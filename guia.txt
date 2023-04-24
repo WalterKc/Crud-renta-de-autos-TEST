@@ -1,0 +1,27 @@
+bueno, aca vamos a empezar a hacer esto, esto , no es dificil, solo algo tedioso, por creo que estoy listo
+lo que vamos a hacer es facil, es tonto y ineficiente empezar directamente con el alquiler de autos
+asi que vamos a crear una proto app de juego , que use todas las herramientas que vamos a usar
+y vamos a hacer que haga cosas parecidas a lo que se quiere en la app final, para luego, escribir 
+sobre ella, y ya
+primero, vamos a hacer un diagrama , de esos lindos, pero nada profesional, de juego
+de lo que quiero para mi appli, luego, vamos a empezar a crear las capretas y seguimos, 
+si vamos a hacer lo ultimo, vamos a hacerlo divertido
+>>>QUE COSAS TIENE QUE TENER?
+>>VER DIAGRAMA 
+>>>que vamos a hacer primero?
+primero vamos a hacer las paginas del server, y vamos a jugar con el en postman(mas facil imposible)
+luego, cuando todo menos el renderado de la pagina este listo, continuemos con el front
+>>bueno, ya tengo bastante control sobre el sql, pero aun me falta un par de cosas par empezar, vamos a 
+escribir lo que falta aca, y luego , cuando terminemos, estamos listos para empezar a jugar con una base de datos de autos
+>ya tengo el selector, no es necesario poner nada mas hay por el momento
+>ya tengo una base de datos seleccionable, todavia falta ver si se puede modificar
+>los servicios ni el selector de la base de datos no existen todavia, pero aun no son necesarios, hay que ahcerlos
+>tenemos el el control un par de cosas que funcionan bien, vamos a nombrar lo que tenemos que hacer, 
+>> selector de todo *LISTO*
+>> selector de algo en particular *LISTO*
+>> creacion de alguna/s fila/tabla/objeto
+>> modificacion alguna/s fila/tabla/objeto
+>> eliminacion de alguna/s fila/tabla/objeto
+>> creacion de una base de datos nueva(opcional)
+> con eso creo que alcanza, acordate que el control es solo eso, controla que se hace en la base de datos
+> no tiene por que tener nada de logica de negocios, eso va en otro lado, asi que limitate a hacer lo de arriba y ya
