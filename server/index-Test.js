@@ -46,15 +46,16 @@ app.get("/", (req, res) => {
   console.log(" SQL actualizado", todo);
 
   res.json(todo);
+  res.end;
 });
 app.post("/", (req, res) => {
   crear();
-  console.log(" SQL actualizado", todo);
+  console.log(" XXXXXXXXXXXXXX");
   res.json(todo);
 });
 app.delete("/", (req, res) => {
   elimino();
-  console.log(" SQL actualizado", todo);
+  console.log(" YYYYYYYYYYYYYYYY");
   res.json(todo);
 });
 
