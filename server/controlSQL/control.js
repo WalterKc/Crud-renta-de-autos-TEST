@@ -9,6 +9,10 @@ const db = new Database("../base_test.db", {
 //db.pragma("journal_mode = WAL");
 
 const todo = db.prepare("SELECT * FROM Cuentas");
+function muestro_tabla() {
+  const datos = db.prepare("SELECT * FROM Cuentas").all();
+  return datos;
+}
 const selecciono_1_tabla = db.prepare("SELECT id FROM Cuentas");
 const selecciono_un_ID_en_particular = db.prepare(
   "SELECT * FROM Cuentas WHERE id = 1"
@@ -49,4 +53,5 @@ module.exports = {
   crear,
   //elimino_un_objeto_particular: elimino_un_objeto_particular.run(),
   elimino,
+  muestro_tabla,
 };

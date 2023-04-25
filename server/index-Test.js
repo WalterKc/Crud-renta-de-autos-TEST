@@ -10,6 +10,7 @@ const {
   //elimino_un_objeto_particular,
   crear,
   elimino,
+  muestro_tabla,
 } = require("./controlSQL/control.js");
 //import { todo } from "./controlSQL/control.js";
 
@@ -38,25 +39,25 @@ let cuentas = [
 ];
 app.get("/", (req, res) => {
   //console.log(cuentas);
-  console.log(" SQL", todo);
+  console.log(" SQL", muestro_tabla());
   console.log(" SQL TABLA ", selecciono_1_tabla);
   console.log(" SQL ID ", selecciono_un_ID_en_particular);
   //elimino_un_objeto_particular;
   //elimino();
-  console.log(" SQL actualizado", todo);
+  console.log(" SQL actualizado", muestro_tabla());
 
-  res.json(todo);
+  res.json(muestro_tabla());
   res.end;
 });
 app.post("/", (req, res) => {
   crear();
   console.log(" XXXXXXXXXXXXXX");
-  res.json(todo);
+  res.json(muestro_tabla());
 });
 app.delete("/", (req, res) => {
   elimino();
   console.log(" YYYYYYYYYYYYYYYY");
-  res.json(todo);
+  res.json(muestro_tabla());
 });
 
 app.listen(8080);
