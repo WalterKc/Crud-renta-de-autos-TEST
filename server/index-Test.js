@@ -13,6 +13,7 @@ const {
   muestro_tabla,
   seleccionarID,
   comprobarId,
+  modificoCliente,
 } = require("./controlSQL/control.js");
 //import { todo } from "./controlSQL/control.js";
 
@@ -86,6 +87,26 @@ app.post("/Test2", (req, res) => {
   } else {
     res.json(muestro_tabla());
   }
+});
+app.put("/test3", (req, res) => {
+  //seleciono una cuenta
+  const nuevosDatos = req.body;
+  console.log("DATOS A MODIFICAR ", nuevosDatos[0].id);
+  console.log(" COLUMNAS A MOD ", Object.values(nuevosDatos[1]));
+  console.log(" NUEVOS DATOS ", Object.values(nuevosDatos[2]));
+  //const DatosB = Object.values(nuevosDatos[2]);
+
+  modificoCliente(
+    nuevosDatos[0].id,
+    Object.values(nuevosDatos[1]),
+    Object.values(nuevosDatos[2])
+  );
+  //res.send(nuevosDatos[0]);
+  res.json(muestro_tabla());
+
+  //digo lo que quiero cambiar
+  //doy los datos nuevos
+  //hago el cambio y debuelvo la tabla otra vez
 });
 
 app.listen(8080);

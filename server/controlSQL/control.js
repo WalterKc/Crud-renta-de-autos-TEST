@@ -86,6 +86,55 @@ function eliminoCliente(id) {
   console.log(" SQL INTERNO DES", todo.all());
   return eliminar;
 }
+//crearAuto
+function crearAuto(datos) {
+  if (comprobarId("autos", datos[0]) === true) {
+    return;
+  } else {
+    console.log(" DATOS", datos);
+    const crear = db
+      .prepare(
+        `INSERT INTO "autos" (id,modelo,catidad_Total,cantidad_disponible) VALUES  (${datos[0]},'${datos[1]}','${datos[2]}','${datos[3]}')`
+      )
+      .run();
+    console.log(" CAMBIOS", crear.changes);
+
+    console.log(" SQL INTERNO DES", todo.all());
+    return crear;
+  }
+}
+
+//modificocliente
+function modificoCliente(id, columnasACAmbiar, datosNuevos) {
+  //seleciono un user
+  let usuario = seleccionarID("cuentas", id);
+  //seleciono lo que quiero cambiar
+  let update = db
+    .prepare(
+      `UPDATE cuentas SET '${columnasACAmbiar[0]}' = '${datosNuevos[0]}','${columnasACAmbiar[1]}' = '${datosNuevos[1]}','${columnasACAmbiar[2]}' = '${datosNuevos[2]}' WHERE id =${id}`
+    )
+    .run();
+  return update;
+  console.log(" NUEVO DATO ID", id);
+
+  console.log(" NUEVO DATO INTERNO 0", datosNuevos);
+  //cambio
+}
+//modificoauto
+function modificoAuto() {
+  //seleciono el auto
+  //seleciono lo que quiero cambiar
+  //cambio
+}
+//elminioauto
+function eliminoAuto(id) {
+  const eliminar = db.prepare(`DELETE FROM autos WHERE id = ${id}`).run();
+  console.log(" CAMBIOS", eliminar.changes);
+
+  console.log(" SQL INTERNO DES", todo.all());
+  return eliminar;
+}
+
 module.exports = {
   todo: todo.all(),
   selecciono_1_tabla: selecciono_1_tabla.all(),
@@ -97,4 +146,5 @@ module.exports = {
   muestro_tabla,
   seleccionarID,
   comprobarId,
+  modificoCliente,
 };
