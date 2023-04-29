@@ -5,4 +5,5 @@ INSERT INTO Cuentas (id,username,role) VALUES (3,'sarahjane','guest');
 
 SELECT * FROM Cuentas
 
-DELETE FROM Cuentas WHERE id = 4
+
+delete  FROM Cuentas WHERE id = 5

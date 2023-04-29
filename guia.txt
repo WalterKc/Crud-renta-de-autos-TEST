@@ -19,9 +19,20 @@ escribir lo que falta aca, y luego , cuando terminemos, estamos listos para empe
 >tenemos el el control un par de cosas que funcionan bien, vamos a nombrar lo que tenemos que hacer, 
 >> selector de todo *LISTO*
 >> selector de algo en particular *LISTO*
->> creacion de alguna/s fila/tabla/objeto
->> modificacion alguna/s fila/tabla/objeto
->> eliminacion de alguna/s fila/tabla/objeto
+>> creacion de alguna/s fila/tabla/objeto *LISTO*
+>> modificacion alguna/s fila/tabla/objeto *LISTO*
+>> eliminacion de alguna/s fila/tabla/objeto *LISTO*
+>> hacer que funcione como una api por medio de peticiones (acordate que, en caso de error,podes enviar un mensaje
+o una señal de false y luego crear el mensaje de error)
 >> creacion de una base de datos nueva(opcional)
 > con eso creo que alcanza, acordate que el control es solo eso, controla que se hace en la base de datos
 > no tiene por que tener nada de logica de negocios, eso va en otro lado, asi que limitate a hacer lo de arriba y ya
+> es hora de hacer el controlador de las dependancia y el de la base de datos
+> primero vamos a hacer un controlador normal , con dic y rdsi, asi no mas, nada raro
+> y luego vamos a hacer el selector de la base de datos(por que vamos a tener mas de 1)
+>>lo que tenemos que hacer, es un control que envie las peticiones(o las controle) que requiera el
+>>index, algo asi como un servicio, tambien tiene que hacer de interfas para el control de sql
+>>para que, el control del sql , solo sepa hacer lo de arriba, sin importar la estructura, ni que
+>>base de datos este usandose
+
+

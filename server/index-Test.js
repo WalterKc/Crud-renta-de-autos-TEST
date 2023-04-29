@@ -8,9 +8,11 @@ const {
   selecciono_un_ID_en_particular,
   //inserto_un_nuevo_objeto,
   //elimino_un_objeto_particular,
-  crear,
-  elimino,
+  crearUsusario,
+  eliminoCliente,
   muestro_tabla,
+  seleccionarID,
+  comprobarId,
 } = require("./controlSQL/control.js");
 //import { todo } from "./controlSQL/control.js";
 
@@ -37,27 +39,53 @@ let cuentas = [
     role: "guest",
   },
 ];
+
 app.get("/", (req, res) => {
   //console.log(cuentas);
   console.log(" SQL", muestro_tabla());
   console.log(" SQL TABLA ", selecciono_1_tabla);
-  console.log(" SQL ID ", selecciono_un_ID_en_particular);
+  console.log(" SQL ID 1 ", seleccionarID("cuentas", 1));
   //elimino_un_objeto_particular;
   //elimino();
   console.log(" SQL actualizado", muestro_tabla());
 
   res.json(muestro_tabla());
+  comprobarId("cuentas", 4);
   res.end;
 });
 app.post("/", (req, res) => {
-  crear();
+  crearUsusario([5, "martin", "gonzales"]);
   console.log(" XXXXXXXXXXXXXX");
   res.json(muestro_tabla());
 });
 app.delete("/", (req, res) => {
-  elimino();
+  eliminoCliente(5);
   console.log(" YYYYYYYYYYYYYYYY");
   res.json(muestro_tabla());
+});
+app.post("/Test", (req, res) => {
+  console.log(req.body);
+  const obj = req.body;
+  console.log(" KEYS ", Object.keys(obj));
+  console.log(" VALUES ", Object.values(obj));
+
+  console.log(obj.id);
+
+  comprobarId("cuentas", obj.id);
+  console.log(" EL ID NO ESTA DISPONIBLE? ", comprobarId("cuentas", obj.id));
+
+  res.send(req.body);
+});
+app.post("/Test2", (req, res) => {
+  const datos = req.body;
+  crearUsusario(Object.values(datos));
+
+  console.log("compruebo", comprobarId("cuentas", datos.x));
+  if (comprobarId("cuentas", datos.x)) {
+    res.send(`EL ID SELECIONADO NO ESTA DISPONIBLE elije otro por favor `);
+  } else {
+    res.json(muestro_tabla());
+  }
 });
 
 app.listen(8080);
