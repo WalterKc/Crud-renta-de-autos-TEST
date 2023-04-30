@@ -43,26 +43,26 @@ let cuentas = [
 
 app.get("/", (req, res) => {
   //console.log(cuentas);
-  console.log(" SQL", muestro_tabla());
+  console.log(" SQL", muestro_tabla("cuentas"));
   console.log(" SQL TABLA ", selecciono_1_tabla);
   console.log(" SQL ID 1 ", seleccionarID("cuentas", 1));
   //elimino_un_objeto_particular;
   //elimino();
-  console.log(" SQL actualizado", muestro_tabla());
+  console.log(" SQL actualizado", muestro_tabla("cuentas"));
 
-  res.json(muestro_tabla());
+  res.json(muestro_tabla("cuentas"));
   comprobarId("cuentas", 4);
   res.end;
 });
 app.post("/", (req, res) => {
   crearUsusario([5, "martin", "gonzales"]);
   console.log(" XXXXXXXXXXXXXX");
-  res.json(muestro_tabla());
+  res.json(muestro_tabla("cuentas"));
 });
 app.delete("/", (req, res) => {
   eliminoCliente(5);
   console.log(" YYYYYYYYYYYYYYYY");
-  res.json(muestro_tabla());
+  res.json(muestro_tabla("cuentas"));
 });
 app.post("/Test", (req, res) => {
   console.log(req.body);
@@ -79,13 +79,14 @@ app.post("/Test", (req, res) => {
 });
 app.post("/Test2", (req, res) => {
   const datos = req.body;
-  crearUsusario(Object.values(datos));
 
-  console.log("compruebo", comprobarId("cuentas", datos.x));
-  if (comprobarId("cuentas", datos.x)) {
+  console.log("compruebo", comprobarId("cuentas", datos.id));
+  if (comprobarId("cuentas", datos.id)) {
     res.send(`EL ID SELECIONADO NO ESTA DISPONIBLE elije otro por favor `);
   } else {
-    res.json(muestro_tabla());
+    crearUsusario(Object.values(datos));
+
+    res.json(muestro_tabla("cuentas"));
   }
 });
 app.put("/test3", (req, res) => {
@@ -105,7 +106,7 @@ app.put("/test3", (req, res) => {
       Object.values(nuevosDatos[2])
     );
     //res.send(nuevosDatos[0]);
-    res.json(muestro_tabla());
+    res.json(muestro_tabla("cuentas"));
   }
 
   //digo lo que quiero cambiar

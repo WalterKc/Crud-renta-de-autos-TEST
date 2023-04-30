@@ -5,25 +5,29 @@
 const Database = require("better-sqlite3");
 
 //este de aca, se va a cambiar, al contenedor
+//este esta bien asi como esta, no necestia nada mas
 function selectorDB(baseDeDatos) {
   const db = new Database(baseDeDatos, {
     verbose: console.log,
   });
   return db;
 }
+//Modular
+let db = selectorDB("../base_test.db");
+/*
 const db = new Database("../base_test.db", {
   verbose: console.log,
 });
+*/
 
 //const db = new Database("../base_test.db", { verbose: console.log });
 //db.pragma("journal_mode = WAL");
 
 //este es fijo, por que siempre da todo
 const todo = db.prepare("SELECT * FROM Cuentas");
-function muestro_tabla() {
-  const datos = selectorDB("../base_test.db")
-    .prepare("SELECT * FROM Cuentas")
-    .all();
+//esta esta perfecta, no es necesario cambios
+function muestro_tabla(tabla) {
+  const datos = db.prepare(`SELECT * FROM ${tabla}`).all();
   return datos;
 }
 //estos de aca, vamos a cambiarlos y van para el contenedor tambien
@@ -50,6 +54,8 @@ function seleccionarID(tabla, ID) {
 //estos 2 tambien, para el contenedor
 //hay que tener en cuenta , que no vamos a crear todo, solo vamos a llenar datos , asi que
 //no es necesario interpolar todo
+//esta funcion de control, tiene que ser externa, no interna, asi que, no hay que menterla adentro de nadie
+//se la llama por fuera y ya, es mas sencillo
 function comprobarId(tabla, id) {
   let existe = false;
   if (seleccionarID(tabla, id)[0] !== undefined) {
@@ -65,20 +71,16 @@ function comprobarId(tabla, id) {
   }
 }
 function crearUsusario(datos) {
-  if (comprobarId("cuentas", datos[0]) === true) {
-    return;
-  } else {
-    console.log(" DATOS", datos);
-    const crear = db
-      .prepare(
-        `INSERT INTO "Cuentas" (id,username,role) VALUES  (${datos[0]},'${datos[1]}','${datos[2]}')`
-      )
-      .run();
-    console.log(" CAMBIOS", crear.changes);
+  console.log(" DATOS", datos);
+  const crear = db
+    .prepare(
+      `INSERT INTO "Cuentas" (id,username,role) VALUES  (${datos[0]},'${datos[1]}','${datos[2]}')`
+    )
+    .run();
+  console.log(" CAMBIOS", crear.changes);
 
-    console.log(" SQL INTERNO DES", todo.all());
-    return crear;
-  }
+  console.log(" SQL INTERNO DES", muestro_tabla("cuentas"));
+  return crear;
 }
 function eliminoCliente(id) {
   const eliminar = db.prepare(`DELETE FROM Cuentas WHERE id = ${id}`).run();
@@ -89,20 +91,16 @@ function eliminoCliente(id) {
 }
 //crearAuto
 function crearAuto(datos) {
-  if (comprobarId("autos", datos[0]) === true) {
-    return;
-  } else {
-    console.log(" DATOS", datos);
-    const crear = db
-      .prepare(
-        `INSERT INTO "autos" (id,modelo,catidad_Total,cantidad_disponible) VALUES  (${datos[0]},'${datos[1]}','${datos[2]}','${datos[3]}')`
-      )
-      .run();
-    console.log(" CAMBIOS", crear.changes);
+  console.log(" DATOS", datos);
+  const crear = db
+    .prepare(
+      `INSERT INTO "autos" (id,modelo,catidad_Total,cantidad_disponible) VALUES  (${datos[0]},'${datos[1]}','${datos[2]}','${datos[3]}')`
+    )
+    .run();
+  console.log(" CAMBIOS", crear.changes);
 
-    console.log(" SQL INTERNO DES", todo.all());
-    return crear;
-  }
+  console.log(" SQL INTERNO DES", todo.all());
+  return crear;
 }
 
 //modificocliente
