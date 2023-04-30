@@ -95,14 +95,18 @@ app.put("/test3", (req, res) => {
   console.log(" COLUMNAS A MOD ", Object.values(nuevosDatos[1]));
   console.log(" NUEVOS DATOS ", Object.values(nuevosDatos[2]));
   //const DatosB = Object.values(nuevosDatos[2]);
-
-  modificoCliente(
-    nuevosDatos[0].id,
-    Object.values(nuevosDatos[1]),
-    Object.values(nuevosDatos[2])
-  );
-  //res.send(nuevosDatos[0]);
-  res.json(muestro_tabla());
+  if (comprobarId("cuentas", nuevosDatos[0].id) === false) {
+    //
+    res.send(`EL ID SELECIONADO NO EXISTE elije otro por favor `);
+  } else {
+    modificoCliente(
+      nuevosDatos[0].id,
+      Object.values(nuevosDatos[1]),
+      Object.values(nuevosDatos[2])
+    );
+    //res.send(nuevosDatos[0]);
+    res.json(muestro_tabla());
+  }
 
   //digo lo que quiero cambiar
   //doy los datos nuevos

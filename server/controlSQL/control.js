@@ -1,6 +1,7 @@
 //import Database from "better-sqlite3";
 //const sqlite = require("better-sqlite3");
 //el database es fijo
+//esto esta casi listo para ponerlo en el contenedor, solo hay que hacerlo mas modular
 const Database = require("better-sqlite3");
 
 //este de aca, se va a cambiar, al contenedor
@@ -107,11 +108,11 @@ function crearAuto(datos) {
 //modificocliente
 function modificoCliente(id, columnasACAmbiar, datosNuevos) {
   //seleciono un user
-  let usuario = seleccionarID("cuentas", id);
+  //let usuario = seleccionarID("cuentas", id);
   //seleciono lo que quiero cambiar
   let update = db
     .prepare(
-      `UPDATE cuentas SET '${columnasACAmbiar[0]}' = '${datosNuevos[0]}','${columnasACAmbiar[1]}' = '${datosNuevos[1]}','${columnasACAmbiar[2]}' = '${datosNuevos[2]}' WHERE id =${id}`
+      `UPDATE cuentas SET '${columnasACAmbiar[0]}' = '${datosNuevos[0]}','${columnasACAmbiar[1]}' = '${datosNuevos[1]}','${columnasACAmbiar[2]}' = '${datosNuevos[2]}','${columnasACAmbiar[3]}' = '${datosNuevos[3]}' WHERE id =${id}`
     )
     .run();
   return update;
@@ -121,10 +122,16 @@ function modificoCliente(id, columnasACAmbiar, datosNuevos) {
   //cambio
 }
 //modificoauto
-function modificoAuto() {
+function modificoAuto(id, columnasACAmbiar, datosNuevos) {
   //seleciono el auto
   //seleciono lo que quiero cambiar
   //cambio
+  let update = db
+    .prepare(
+      `UPDATE cuentas SET '${columnasACAmbiar[0]}' = '${datosNuevos[0]}','${columnasACAmbiar[1]}' = '${datosNuevos[1]}','${columnasACAmbiar[2]}' = '${datosNuevos[2]}' WHERE id =${id}`
+    )
+    .run();
+  return update;
 }
 //elminioauto
 function eliminoAuto(id) {

@@ -25,7 +25,8 @@ escribir lo que falta aca, y luego , cuando terminemos, estamos listos para empe
 >> hacer que funcione como una api por medio de peticiones (acordate que, en caso de error,podes enviar un mensaje
 o una señal de false y luego crear el mensaje de error) *LISTO*
 >> finalizar la api y dejarla lista para trabajar
->>>hacer lo mismo que arriba, pero ahora con los autos, y hacerlos menos hardcodeados (a lo que puedan)
+>> dejar la api lista y modularizada, lista para rellenar y trabajar, tambien arreglar el index
+>>>hacer lo mismo que arriba, pero ahora con los autos, y hacerlos menos hardcodeados (a lo que puedan) *LISTO*
 >> creacion de una base de datos nueva(opcional)
 > con eso creo que alcanza, acordate que el control es solo eso, controla que se hace en la base de datos
 > no tiene por que tener nada de logica de negocios, eso va en otro lado, asi que limitate a hacer lo de arriba y ya
