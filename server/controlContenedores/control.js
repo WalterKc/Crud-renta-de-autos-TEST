@@ -6,4 +6,8 @@ const container = new DIContainer();
 //y tiene que ser ligero y facil de leer, 15/20 lineas max
 //acordate que esto es una interfas/service casi, asi que, no tiene mucha logica,ni nada del ui
 //asi que no metas cosas raras, solo un contenedor y un par de cosas,
+//CREO QUE YA ESTOY LISTO PAR HACER ESTO, VOY A IR EXPLICANDO LO QUE VOY ENTENDIENDO
+/**
+ *
+ */
 container.addDefinitions({});

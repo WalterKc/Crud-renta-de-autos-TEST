@@ -6,6 +6,7 @@ const Database = require("better-sqlite3");
 
 //este de aca, se va a cambiar, al contenedor
 //este esta bien asi como esta, no necestia nada mas
+/////esto se puede configurar
 function selectorDB(baseDeDatos) {
   const db = new Database(baseDeDatos, {
     verbose: console.log,
@@ -26,6 +27,7 @@ const db = new Database("../base_test.db", {
 //este es fijo, por que siempre da todo
 const todo = db.prepare("SELECT * FROM Cuentas");
 //esta esta perfecta, no es necesario cambios
+///esto es una herramienta, no se configura
 function muestro_tabla(tabla) {
   const datos = db.prepare(`SELECT * FROM ${tabla}`).all();
   return datos;
@@ -35,6 +37,8 @@ const selecciono_1_tabla = db.prepare("SELECT id FROM Cuentas");
 const selecciono_un_ID_en_particular = db.prepare(
   "SELECT * FROM Cuentas WHERE id = 1"
 );
+///esto es una herramienta, no se configura
+
 function seleccionarID(tabla, ID) {
   const IdSelecionado = db
     .prepare(`SELECT * FROM ${tabla} WHERE id = ${ID}`)
@@ -56,6 +60,8 @@ function seleccionarID(tabla, ID) {
 //no es necesario interpolar todo
 //esta funcion de control, tiene que ser externa, no interna, asi que, no hay que menterla adentro de nadie
 //se la llama por fuera y ya, es mas sencillo
+///esto es una herramienta, no se configura
+
 function comprobarId(tabla, id) {
   let existe = false;
   if (seleccionarID(tabla, id)[0] !== undefined) {
@@ -70,6 +76,8 @@ function comprobarId(tabla, id) {
     return existe;
   }
 }
+///esto es una herramienta, no se configura
+
 function crearUsusario(datos) {
   console.log(" DATOS", datos);
   const crear = db
@@ -82,6 +90,8 @@ function crearUsusario(datos) {
   console.log(" SQL INTERNO DES", muestro_tabla("cuentas"));
   return crear;
 }
+///esto es una herramienta, no se configura
+
 function eliminoCliente(id) {
   const eliminar = db.prepare(`DELETE FROM Cuentas WHERE id = ${id}`).run();
   console.log(" CAMBIOS", eliminar.changes);
@@ -90,6 +100,8 @@ function eliminoCliente(id) {
   return eliminar;
 }
 //crearAuto
+///esto es una herramienta, no se configura
+
 function crearAuto(datos) {
   console.log(" DATOS", datos);
   const crear = db
@@ -104,6 +116,8 @@ function crearAuto(datos) {
 }
 
 //modificocliente
+///esto es una herramienta, no se configura
+
 function modificoCliente(id, columnasACAmbiar, datosNuevos) {
   //seleciono un user
   //let usuario = seleccionarID("cuentas", id);
@@ -120,6 +134,8 @@ function modificoCliente(id, columnasACAmbiar, datosNuevos) {
   //cambio
 }
 //modificoauto
+///esto es una herramienta, no se configura
+
 function modificoAuto(id, columnasACAmbiar, datosNuevos) {
   //seleciono el auto
   //seleciono lo que quiero cambiar
@@ -132,6 +148,8 @@ function modificoAuto(id, columnasACAmbiar, datosNuevos) {
   return update;
 }
 //elminioauto
+///esto es una herramienta, no se configura
+
 function eliminoAuto(id) {
   const eliminar = db.prepare(`DELETE FROM autos WHERE id = ${id}`).run();
   console.log(" CAMBIOS", eliminar.changes);
