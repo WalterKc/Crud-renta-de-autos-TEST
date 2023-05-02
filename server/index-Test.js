@@ -18,9 +18,11 @@ const {
 //import { todo } from "./controlSQL/control.js";
 
 const express = require("express");
+var cors = require("cors");
 
 const PUERTO = 8080;
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 let cuentas = [
