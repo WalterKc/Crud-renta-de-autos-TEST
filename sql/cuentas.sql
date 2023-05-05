@@ -4,6 +4,9 @@ INSERT INTO Cuentas (id,username,role) VALUES (2,'johndoe','guest');
 INSERT INTO Cuentas (id,username,role) VALUES (3,'sarahjane','guest');
 
 SELECT * FROM Cuentas
+SELECT * FROM sessions
+
+
 
 
 delete  FROM Cuentas WHERE id = 6

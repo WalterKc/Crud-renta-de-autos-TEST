@@ -13,6 +13,7 @@ async function otroTEST(valor) {
 const test1 = otroTEST(obtenerDatosIniciales());
 const test2 = obtenerDatosIniciales();
 console.log(test1);
+//al use effect no le gusta nada, todo se tiene que hacer afuera para que se vean los resultados
 const otrafuncion = async () => {
   let datos = await obtenerDatosIniciales();
   console.log(datos[0]);

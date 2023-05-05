@@ -32,6 +32,7 @@ function muestro_tabla(tabla) {
   const datos = db.prepare(`SELECT * FROM ${tabla}`).all();
   return datos;
 }
+
 //estos de aca, vamos a cambiarlos y van para el contenedor tambien
 const selecciono_1_tabla = db.prepare("SELECT id FROM Cuentas");
 const selecciono_un_ID_en_particular = db.prepare(
@@ -101,12 +102,13 @@ function eliminoCliente(id) {
 }
 //crearAuto
 ///esto es una herramienta, no se configura
-
+//tarde, literalmente 10 segundos en actualizar/modificar esto, no me rompas las pelotas con esto, por que te voy
+//a mandar a la mierda, tarde mas en escribir esto que en modificarlo
 function crearAuto(datos) {
   console.log(" DATOS", datos);
   const crear = db
     .prepare(
-      `INSERT INTO "autos" (id,modelo,catidad_Total,cantidad_disponible) VALUES  (${datos[0]},'${datos[1]}','${datos[2]}','${datos[3]}')`
+      `INSERT INTO "autos" (id,Marca,Modelo,Año,Kms,Color,Aire_acondicionado ,Pasajeros,trasmision) VALUES  (${datos[0]},'${datos[1]}','${datos[2]}','${datos[3]},'${datos[4]},'${datos[5]},'${datos[6]},'${datos[7]},'${datos[8]}')`
     )
     .run();
   console.log(" CAMBIOS", crear.changes);
@@ -142,7 +144,7 @@ function modificoAuto(id, columnasACAmbiar, datosNuevos) {
   //cambio
   let update = db
     .prepare(
-      `UPDATE cuentas SET '${columnasACAmbiar[0]}' = '${datosNuevos[0]}','${columnasACAmbiar[1]}' = '${datosNuevos[1]}','${columnasACAmbiar[2]}' = '${datosNuevos[2]}' WHERE id =${id}`
+      `UPDATE cuentas SET '${columnasACAmbiar[0]}' = '${datosNuevos[0]}','${columnasACAmbiar[1]}' = '${datosNuevos[1]}','${columnasACAmbiar[2]}' = '${datosNuevos[2]}' ,'${columnasACAmbiar[3]}' = '${datosNuevos[3]}','${columnasACAmbiar[4]}' = '${datosNuevos[4]}','${columnasACAmbiar[5]}' = '${datosNuevos[5]}','${columnasACAmbiar[6]}' = '${datosNuevos[6]}','${columnasACAmbiar[7]}' = '${datosNuevos[7]}','${columnasACAmbiar[8]}' = '${datosNuevos[8]}' WHERE id =${id}`
     )
     .run();
   return update;
@@ -170,4 +172,8 @@ module.exports = {
   seleccionarID,
   comprobarId,
   modificoCliente,
+  db,
+  crearAuto,
+  modificoAuto,
+  eliminoAuto,
 };

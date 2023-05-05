@@ -37,6 +37,18 @@ o una señal de false y luego crear el mensaje de error) *LISTO*
 >>index, algo asi como un servicio, tambien tiene que hacer de interfas para el control de sql
 >>para que, el control del sql , solo sepa hacer lo de arriba, sin importar la estructura, ni que
 >>base de datos este usandose
->>>vamos a hacer un front basico, para ir complentando esto y tener una vista general de esto
+>>>vamos a hacer un front basico, para ir complentando esto y tener una vista general de esto *LISTO*
+>>el front funciona , por lo menos la peticion get, pero con eso es suficiente por el momento
+>>>tenemos que ver como unimos a los usuarios con los autos, tenemos que hacer una base de datos crusada
+>>>que diga quien tiene que auto, la patente, y por cuanto tiempo lo tienen que tener ,ect
+>>tenemos que crear una base de datos de asignacion/transaccion/identificiacion, asi  poder hacer esto,
+>> y en esta, decimos quien es el que alquila, que auto alquila, y por cuanto tiempo *LISTO*
+>> ahora vamos a poner seciones y cokies a la aplicacion, acordate que las secciones van en el server
+>> y las galletas en el cliente
+>>> hay aque arreglar la base de datos de los autos, y podemos completar la api
+>>hoy vamos a completar toda la api, y dejarla lista para trabajar facilmente
+
+>>vamos activar y completar todo el control de la api, y cuando eso este listo, vamos a empezar el front final
+
 
 
