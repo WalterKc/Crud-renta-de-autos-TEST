@@ -83,7 +83,7 @@ function crearUsusario(datos) {
   console.log(" DATOS", datos);
   const crear = db
     .prepare(
-      `INSERT INTO "Cuentas" (id,username,role) VALUES  (${datos[0]},'${datos[1]}','${datos[2]}')`
+      `INSERT INTO "Cuentas" (id,username,role,telefono,email) VALUES  (${datos[0]},'${datos[1]}','${datos[2]}',${datos[3]},'${datos[4]}')`
     )
     .run();
   console.log(" CAMBIOS", crear.changes);
@@ -108,7 +108,7 @@ function crearAuto(datos) {
   console.log(" DATOS", datos);
   const crear = db
     .prepare(
-      `INSERT INTO "autos" (id,Marca,Modelo,Año,Kms,Color,Aire_acondicionado ,Pasajeros,trasmision) VALUES  (${datos[0]},'${datos[1]}','${datos[2]}','${datos[3]},'${datos[4]},'${datos[5]},'${datos[6]},'${datos[7]},'${datos[8]}')`
+      `INSERT INTO "autos" (id,Marca,Modelo,Año,Kms,Color,Aire_acondicionado ,Pasajeros,trasmision) VALUES  (${datos[0]},'${datos[1]}','${datos[2]}',${datos[3]},${datos[4]},'${datos[5]}',${datos[6]},${datos[7]},'${datos[8]}')`
     )
     .run();
   console.log(" CAMBIOS", crear.changes);
@@ -126,7 +126,7 @@ function modificoCliente(id, columnasACAmbiar, datosNuevos) {
   //seleciono lo que quiero cambiar
   let update = db
     .prepare(
-      `UPDATE cuentas SET '${columnasACAmbiar[0]}' = '${datosNuevos[0]}','${columnasACAmbiar[1]}' = '${datosNuevos[1]}','${columnasACAmbiar[2]}' = '${datosNuevos[2]}','${columnasACAmbiar[3]}' = '${datosNuevos[3]}' WHERE id =${id}`
+      `UPDATE cuentas SET '${columnasACAmbiar[0]}' = '${datosNuevos[0]}','${columnasACAmbiar[1]}' = '${datosNuevos[1]}','${columnasACAmbiar[2]}' = '${datosNuevos[2]}','${columnasACAmbiar[3]}' = '${datosNuevos[3]},'${columnasACAmbiar[4]}' = '${datosNuevos[4]}' WHERE id =${id}`
     )
     .run();
   return update;
@@ -144,7 +144,7 @@ function modificoAuto(id, columnasACAmbiar, datosNuevos) {
   //cambio
   let update = db
     .prepare(
-      `UPDATE cuentas SET '${columnasACAmbiar[0]}' = '${datosNuevos[0]}','${columnasACAmbiar[1]}' = '${datosNuevos[1]}','${columnasACAmbiar[2]}' = '${datosNuevos[2]}' ,'${columnasACAmbiar[3]}' = '${datosNuevos[3]}','${columnasACAmbiar[4]}' = '${datosNuevos[4]}','${columnasACAmbiar[5]}' = '${datosNuevos[5]}','${columnasACAmbiar[6]}' = '${datosNuevos[6]}','${columnasACAmbiar[7]}' = '${datosNuevos[7]}','${columnasACAmbiar[8]}' = '${datosNuevos[8]}' WHERE id =${id}`
+      `UPDATE cuentas  SET '${columnasACAmbiar[0]}' = '${datosNuevos[0]}','${columnasACAmbiar[1]}' = '${datosNuevos[1]}','${columnasACAmbiar[2]}' = '${datosNuevos[2]}' ,'${columnasACAmbiar[3]}' = '${datosNuevos[3]}','${columnasACAmbiar[4]}' = '${datosNuevos[4]}','${columnasACAmbiar[5]}' = '${datosNuevos[5]}','${columnasACAmbiar[6]}' = '${datosNuevos[6]}','${columnasACAmbiar[7]}' = '${datosNuevos[7]}','${columnasACAmbiar[8]}' = '${datosNuevos[8]}' WHERE id =${id}`
     )
     .run();
   return update;
@@ -158,6 +158,24 @@ function eliminoAuto(id) {
 
   console.log(" SQL INTERNO DES", todo.all());
   return eliminar;
+}
+
+function eliminarFilaDeTabla(id, tabla) {
+  const eliminar = db.prepare(`DELETE FROM '${tabla}' WHERE id = ${id}`).run();
+  console.log(" CAMBIOS", eliminar.changes);
+
+  console.log(" SQL INTERNO DES", todo.all());
+  return eliminar;
+}
+// prettier-ignore
+
+function updateTEST(id, columnasACAmbiar, datosNuevos) {
+  let update = db
+    .prepare(
+      `UPDATE cuentas SET "${columnasACAmbiar.forEach((element) => {element = datosNuevos})}" WHERE id =${id}`
+    )
+    .run();
+  return update;
 }
 
 module.exports = {
@@ -176,4 +194,6 @@ module.exports = {
   crearAuto,
   modificoAuto,
   eliminoAuto,
+  eliminarFilaDeTabla,
+  updateTEST,
 };

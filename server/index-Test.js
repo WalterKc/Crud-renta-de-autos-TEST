@@ -15,6 +15,11 @@ const {
   comprobarId,
   modificoCliente,
   db,
+  modificoAuto,
+  crearAuto,
+  eliminoAuto,
+  eliminarFilaDeTabla,
+  updateTEST,
 } = require("./controlSQL/control.js");
 //import { todo } from "./controlSQL/control.js";
 
@@ -37,7 +42,8 @@ app.use(
 );
 */
 const SqliteStore = require("better-sqlite3-session-store")(session);
-
+//DESACTIVO ESTO POR QUE ES MOLESTO; ME LLENA LA CONSOLA
+/* 
 app.use(
   session({
     store: new SqliteStore({
@@ -53,6 +59,7 @@ app.use(
     saveUninitialized: false,
   })
 );
+*/
 
 let cuentas = [
   {
@@ -189,12 +196,91 @@ app.get("/TEST_ID", (req, res) => {
 //luego hay que hacer lo mismo con las demas, pero va a ser un copy paste casi, luego de completar estas funciones
 //vamos a hacer puro frot para tener una pagina completa(aunque fea al principio), en la guia a a decir como
 //va a estar estrucutrada
-app.put("/TEST_crear_datos", (req, res) => {
+//SELECTOR AUTOS LISTO, siguiente, el de cuentas(que es un copypaste casi)
+app.post("/TEST_crear_datos", (req, res) => {
+  //selector
+  //el selector tiene que verificar 2 cosas, 1 que sea la tabla correcta, y otra es que los datos
+  //enviados sean del tamaño adecuado (para que no se envien cosas incompletas)
+
   const nuevosDatos = req.body;
-  console.log("DATOS A MODIFICAR ", nuevosDatos[0].id);
-  console.log(" COLUMNAS A MOD ", Object.values(nuevosDatos[1]));
-  console.log(" NUEVOS DATOS ", Object.values(nuevosDatos[2]));
+  console.log("DATOS A MODIFICAR ", nuevosDatos);
+  console.log(" COLUMNAS A MOD ", Object.keys(nuevosDatos[1]));
+  console.log(" NUEVOS DATOS ", Object.values(nuevosDatos[1]));
+  /**
+   * TEST SELECTOR
+   */
+  console.log(" Tabla ", Object.values(nuevosDatos[0]));
+  //AUTOS
+  if (
+    nuevosDatos[0].tabla === "autos" &&
+    Object.keys(nuevosDatos[1]).length === 9
+  ) {
+    console.log("es una tabla de autos");
+    console.log("el tamaño de la tabla es", Object.keys(nuevosDatos[1]).length);
+    console.log("tipo de tabla", nuevosDatos[0].tabla);
+    //se cumple la condicion
+    if (
+      comprobarId(nuevosDatos[0].tabla, nuevosDatos[1].id) === false &&
+      nuevosDatos[1].id > 0
+    ) {
+      console.log("DATOS NUEVOS ", Object.values(nuevosDatos[1]));
+
+      crearAuto(Object.values(nuevosDatos[1]));
+      console.log(`EL ID SELECIONADO esta disponible y es valido para ser un nuevo auto, es posible usarlo,
+      se ha creado un nuevo auto`);
+
+      res.send(muestro_tabla(nuevosDatos[0].tabla));
+    } //
+    else {
+      res.send(
+        `EL ID SELECIONADO ESTA SIENDO USADO POR OTRO AUTO O ES EL ID 0, ELIJE OTRO`
+      );
+    }
+  } // CUENTAS
+  else if (
+    nuevosDatos[0].tabla === "cuentas" &&
+    Object.keys(nuevosDatos[1]).length === 5
+  ) {
+    //se cumple la condicion
+
+    if (
+      comprobarId(nuevosDatos[0].tabla, nuevosDatos[1].id) === false &&
+      nuevosDatos[1].id > 0
+    ) {
+      //
+      console.log("DATOS NUEVOS ", Object.values(nuevosDatos[1]));
+      console.log("es una tabla de cuentas");
+      console.log("el tamaño de la tabla es");
+
+      crearUsusario(Object.values(nuevosDatos[1]));
+      console.log(`EL ID SELECIONADO esta disponible y es valido para ser un nuevo auto, es posible usarlo,
+      se ha creado un nuevo auto`);
+
+      res.send(muestro_tabla(nuevosDatos[0].tabla));
+    } //
+    else {
+      res.send(
+        `EL ID SELECIONADO ESTA SIENDO USADO POR OTRO USUARIO O ES EL ID 0, ELIJE OTRO`
+      );
+    }
+  } // transacciones (esta tabla, puede llegar a cambiar, por que, al usar plata, tiene que tener
+  // cosas extra, para que cualquiera no se meta y pida algo sin pagar)
+  //esta es una trasaccion, pero como es algo que se puede dejar para mas adelante, lo voy a dejar para
+  //el final
+  else if (
+    nuevosDatos[0].tabla === "transacciones" &&
+    Object.keys(nuevosDatos[1]).length === 6
+  ) {
+    res.send("es una tabla de transacciones");
+    console.log("es una tabla de transacciones");
+    console.log("el tamaño de la tabla es");
+  } else {
+    res.send("no es una tabla valida");
+    console.log("no es una tabla valida");
+  }
+
   //const DatosB = Object.values(nuevosDatos[2]);
+  /*
   if (comprobarId("cuentas", nuevosDatos[0].id) === false) {
     //
     res.send(`EL ID SELECIONADO NO EXISTE elije otro por favor `);
@@ -206,6 +292,85 @@ app.put("/TEST_crear_datos", (req, res) => {
     );
     //res.send(nuevosDatos[0]);
     res.json(muestro_tabla("cuentas"));
+  }
+
+  //digo lo que quiero cambiar
+  //doy los datos nuevos
+  //hago el cambio y debuelvo la tabla otra vez
+  */
+  //res.send("HECHO");
+});
+
+//este tambien necesita un selector, pero mas pequeño
+//NUEVO, no es necesario tener separado esto, vamos a crear una nueva funcion y ya
+app.delete("/TEST_delete", (req, res) => {
+  let idAEliminar = req.body;
+  // aca se seleciona los autos
+  if (
+    (idAEliminar[0].tabla === "autos" || idAEliminar[0].tabla === "cuentas") &&
+    Object.keys(idAEliminar[0]).length === 1
+  ) {
+    //verificamos si exite ese id
+    if (
+      comprobarId(idAEliminar[0].tabla, idAEliminar[1].id) === true &&
+      idAEliminar[1].id > 0
+    ) {
+      console.log(
+        " TABLA DEL OBJETO A ELIMNAR",
+        idAEliminar[0],
+        " ID DEL OBJETO A ELIMNAR",
+        idAEliminar[1]
+      );
+      eliminarFilaDeTabla(idAEliminar[1].id, idAEliminar[0].tabla);
+      res.send(
+        ` SE ELIMINO EL ${idAEliminar[0].tabla} DE ID  ${idAEliminar[1].id}`
+      );
+    } //no pasa
+    else {
+      res.send(" EL id NO EXISTE, o es un 0, por favor revisa ");
+    }
+  }
+  // si no seleciono algo valido
+  else {
+    res.send(" no es una tabla valida ");
+  }
+  //aca se seleciona las cuentas
+  //aca se selecionan las transaciones(para mas tarde)
+
+  //res.json(muestro_tabla("cuentas"));
+});
+app.put("/TEST_PUT", (req, res) => {
+  //seleciono una cuenta
+  const nuevosDatos = req.body;
+  //
+  console.log("DATOS A MODIFICAR ", nuevosDatos[0].id);
+  if (nuevosDatos[0].tabla === "TESTUPDATE") {
+    if (comprobarId(nuevosDatos[0].tabla, nuevosDatos[1].id) === true) {
+      console.log("DATOS A MODIFICAR ", nuevosDatos[1].id);
+      console.log(" COLUMNAS A MOD ", Object.values(nuevosDatos[1]));
+      console.log(" NUEVOS DATOS ", Object.keys(nuevosDatos[1]));
+
+      updateTEST(
+        nuevosDatos[1].id,
+        Object.keys(nuevosDatos[1]),
+        Object.values(nuevosDatos[1])
+      );
+      //
+      res.send(`EL ID SELECIONADO  EXISTE elije otro por favor `);
+    } else {
+      /*
+      modificoCliente(
+        nuevosDatos[0].id,
+        Object.values(nuevosDatos[1]),
+        Object.values(nuevosDatos[2])
+      );
+      //res.send(nuevosDatos[0]);
+      */
+      res.send(`EL ID SELECIONADO NO EXISTE elije otro por favor `);
+    }
+  } //
+  else {
+    res.send(" no es una tabla valida ");
   }
 
   //digo lo que quiero cambiar

@@ -9,9 +9,9 @@ INSERT INTO Autos (id,modelo,catidad_Total,cantidad_disponible) VALUES (5,'auto 
 SELECT * FROM Autos
 
 DROP TABLE IF EXISTS Autos
-CREATE TABLE Autos(id DOUBLE,Marca VARCHAR(10),Modelo VARCHAR(10),Año INT,Kms INT,Color VARCHAR(10),Aire_acondicionado BOOLEAN,Pasajeros,trasmision BOOLEAN);
-INSERT INTO Autos (id,Marca,Modelo,Año,Kms,Color,Aire_acondicionado ,Pasajeros,trasmision ) VALUES (1,'marca n°1','modelo n°1',2010,10000,'azul',TRUE,5,TRUE );
-INSERT INTO Autos (id,Marca,Modelo,Año,Kms,Color,Aire_acondicionado ,Pasajeros,trasmision ) VALUES (2,'marca n°2','modelo n°2',2000,100000,'azul',FALSE,5,FALSE );
+CREATE TABLE Autos(id DOUBLE NOT NULL,Marca VARCHAR(10) NOT NULL,Modelo VARCHAR(10) NOT NULL,Año INT NOT NULL,Kms INT NOT NULL,Color VARCHAR(10) NOT NULL,Aire_acondicionado BOOLEAN NOT NULL,Pasajeros NOT NULL,trasmision NOT NULL);
+INSERT INTO Autos (id,Marca,Modelo,Año,Kms,Color,Aire_acondicionado ,Pasajeros,trasmision ) VALUES (1,'marca n°1','modelo n°1',2010,10000,'azul',TRUE,5,"manual" );
+INSERT INTO Autos (id,Marca,Modelo,Año,Kms,Color,Aire_acondicionado ,Pasajeros,trasmision ) VALUES (2,'marca n°2','modelo n°2',2000,100000,'azul',FALSE,5,"manual" );
 SELECT * FROM Autos
 
 

@@ -47,6 +47,8 @@ o una señal de false y luego crear el mensaje de error) *LISTO*
 >> y las galletas en el cliente
 >>> hay aque arreglar la base de datos de los autos, y podemos completar la api
 >>hoy vamos a completar toda la api, y dejarla lista para trabajar facilmente
+>> a la transaccion la dejamos para mas tarde, por ser algo especial
+>> falta lo de eliminar y modificar la api todavia
 
 >>vamos activar y completar todo el control de la api, y cuando eso este listo, vamos a empezar el front final
 
