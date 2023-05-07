@@ -20,12 +20,15 @@ const {
   eliminoAuto,
   eliminarFilaDeTabla,
   updateTEST,
+  funcionDeApoyoPut_Indice,
+  funcionDeApoyoPut_DatosNuevos,
 } = require("./controlSQL/control.js");
 //import { todo } from "./controlSQL/control.js";
 
 const express = require("express");
 var cors = require("cors");
 const session = require("express-session");
+const { object } = require("rsdi");
 
 const PUERTO = 8080;
 const app = express();
@@ -340,23 +343,61 @@ app.delete("/TEST_delete", (req, res) => {
   //res.json(muestro_tabla("cuentas"));
 });
 app.put("/TEST_PUT", (req, res) => {
+  //seleciono un auto
+  /**
+   *  (nuevosDatos[0].tabla === "autos" &&
+      Object.keys(nuevosDatos[1]).length > 0 &&
+      Object.keys(nuevosDatos[1]).length < 10) ||
+   */
   //seleciono una cuenta
   const nuevosDatos = req.body;
+  let id = nuevosDatos[1].id;
+  let tabla = nuevosDatos[0].tabla;
+  let valoresDatosNuevos = Object.values(nuevosDatos[1]);
+  let keysDatosNuevos = Object.keys(nuevosDatos[1]);
   //
   console.log("DATOS A MODIFICAR ", nuevosDatos[0].id);
-  if (nuevosDatos[0].tabla === "TESTUPDATE") {
+  if (
+    nuevosDatos[0].tabla === "cuentas" &&
+    Object.keys(nuevosDatos[1]).length === 5
+  ) {
     if (comprobarId(nuevosDatos[0].tabla, nuevosDatos[1].id) === true) {
       console.log("DATOS A MODIFICAR ", nuevosDatos[1].id);
       console.log(" COLUMNAS A MOD ", Object.values(nuevosDatos[1]));
       console.log(" NUEVOS DATOS ", Object.keys(nuevosDatos[1]));
+      console.log("LARGO ", Object.keys(nuevosDatos[1]).length);
+      //console.log("datos originales", tablaActual);
+      console.log("KEYS A MOD ", Object.values(nuevosDatos[1]));
+      //console.log("resultado ",Object.keys(tablaActual[0]) - Object.keys(nuevosDatos[1]));
+      let indice = funcionDeApoyoPut_Indice(Object.values(nuevosDatos[1]));
+      console.log(indice);
+      let datosFinales = funcionDeApoyoPut_DatosNuevos(indice, nuevosDatos);
+      console.log("tamaño datos externo", Object.values(nuevosDatos[1]).length);
+      modificoCliente(id, keysDatosNuevos, datosFinales);
+      let tablaActual = seleccionarID(tabla, id);
+      /*
+      var indices = [];
+      var array = Object.values(nuevosDatos[1]);
+      var element = null;
+      var idx = array.indexOf(element);
+      while (idx != -1) {
+        console.log(idx);
+        indices.push(idx);
+        idx = array.indexOf(element, idx + 1);
+      }
+      console.log(indices);
+      console.log(idx);
+      */
 
-      updateTEST(
+      /*
+      modificoCliente(
         nuevosDatos[1].id,
         Object.keys(nuevosDatos[1]),
         Object.values(nuevosDatos[1])
       );
+      */
       //
-      res.send(`EL ID SELECIONADO  EXISTE elije otro por favor `);
+      res.send(tablaActual);
     } else {
       /*
       modificoCliente(
@@ -368,7 +409,25 @@ app.put("/TEST_PUT", (req, res) => {
       */
       res.send(`EL ID SELECIONADO NO EXISTE elije otro por favor `);
     }
-  } //
+  } //seleciono un auto
+  else if (
+    nuevosDatos[0].tabla === "autos" &&
+    Object.keys(nuevosDatos[1]).length === 9
+  ) {
+    if (comprobarId(tabla, id) === true) {
+      let indice = funcionDeApoyoPut_Indice(valoresDatosNuevos);
+      let datosFinales = funcionDeApoyoPut_DatosNuevos(indice, nuevosDatos);
+      //console.log("KEYS", keysDatosNuevos);
+      modificoAuto(id, keysDatosNuevos, datosFinales);
+      let tablaActual = seleccionarID(tabla, id);
+
+      res.send(tablaActual);
+    } else {
+      res.send(`EL ID SELECIONADO NO EXISTE elije otro por favor `);
+    }
+  }
+
+  //
   else {
     res.send(" no es una tabla valida ");
   }

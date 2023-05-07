@@ -3,6 +3,7 @@
 //el database es fijo
 //esto esta casi listo para ponerlo en el contenedor, solo hay que hacerlo mas modular
 const Database = require("better-sqlite3");
+const { object } = require("rsdi");
 
 //este de aca, se va a cambiar, al contenedor
 //este esta bien asi como esta, no necestia nada mas
@@ -126,7 +127,7 @@ function modificoCliente(id, columnasACAmbiar, datosNuevos) {
   //seleciono lo que quiero cambiar
   let update = db
     .prepare(
-      `UPDATE cuentas SET '${columnasACAmbiar[0]}' = '${datosNuevos[0]}','${columnasACAmbiar[1]}' = '${datosNuevos[1]}','${columnasACAmbiar[2]}' = '${datosNuevos[2]}','${columnasACAmbiar[3]}' = '${datosNuevos[3]},'${columnasACAmbiar[4]}' = '${datosNuevos[4]}' WHERE id =${id}`
+      `UPDATE cuentas SET '${columnasACAmbiar[0]}' = '${datosNuevos[0]}','${columnasACAmbiar[1]}' = '${datosNuevos[1]}','${columnasACAmbiar[2]}' = '${datosNuevos[2]}','${columnasACAmbiar[3]}' = '${datosNuevos[3]}','${columnasACAmbiar[4]}' = '${datosNuevos[4]}' WHERE id =${id}`
     )
     .run();
   return update;
@@ -137,16 +138,63 @@ function modificoCliente(id, columnasACAmbiar, datosNuevos) {
 }
 //modificoauto
 ///esto es una herramienta, no se configura
+//ok, lo que tengo que hace es simple, pero es lo ultimo que tengo que hacer
+//el front siempre va a mandar todo el json, pero si alguna columna no tiene cambios, se envia null y ya
+//y lo que tiene que hacer el server es, nonde apareec ese null, llenarlo con los datos viejos y ya
+//por lo que, los datos nuevos, lo va a entregar una funcion, si es una kaka, pero no tengo ganas
+//de ver como arreglo lo del update, y esto hace ,mas o menos , lo mismo
+
+function funcionDeApoyoPut_Indice(arrayDatos) {
+  var indices = [];
+  //var arrayDatos = Object.values(nuevosDatos[1]);
+  var element = null;
+  var idx = arrayDatos.indexOf(element);
+  while (idx != -1) {
+    indices.push(idx);
+    idx = arrayDatos.indexOf(element, idx + 1);
+  }
+  console.log(indices);
+  return indices;
+}
+//esta funcion va a entregar el array final
+function funcionDeApoyoPut_DatosNuevos(indice, datosAUnir) {
+  let datosFinales = [];
+  let tablaActual = seleccionarID(datosAUnir[0].tabla, datosAUnir[1].id);
+  let valoresTablaActual = Object.values(tablaActual[0]);
+  let valoresDatosAUnir = Object.values(datosAUnir[1]);
+
+  for (let x = 0; x < valoresDatosAUnir.length; x++) {
+    if (indice.indexOf(x) != -1) {
+      datosFinales.push(valoresTablaActual[x]);
+    } else {
+      datosFinales.push(valoresDatosAUnir[x]);
+    }
+  }
+
+  console.log("TAMAÑO DATOS A U", valoresDatosAUnir.length);
+  console.log("DATOS 'MALOS'", valoresDatosAUnir);
+
+  console.log("DATOS FINALES BUENOS", datosFinales);
+  console.log("TABLA ACTUAL INTERNA", valoresTablaActual);
+
+  return datosFinales;
+
+  //
+}
 
 function modificoAuto(id, columnasACAmbiar, datosNuevos) {
   //seleciono el auto
   //seleciono lo que quiero cambiar
-  //cambio
+  //ACOTADE DE SELECIONAR BIEN LA TABLA PLS
+  //console.log("COLUMNAS ", columnasACAmbiar);
+  //console.log("DATOS ", datosNuevos);
+
   let update = db
     .prepare(
-      `UPDATE cuentas  SET '${columnasACAmbiar[0]}' = '${datosNuevos[0]}','${columnasACAmbiar[1]}' = '${datosNuevos[1]}','${columnasACAmbiar[2]}' = '${datosNuevos[2]}' ,'${columnasACAmbiar[3]}' = '${datosNuevos[3]}','${columnasACAmbiar[4]}' = '${datosNuevos[4]}','${columnasACAmbiar[5]}' = '${datosNuevos[5]}','${columnasACAmbiar[6]}' = '${datosNuevos[6]}','${columnasACAmbiar[7]}' = '${datosNuevos[7]}','${columnasACAmbiar[8]}' = '${datosNuevos[8]}' WHERE id =${id}`
+      `UPDATE Autos SET '${columnasACAmbiar[0]}' = '${datosNuevos[0]}','${columnasACAmbiar[1]}' = '${datosNuevos[1]}','${columnasACAmbiar[2]}' = '${datosNuevos[2]}','${columnasACAmbiar[3]}' = '${datosNuevos[3]}','${columnasACAmbiar[4]}' = '${datosNuevos[4]}','${columnasACAmbiar[5]}' = '${datosNuevos[5]}','${columnasACAmbiar[6]}' = '${datosNuevos[6]}','${columnasACAmbiar[7]}' = '${datosNuevos[7]}','${columnasACAmbiar[8]}' = '${datosNuevos[8]}' WHERE id =${id}`
     )
     .run();
+
   return update;
 }
 //elminioauto
@@ -167,12 +215,13 @@ function eliminarFilaDeTabla(id, tabla) {
   console.log(" SQL INTERNO DES", todo.all());
   return eliminar;
 }
-// prettier-ignore
-
+/*vale la pena hacer esto?mmmmmmm */
 function updateTEST(id, columnasACAmbiar, datosNuevos) {
   let update = db
     .prepare(
-      `UPDATE cuentas SET "${columnasACAmbiar.forEach((element) => {element = datosNuevos})}" WHERE id =${id}`
+      `UPDATE cuentas SET "${columnasACAmbiar.forEach((element) => {
+        element = datosNuevos;
+      })}" WHERE id =${id}`
     )
     .run();
   return update;
@@ -196,4 +245,6 @@ module.exports = {
   eliminoAuto,
   eliminarFilaDeTabla,
   updateTEST,
+  funcionDeApoyoPut_Indice,
+  funcionDeApoyoPut_DatosNuevos,
 };
