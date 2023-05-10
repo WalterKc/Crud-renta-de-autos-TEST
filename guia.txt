@@ -54,5 +54,7 @@ o una señal de false y luego crear el mensaje de error) *LISTO*
 
 >>vamos activar y completar todo el control de la api, y cuando eso este listo, vamos a empezar el front final
 
-
+>> vamos a hacer el front, vamos a hacer un html simple, con placeholder por todos lados, 
+>> no vamos a tocar la api por ahora, vamos a hacer el esqueleto de la pagina y ya
+>> idea sencilla, hacer 4 componentes, nav(menus),header,main y footer
 
