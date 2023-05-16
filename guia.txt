@@ -57,4 +57,10 @@ o una señal de false y luego crear el mensaje de error) *LISTO*
 >> vamos a hacer el front, vamos a hacer un html simple, con placeholder por todos lados, 
 >> no vamos a tocar la api por ahora, vamos a hacer el esqueleto de la pagina y ya
 >> idea sencilla, hacer 4 componentes, nav(menus),header,main y footer
+>> idea, olcultar el body por 0.5 segundos para que no se vean los efectos feos
+>> vamos a hacer todas las paginas ahora, los links y el login(sin funcionar), hoy tenemos que dejar
+>> el html listo, estoy arto de esta shit
+>> paginas
+>> reservas, autos disponibles(catalogo), login, home,registro de user, registro de autos(para admin), default(pagina de error)
+>> creo que es todo por ahora 
 

@@ -16,7 +16,8 @@ import { DatosHeader } from "./componentes/header";
 import { DatosFooter } from "./componentes/footer";
 import { Route, Routes } from "react-router-dom";
 import { Home } from "./paginas/home";
-import { About } from "./paginas/about";
+import { About } from "./paginas/catalogo";
+import { Catalogo } from "./paginas/catalogo";
 import { Default } from "./paginas/default";
 import { Layount } from "./paginas/layount";
 import auto1 from "./imagenes/Chevrolet Onix.jpg";
@@ -26,6 +27,8 @@ import auto4 from "./imagenes/Toyota Hiace.jpg";
 import auto5 from "./imagenes/Ford Ranger 2.2.jpg";
 import auto6 from "./imagenes/Mercedes Benz Vito.jpg";
 import auto7 from "./imagenes/Renault kangoo.jpg";
+import { Login } from "./paginas/login";
+import { Reservas } from "./paginas/reservas";
 
 async function inicializador() {
   mostratDatosTest(await obtenerDatosIniciales());
@@ -47,6 +50,123 @@ const otrafuncion = async () => {
 //es una pta funcion, y como tal, podes usarla asi, pero con algunas cositas de mas, pero, deja de tratarla
 //como algo especial y trabaja como una funcion, aca abajo tenes unos ejemplos, la usamos como una funcion
 //"normal" y hacemos que pase todo lo que queremos, como queremos
+//para crear los links correctos hay que cambiar esto, por que esto y hacerlo de
+//proposito general
+function SelectorPaginaGeneral(estado) {
+  /**estados
+   * este selector, tiene que compartir todos los estados del otro, asi que, hacemos un copy paste y ya
+   * pero talves necesite alguno nuevo
+   */
+  const estadoMenu = estado.estadoMenu;
+  const setEstado = estado.setMenu;
+  const estadoBotones = estado.estadoBotones;
+  const setBotones = estado.setBotones;
+  const imagenes = estado.arrayDeImagenes;
+  const paginaActual = estado.paginaActual;
+  const setPaginaActual = estado.setPagina;
+
+  //if else?
+  /**
+   * primero vamos a hacer que, por cada click a una pagina, renderize esa pagina VACIA, y que cierre el nav
+   *
+   */
+  if (estadoMenu) {
+    return (
+      <>
+        <header>
+          <Nav estado={estadoMenu} set={setEstado}></Nav>
+        </header>
+        <main>
+          {DatosMainFinales(estadoMenu)}
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Layount
+                  setPagina={setPaginaActual}
+                  setNav={setEstado}
+                ></Layount>
+              }
+            >
+              <Route
+                path="/"
+                element={<Home paginaActual={paginaActual}></Home>}
+              ></Route>
+              <Route
+                path="/Catalogo"
+                element={<Catalogo paginaActual={paginaActual}></Catalogo>}
+              ></Route>
+              <Route
+                path="*"
+                element={<Default paginaActual={paginaActual}></Default>}
+              ></Route>
+              <Route
+                path="/Login"
+                element={<Login paginaActual={paginaActual}></Login>}
+              ></Route>
+              <Route
+                path="/Reservas"
+                element={<Reservas paginaActual={paginaActual}></Reservas>}
+              ></Route>
+            </Route>
+          </Routes>
+        </main>
+        <footer></footer>
+      </>
+    );
+  } else {
+    //aca tiene que ir la pagina selecionada, una vez cerrado el menu(se tiene que cerrar al click)
+    return (
+      <div>
+        <header>
+          <Nav estado={estadoMenu} set={setEstado}></Nav>
+        </header>
+        <main id="Test">
+          {devolverNombreCorrecto(
+            paginasDisponibles(paginaActual),
+            paginaActual
+          )}
+        </main>
+      </div>
+    );
+  }
+
+  //onclicks
+  //resto (talvez)
+}
+function paginasDisponibles(estado) {
+  const Paginas = [
+    <Home paginaActual={estado}></Home>,
+    <Catalogo paginaActual={estado}></Catalogo>,
+    <Default paginaActual={estado}></Default>,
+    <Login paginaActual={estado}></Login>,
+    <Reservas paginaActual={estado}></Reservas>,
+  ];
+  return Paginas;
+}
+function devolverNombreCorrecto(paginas, paginaSelecionada) {
+  //esto es una shit, no intentes armar un html con {} y insersiones y eso POR QUE NO FUNCIONA
+  //, mejor vamos a hacerlo
+  //mediante comparacion y ya, que manera de perder el tiempo
+  console.log("PAGINAS ", paginas[1].type.name);
+  const found = paginas.find(
+    (pagina) => pagina.type.name === paginaSelecionada
+  );
+
+  console.log(found);
+
+  if (paginas.find((pagina) => pagina.type.name === paginaSelecionada)) {
+    console.log(" ES VERDAD");
+    const index = paginas.findIndex(
+      (pagina) => pagina.type.name === paginaSelecionada
+    );
+    console.log(" indice ", index);
+    return paginas[index];
+  } else {
+    console.log(" ES Falso");
+    console.log("paginaSelecionada", paginaSelecionada);
+  }
+}
 function SelectorTEST(estado) {
   const estadoMenu = estado.estadoMenu;
   const setEstado = estado.setMenu;
@@ -65,8 +185,10 @@ function SelectorTEST(estado) {
           <Routes>
             <Route path="/" element={Layount()}>
               <Route path="/" element={Home()}></Route>
-              <Route path="/About" element={About()}></Route>
+              <Route path="/Catalogo" element={Catalogo()}></Route>
               <Route path="*" element={Default()}></Route>
+              <Route path="/Login" element={Login()}></Route>
+              <Route path="/Reservas" element={Reservas()}></Route>
             </Route>
           </Routes>
         </main>
@@ -153,7 +275,8 @@ function SliderGeneral(estado) {
 
   useEffect(() => {
     acomodarImagenes(`slider-${padre}`, imagenes.length);
-  });
+  }, []);
+
   return (
     <div className="contedenor-slider ">
       <div className="slider" id={"slider-" + padre}>
@@ -364,6 +487,7 @@ function App() {
   //boton();
   const [estadoBotones, setEstadoBotones] = useState(true);
   const [estadoMenu, setEstadoMenu] = useState(false);
+  const [PaginaActual, setPaginaActual] = useState("Home");
   //id="menu-Desplegable"
   console.log("ESTADO INTERNO", estadoMenu);
   const arrayDeImagenes = [auto1, auto2, auto3, auto4];
@@ -381,7 +505,7 @@ function App() {
       {/*Nav(estadoMenu)*/}
       {/*<TestEstadosAjenos test={estadoMenu} set={setEstadoMenu} />*/}
 
-      {
+      {/*
         <SelectorTEST
           estadoMenu={estadoMenu}
           setMenu={setEstadoMenu}
@@ -389,7 +513,16 @@ function App() {
           setBotones={setEstadoBotones}
           arrayDeImagenes={[arrayDeImagenes, arrayDeImagenes2]}
         ></SelectorTEST>
-      }
+  */}
+      <SelectorPaginaGeneral
+        estadoMenu={estadoMenu}
+        setMenu={setEstadoMenu}
+        estadoBotones={estadoBotones}
+        setBotones={setEstadoBotones}
+        arrayDeImagenes={[arrayDeImagenes, arrayDeImagenes2]}
+        paginaActual={PaginaActual}
+        setPagina={setPaginaActual}
+      ></SelectorPaginaGeneral>
 
       {/*<SliderTest estado={estadoBotones} set={setEstado}></SliderTest>*/}
 
