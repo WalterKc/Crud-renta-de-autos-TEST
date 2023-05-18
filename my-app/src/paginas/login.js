@@ -12,6 +12,40 @@ import "./registroUsuario.css";
  * por que son molestas ya
  *
  */
+/**
+ * NO puedo buscar el id, por que es algo que el user no sabe
+ * No puedo buscar por el nombre, ni la contraseña, podrian ser repetidos
+ * PUEDO buscar por el email, el email es unico (lo voy a forzar asi, es logico)
+ * asi que, vamos a tener que modificar ligeramente el control de sql para que busque por email
+ * en ves de id
+ *
+ */
+import { obtenerDatosLoginTest } from "../selector api/api";
+async function testDeDatos() {
+  let datos = await obtenerDatosLoginTest();
+  console.log(datos);
+}
+/** */
+const data = {
+  selector: "Cuentas",
+  email: "email@ejemplo2.com",
+};
+const urlTest = "http://localhost:8080/TEST_EMAIL";
+
+async function testDeDatos2() {
+  const response = await fetch(urlTest, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  const result = await response.json();
+  console.log(result[0]);
+}
+
+/** */
+
 function procesarFormulario(e) {
   e.preventDefault();
   var miFormulario = document.getElementById("mi-formulario");
@@ -24,6 +58,7 @@ function procesarFormulario(e) {
   console.log(numeroTargets[0]);
   console.log(numeroTargets[1]);
   console.log(numeroTargets[2]);
+  console.log("DATOS DE LA API/SERVER TEST", testDeDatos2());
 }
 
 export function Login(estado) {
@@ -54,6 +89,13 @@ export function Login(estado) {
                 type="password"
                 id="Contraseña"
                 placeholder="tu contraseña"
+              />
+              <label>email:</label>
+              <input
+                className="inputs"
+                type="email"
+                id="email"
+                placeholder="tu email"
               />
 
               <input

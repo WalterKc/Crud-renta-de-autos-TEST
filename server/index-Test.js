@@ -22,6 +22,8 @@ const {
   updateTEST,
   funcionDeApoyoPut_Indice,
   funcionDeApoyoPut_DatosNuevos,
+  comprobarEMAIL,
+  seleccionarEMAIL,
 } = require("./controlSQL/control.js");
 //import { todo } from "./controlSQL/control.js";
 
@@ -193,6 +195,22 @@ app.get("/TEST_ID", (req, res) => {
     );
     res.send(seleccionarID(selector.selector, selector.id));
   }
+});
+app.post("/TEST_EMAIL", (req, res) => {
+  let selector = req.body;
+  console.log("DATOS LLEGADOS DESDE EL FRONT", selector);
+
+  if (comprobarEMAIL(selector.selector, selector.email) === false) {
+    //
+    res.send(`EL EMAIL SELECIONADO NO EXISTE elije otro por favor `);
+  } else {
+    console.log(
+      ` SQL ID ${selector.email} `,
+      seleccionarEMAIL(selector.selector, selector.email)
+    );
+    res.send(seleccionarEMAIL(selector.selector, selector.email));
+  }
+  //res.send(selector);
 });
 //aca hay que hacer un selector, y con ese selector, pasar los datos necesarios para LAS 3 TABLAS
 //este es el LA FUNCION PRINCIPAL, TIENE QUE ESTAR MUY BIEN ECHA, sino esta perfecta, no se va a avanzar

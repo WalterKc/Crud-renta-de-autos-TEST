@@ -78,6 +78,34 @@ function comprobarId(tabla, id) {
     return existe;
   }
 }
+/**
+ *
+ * Selector de email y comprobador
+ * FUNCIONO A LA PERFECION, solo le puse comillas al email, al este ser un string
+ */
+function seleccionarEMAIL(tabla, Email) {
+  const IdSelecionado = db
+    .prepare(`SELECT * FROM ${tabla} WHERE email = '${Email}'`)
+    .all();
+  return IdSelecionado;
+}
+function comprobarEMAIL(tabla, Email) {
+  let existe = false;
+  if (seleccionarEMAIL(tabla, Email)[0] !== undefined) {
+    console.log(
+      `EL Email SELECIONADO NO ESTA DISPONIBLE Y ES EL Email '${Email}', elije otro por favor `
+    );
+    console.log("Email A TESTEAR", seleccionarEMAIL(tabla, Email)[0]);
+    existe = true;
+    return existe;
+  } else {
+    console.log(
+      ` EL Email SELECIONADO ESTA DISPONIBLE Y ES EL Email '${Email}' `
+    );
+    return existe;
+  }
+}
+
 ///esto es una herramienta, no se configura
 
 function crearUsusario(datos) {
@@ -247,4 +275,6 @@ module.exports = {
   updateTEST,
   funcionDeApoyoPut_Indice,
   funcionDeApoyoPut_DatosNuevos,
+  comprobarEMAIL,
+  seleccionarEMAIL,
 };
