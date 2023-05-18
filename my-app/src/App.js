@@ -27,8 +27,11 @@ import auto4 from "./imagenes/Toyota Hiace.jpg";
 import auto5 from "./imagenes/Ford Ranger 2.2.jpg";
 import auto6 from "./imagenes/Mercedes Benz Vito.jpg";
 import auto7 from "./imagenes/Renault kangoo.jpg";
+import titulo1 from "./imagenes/ejemplo 1.png";
+import titulo2 from "./imagenes/ejemplo 3.png";
 import { Login } from "./paginas/login";
 import { Reservas } from "./paginas/reservas";
+import { RegistroUsuarios } from "./paginas/registroUsuarios";
 
 async function inicializador() {
   mostratDatosTest(await obtenerDatosIniciales());
@@ -64,7 +67,7 @@ function SelectorPaginaGeneral(estado) {
   const imagenes = estado.arrayDeImagenes;
   const paginaActual = estado.paginaActual;
   const setPaginaActual = estado.setPagina;
-
+  const slidersTest = slidersParaEntregar(imagenes, estadoBotones, setBotones);
   //if else?
   /**
    * primero vamos a hacer que, por cada click a una pagina, renderize esa pagina VACIA, y que cierre el nav
@@ -94,7 +97,12 @@ function SelectorPaginaGeneral(estado) {
               ></Route>
               <Route
                 path="/Catalogo"
-                element={<Catalogo paginaActual={paginaActual}></Catalogo>}
+                element={
+                  <Catalogo
+                    paginaActual={paginaActual}
+                    //imagenes={imagenes}
+                  ></Catalogo>
+                }
               ></Route>
               <Route
                 path="*"
@@ -108,6 +116,14 @@ function SelectorPaginaGeneral(estado) {
                 path="/Reservas"
                 element={<Reservas paginaActual={paginaActual}></Reservas>}
               ></Route>
+              <Route
+                path="/Registro"
+                element={
+                  <RegistroUsuarios
+                    paginaActual={paginaActual}
+                  ></RegistroUsuarios>
+                }
+              ></Route>
             </Route>
           </Routes>
         </main>
@@ -118,15 +134,99 @@ function SelectorPaginaGeneral(estado) {
     //aca tiene que ir la pagina selecionada, una vez cerrado el menu(se tiene que cerrar al click)
     return (
       <div>
-        <header>
-          <Nav estado={estadoMenu} set={setEstado}></Nav>
-        </header>
-        <main id="Test">
-          {devolverNombreCorrecto(
-            paginasDisponibles(paginaActual),
-            paginaActual
-          )}
-        </main>
+        {/*
+            <DevolverNombreCorrecto
+              paginas={paginasDisponibles(paginaActual)}
+              paginaSelecionada={paginaActual}
+            ></DevolverNombreCorrecto>
+    */}
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <Home
+                paginaActual={paginaActual}
+                Nav={<Nav estado={estadoMenu} set={setEstado}></Nav>}
+                Slider1={
+                  <SliderGeneral
+                    estado={estadoBotones}
+                    set={setBotones}
+                    padre={"Header"}
+                    arrayDeImagenes={imagenes[2]}
+                    ID={0}
+                  ></SliderGeneral>
+                }
+                Slider2={
+                  <SliderGeneral
+                    estado={estadoBotones}
+                    set={setBotones}
+                    padre={"Header"}
+                    arrayDeImagenes={imagenes[2]}
+                    ID={1}
+                  ></SliderGeneral>
+                }
+              ></Home>
+            }
+          ></Route>
+          <Route
+            path="/Catalogo"
+            element={
+              <Catalogo
+                paginaActual={paginaActual}
+                Nav={<Nav estado={estadoMenu} set={setEstado}></Nav>}
+                //aca es mejor no mandar el slider entero, sino las imagenes y armar el slider alla
+                //error, esto de aca, da problemas, la solucion es mandar ya los slider armados de antemano
+                //lo vamos a enviar asi nomas, dentro de un array, y los selecionamos alla
+                Slider1={
+                  <SliderGeneral
+                    estado={estadoBotones}
+                    set={setBotones}
+                    padre={"Header"}
+                    arrayDeImagenes={imagenes[0]}
+                    ID={0}
+                  ></SliderGeneral>
+                }
+                Sliders={slidersTest[1]}
+              ></Catalogo>
+            }
+          ></Route>
+          <Route
+            path="*"
+            element={
+              <Default
+                paginaActual={paginaActual}
+                Nav={<Nav estado={estadoMenu} set={setEstado}></Nav>}
+              ></Default>
+            }
+          ></Route>
+          <Route
+            path="/Login"
+            element={
+              <Login
+                paginaActual={paginaActual}
+                Nav={<Nav estado={estadoMenu} set={setEstado}></Nav>}
+              ></Login>
+            }
+          ></Route>
+          <Route
+            path="/Registro"
+            element={
+              <RegistroUsuarios
+                paginaActual={paginaActual}
+                Nav={<Nav estado={estadoMenu} set={setEstado}></Nav>}
+              ></RegistroUsuarios>
+            }
+          ></Route>
+          <Route
+            path="/Reservas"
+            element={
+              <Reservas
+                paginaActual={paginaActual}
+                Nav={<Nav estado={estadoMenu} set={setEstado}></Nav>}
+              ></Reservas>
+            }
+          ></Route>
+        </Routes>
       </div>
     );
   }
@@ -134,6 +234,30 @@ function SelectorPaginaGeneral(estado) {
   //onclicks
   //resto (talvez)
 }
+//tengo que crear un generador de sliders, Y ES LO ULTIMO
+//
+function slidersParaEntregar(imagenes, estadoBotones, setBotones) {
+  let slidersListos = [];
+  for (let x = 0; x < imagenes.length; x++) {
+    slidersListos.push(
+      <SliderGeneral
+        estado={estadoBotones}
+        set={setBotones}
+        padre={"Main"}
+        arrayDeImagenes={imagenes[x]}
+        ID={x}
+      ></SliderGeneral>
+    );
+    //
+  }
+  //console.log("IMAGENES PARA ENTREGAR", slidersListos);
+  return slidersListos;
+}
+//Nueva problema(solucionado) y idea
+//si pongo una rideccion incorrecta , como el antior modelo, no va al default, pero creo que, si
+//devolvemos la ruta, podemos arreglar todo(que se arregla), y podemos terminar esta shit de una vez
+
+//el problema es que no tengo las paginas completas, vamos acompletarlas y vemos mas tarde que hacemos
 function paginasDisponibles(estado) {
   const Paginas = [
     <Home paginaActual={estado}></Home>,
@@ -142,30 +266,56 @@ function paginasDisponibles(estado) {
     <Login paginaActual={estado}></Login>,
     <Reservas paginaActual={estado}></Reservas>,
   ];
-  return Paginas;
+  const Paginas2 = [
+    <Route path="/" element={<Home paginaActual={estado}></Home>}></Route>,
+    <Route
+      path="/Catalogo"
+      element={<Catalogo paginaActual={estado}></Catalogo>}
+    ></Route>,
+    <Route
+      path="*"
+      element={<Default paginaActual={estado}></Default>}
+    ></Route>,
+    <Route
+      path="/Login"
+      element={<Login paginaActual={estado}></Login>}
+    ></Route>,
+    <Route
+      path="/Reservas"
+      element={<Reservas paginaActual={estado}></Reservas>}
+    ></Route>,
+  ];
+  return Paginas2;
 }
-function devolverNombreCorrecto(paginas, paginaSelecionada) {
+
+function DevolverNombreCorrecto(estado) {
+  const paginas = estado.paginas;
+  const paginaSelecionada = estado.paginaSelecionada;
   //esto es una shit, no intentes armar un html con {} y insersiones y eso POR QUE NO FUNCIONA
   //, mejor vamos a hacerlo
   //mediante comparacion y ya, que manera de perder el tiempo
-  console.log("PAGINAS ", paginas[1].type.name);
-  const found = paginas.find(
+  console.log("PAGINAS ", paginas[1]);
+  /*const found = paginas.find(
     (pagina) => pagina.type.name === paginaSelecionada
   );
 
-  console.log(found);
-
+  console.log(found);*/
+  /*
   if (paginas.find((pagina) => pagina.type.name === paginaSelecionada)) {
     console.log(" ES VERDAD");
     const index = paginas.findIndex(
       (pagina) => pagina.type.name === paginaSelecionada
     );
     console.log(" indice ", index);
-    return paginas[index];
+    console.log(" propiedades ", paginas[index].props);
+
+    //return paginas[index];
   } else {
     console.log(" ES Falso");
     console.log("paginaSelecionada", paginaSelecionada);
+    //return paginas[2];
   }
+  */
 }
 function SelectorTEST(estado) {
   const estadoMenu = estado.estadoMenu;
@@ -263,23 +413,24 @@ function TestEstadosAjenos(props) {
  */
 //NUEVO slider de proposito general
 
-function SliderGeneral(estado) {
+export function SliderGeneral(estado) {
   const estadoMenu = estado.estado;
   const setEstado = estado.set;
   const padre = estado.padre;
   const imagenes = estado.arrayDeImagenes;
+  const ID = estado.ID;
   let test = "";
   // let selectorSlider = document.querySelector(`#slider-${padre}`);
   //selectorSlider.style.width = "-200%";
   //console.log(" selectorSlider GENERAL", selectorSlider);
 
   useEffect(() => {
-    acomodarImagenes(`slider-${padre}`, imagenes.length);
+    acomodarImagenes(`slider-${padre}${ID}`, imagenes.length);
   }, []);
 
   return (
     <div className="contedenor-slider ">
-      <div className="slider" id={"slider-" + padre}>
+      <div className="slider" id={"slider-" + padre + ID}>
         {console.log(" selectorSlider GENERAL", `slider-${padre}`)}
         {/*<p>"TEST FOR"</p>
         <p>{console.log("imagenes ", imagenes.length)}</p>
@@ -291,14 +442,16 @@ function SliderGeneral(estado) {
       <div
         className="slider-boton slider-boton-derecha"
         id="derecha"
-        onClick={() => nuevoBoton(padre, estadoMenu, setEstado, "derecha")}
+        onClick={() => nuevoBoton(padre + ID, estadoMenu, setEstado, "derecha")}
       >
         {">"}
       </div>
       <div
         className="slider-boton slider-boton-izquierda"
         id="izquierda"
-        onClick={() => nuevoBoton(padre, estadoMenu, setEstado, "izquierda")}
+        onClick={() =>
+          nuevoBoton(padre + ID, estadoMenu, setEstado, "izquierda")
+        }
       >
         {"<"}
       </div>
@@ -492,6 +645,7 @@ function App() {
   console.log("ESTADO INTERNO", estadoMenu);
   const arrayDeImagenes = [auto1, auto2, auto3, auto4];
   const arrayDeImagenes2 = [auto5, auto6, auto7];
+  const arrayDeImagenes3 = [titulo1, titulo2, auto7];
   console.log("imagenes APP", arrayDeImagenes.length);
 
   return (
@@ -519,7 +673,7 @@ function App() {
         setMenu={setEstadoMenu}
         estadoBotones={estadoBotones}
         setBotones={setEstadoBotones}
-        arrayDeImagenes={[arrayDeImagenes, arrayDeImagenes2]}
+        arrayDeImagenes={[arrayDeImagenes, arrayDeImagenes2, arrayDeImagenes3]}
         paginaActual={PaginaActual}
         setPagina={setPaginaActual}
       ></SelectorPaginaGeneral>

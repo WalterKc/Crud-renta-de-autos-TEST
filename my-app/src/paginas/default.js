@@ -6,5 +6,14 @@ export function Default(estado) {
   //setPagina("default");
   console.log("pagina Actual", paginaActual);
 
-  return <h1>default</h1>;
+  const nav = estado.Nav;
+
+  return (
+    <div>
+      <header>
+        <div>{nav}</div>
+      </header>
+      <main id="Test">ESTA PAGINA NO EXISTE</main>
+    </div>
+  );
 }

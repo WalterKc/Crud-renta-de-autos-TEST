@@ -45,6 +45,14 @@ export function Layount(estado) {
               Reservas
             </Link>
           </li>
+          <li>
+            <Link
+              to="/Registro"
+              onClick={() => [setPagina("Registro"), cerrarNav(false)]}
+            >
+              Registro
+            </Link>
+          </li>
         </ul>
       </nav>
       <hr />

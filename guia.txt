@@ -63,4 +63,5 @@ o una señal de false y luego crear el mensaje de error) *LISTO*
 >> paginas
 >> reservas, autos disponibles(catalogo), login, home,registro de user, registro de autos(para admin), default(pagina de error)
 >> creo que es todo por ahora 
-
+>> vamos a crear una funcion para crear sliders generales
+>> Vamos a automatizar los links tambien, para que no halla que escribirlos
