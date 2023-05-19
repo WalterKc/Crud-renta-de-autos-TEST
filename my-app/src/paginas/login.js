@@ -21,6 +21,8 @@ import "./registroUsuario.css";
  *
  */
 import { obtenerDatosLoginTest } from "../selector api/api";
+import { obtenerDatosIniciales } from "../services/service";
+import { object } from "rsdi";
 async function testDeDatos() {
   let datos = await obtenerDatosLoginTest();
   console.log(datos);
@@ -42,11 +44,21 @@ async function testDeDatos2() {
   });
   const result = await response.json();
   console.log(result[0]);
+  return result[0];
 }
-
+const otrafuncion = async () => {
+  let datos = await obtenerDatosIniciales();
+  console.log(datos[0]);
+  return datos;
+};
+async function logExtra(objeto) {
+  const dato = await objeto;
+  console.log(Object.keys(dato));
+  return Object.keys(dato);
+}
 /** */
 
-function procesarFormulario(e) {
+async function procesarFormulario(e) {
   e.preventDefault();
   var miFormulario = document.getElementById("mi-formulario");
   var datosEnviados = miFormulario.elements.Nombre.value;
@@ -58,7 +70,7 @@ function procesarFormulario(e) {
   console.log(numeroTargets[0]);
   console.log(numeroTargets[1]);
   console.log(numeroTargets[2]);
-  console.log("DATOS DE LA API/SERVER TEST", testDeDatos2());
+  console.log("DATOS DE LA API/SERVER TEST", await logExtra(testDeDatos2()));
 }
 
 export function Login(estado) {
@@ -70,6 +82,7 @@ export function Login(estado) {
     <div>
       <header>
         <div>{nav}</div>
+        <div>{}</div>
       </header>
       <main id="Test">
         <section className="Formulario">
