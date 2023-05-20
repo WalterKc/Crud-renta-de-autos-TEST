@@ -105,6 +105,61 @@ function comprobarEMAIL(tabla, Email) {
     return existe;
   }
 }
+//vamos a hacer lo mismo con la contraseña
+function seleccionarContraseña(tabla, Contraseña) {
+  const IdSelecionado = db
+    .prepare(`SELECT * FROM ${tabla} WHERE contraseña = '${Contraseña}'`)
+    .all();
+  return IdSelecionado;
+}
+function comprobarContraseña(tabla, Contraseña) {
+  let existe = false;
+  if (seleccionarContraseña(tabla, Contraseña)[0] !== undefined) {
+    console.log(
+      `EL contraseña SELECIONADO NO ESTA DISPONIBLE Y ES EL contraseña '${Contraseña}', elije otro por favor `
+    );
+    console.log(
+      "contraseña A TESTEAR",
+      seleccionarContraseña(tabla, Contraseña)[0]
+    );
+    existe = true;
+    return existe;
+  } else {
+    console.log(
+      ` EL Contraseña SELECIONADO ESTA DISPONIBLE Y ES EL Contraseña '${Contraseña}' `
+    );
+    return existe;
+  }
+}
+function seleccionarContraseñaV2(tabla, Contraseña, Email) {
+  const IdSelecionado = db
+
+    .prepare(
+      `SELECT * FROM ${tabla} WHERE email= '${Email}' AND contraseña ='${Contraseña}'`
+    )
+    .all();
+  return IdSelecionado;
+}
+
+function comprobarContraseñaV2(tabla, Contraseña, Email) {
+  let existe = false;
+  if (seleccionarContraseñaV2(tabla, Contraseña, Email)[0] !== undefined) {
+    console.log(
+      `EL contraseña SELECIONADO NO ESTA DISPONIBLE Y ES EL contraseña '${Contraseña}', elije otro por favor `
+    );
+    console.log(
+      "contraseña A TESTEAR",
+      seleccionarContraseñaV2(tabla, Contraseña, Email)[0]
+    );
+    existe = true;
+    return existe;
+  } else {
+    console.log(
+      ` EL Contraseña SELECIONADO ESTA DISPONIBLE Y ES EL Contraseña '${Contraseña}' `
+    );
+    return existe;
+  }
+}
 
 ///esto es una herramienta, no se configura
 
@@ -112,7 +167,7 @@ function crearUsusario(datos) {
   console.log(" DATOS", datos);
   const crear = db
     .prepare(
-      `INSERT INTO "Cuentas" (id,username,role,telefono,email) VALUES  (${datos[0]},'${datos[1]}','${datos[2]}',${datos[3]},'${datos[4]}')`
+      `INSERT INTO "Cuentas" (id,username,role,telefono,email,contraseña) VALUES  (${datos[0]},'${datos[1]}','${datos[2]}',${datos[3]},'${datos[4]}','${datos[5]}')`
     )
     .run();
   console.log(" CAMBIOS", crear.changes);
@@ -155,7 +210,7 @@ function modificoCliente(id, columnasACAmbiar, datosNuevos) {
   //seleciono lo que quiero cambiar
   let update = db
     .prepare(
-      `UPDATE cuentas SET '${columnasACAmbiar[0]}' = '${datosNuevos[0]}','${columnasACAmbiar[1]}' = '${datosNuevos[1]}','${columnasACAmbiar[2]}' = '${datosNuevos[2]}','${columnasACAmbiar[3]}' = '${datosNuevos[3]}','${columnasACAmbiar[4]}' = '${datosNuevos[4]}' WHERE id =${id}`
+      `UPDATE cuentas SET '${columnasACAmbiar[0]}' = '${datosNuevos[0]}','${columnasACAmbiar[1]}' = '${datosNuevos[1]}','${columnasACAmbiar[2]}' = '${datosNuevos[2]}','${columnasACAmbiar[3]}' = '${datosNuevos[3]}','${columnasACAmbiar[4]}' = '${datosNuevos[4]}','${columnasACAmbiar[5]}' = '${datosNuevos[5]}' WHERE id =${id}`
     )
     .run();
   return update;
@@ -277,4 +332,8 @@ module.exports = {
   funcionDeApoyoPut_DatosNuevos,
   comprobarEMAIL,
   seleccionarEMAIL,
+  comprobarContraseña,
+  seleccionarContraseña,
+  seleccionarContraseñaV2,
+  comprobarContraseñaV2,
 };

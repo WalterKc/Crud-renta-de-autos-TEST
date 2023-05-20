@@ -13,7 +13,7 @@ export async function obtenerDatosAPI() {
 export async function obtenerDatosLoginTest() {
   return (await fetch(urlTest),
   {
-    method: "GET",
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },

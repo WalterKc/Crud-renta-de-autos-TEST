@@ -24,6 +24,10 @@ const {
   funcionDeApoyoPut_DatosNuevos,
   comprobarEMAIL,
   seleccionarEMAIL,
+  comprobarContraseña,
+  seleccionarContraseña,
+  seleccionarContraseñaV2,
+  comprobarContraseñaV2,
 } = require("./controlSQL/control.js");
 //import { todo } from "./controlSQL/control.js";
 
@@ -210,6 +214,69 @@ app.post("/TEST_EMAIL", (req, res) => {
     );
     res.send(seleccionarEMAIL(selector.selector, selector.email));
   }
+  //res.send(selector);
+});
+app.post("/TEST_LOGIN1", (req, res) => {
+  //aca vamos a testear el login completo, vamos a enviar datos correctos y tiene que devolver
+  //una señal de correcto, y tenermos que enviar datos inconrrectos, y devolver una señal de incorrecto
+  // si esto funciona, listo, ya tenemos un login funcional por server
+  //primero, hay que comprobar el email(por que, hay que saber a quien nos dirigimos), y luego la contraseña
+
+  let selector = req.body;
+  /**comprobamos el email */
+  if (comprobarEMAIL(selector.selector, selector.email) === false) {
+    //
+    console.log("DATOS LLEGADOS DESDE EL FRONT", selector);
+
+    res.send({
+      mensaje: `EL Email SELECIONADO NO EXISTE elije otro por favor `,
+      estado: false,
+    });
+    //si no pasa/existe, para aqui y envia un mensaje de error, caso contraio, pasa al la contraseña
+  } else {
+    console.log("DATOS LLEGADOS DESDE EL FRONT", selector);
+
+    //comprovamos la contraseña, es ese email
+    if (
+      comprobarContraseñaV2(
+        selector.selector,
+        selector.contraseña,
+        selector.email
+      ) === false
+    ) {
+      // la contraseña falla/es inconrrecta
+      res.send({
+        mensaje: `La contraseña SELECIONADA Es incorrecta, elije otra por favor `,
+        estado: false,
+      });
+    } else {
+      console.log("DATOS LLEGADOS DESDE EL FRONT", selector);
+
+      console.log(
+        ` SQL ID ${selector.contraseña} `,
+        seleccionarContraseñaV2(
+          selector.selector,
+          selector.contraseña,
+          selector.email
+        )
+      );
+      res.send({
+        mensaje: seleccionarContraseñaV2(
+          selector.selector,
+          selector.contraseña,
+          selector.email
+        ),
+        estado: true,
+      });
+    }
+
+    console.log(
+      ` SQL ID ${selector.email} `,
+      seleccionarEMAIL(selector.selector, selector.email)
+    );
+    //res.send(seleccionarEMAIL(selector.selector, selector.email));
+  }
+
   //res.send(selector);
 });
 //aca hay que hacer un selector, y con ese selector, pasar los datos necesarios para LAS 3 TABLAS
