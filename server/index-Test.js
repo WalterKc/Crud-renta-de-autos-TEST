@@ -28,6 +28,7 @@ const {
   seleccionarContraseña,
   seleccionarContraseñaV2,
   comprobarContraseñaV2,
+  crearUsusarioV2,
 } = require("./controlSQL/control.js");
 //import { todo } from "./controlSQL/control.js";
 
@@ -35,6 +36,8 @@ const express = require("express");
 var cors = require("cors");
 const session = require("express-session");
 const { object } = require("rsdi");
+const path = require("path");
+const fs = require("fs");
 
 const PUERTO = 8080;
 const app = express();
@@ -69,6 +72,13 @@ app.use(
   })
 );
 */
+/**
+ * TEST INDEX
+ */
+var serveIndex = require("serve-index");
+/**
+ * TEST 2 INDEX
+ */
 
 let cuentas = [
   {
@@ -279,6 +289,29 @@ app.post("/TEST_LOGIN1", (req, res) => {
 
   //res.send(selector);
 });
+app.post("/TEST_REGISTRO1", (req, res) => {
+  const nuevosDatos = req.body;
+  //no hay que verificar la id, ya que es autoincremental, pero, hay que verificar el email, solo eso
+  //
+  if (comprobarEMAIL(nuevosDatos[0].selector, nuevosDatos[0].email) === true) {
+    //
+    console.log("DATOS LLEGADOS DESDE EL FRONT", nuevosDatos);
+
+    res.send({
+      mensaje: `EL Email SELECIONADO YA ESTA EN USO, elije otro por favor `,
+      estado: false,
+    });
+    //si existe, para aqui(por que no puede haber emails repetidos) y envia un mensaje de error
+    //, caso contraio, pasa al la contraseña, la contraseña es libre, no hay limitantes
+  } else {
+    console.log("DATOS LLEGADOS DESDE EL FRONT", nuevosDatos);
+    crearUsusarioV2(Object.values(nuevosDatos[1]));
+    res.send({ mensaje: "Usuario Creado", estado: true });
+
+    //
+  }
+});
+
 //aca hay que hacer un selector, y con ese selector, pasar los datos necesarios para LAS 3 TABLAS
 //este es el LA FUNCION PRINCIPAL, TIENE QUE ESTAR MUY BIEN ECHA, sino esta perfecta, no se va a avanzar
 //luego hay que hacer lo mismo con las demas, pero va a ser un copy paste casi, luego de completar estas funciones
@@ -522,5 +555,70 @@ app.put("/TEST_PUT", (req, res) => {
   //hago el cambio y debuelvo la tabla otra vez
 });
 
-app.listen(8080);
-console.log(`Escuchando en el puerto ${PUERTO}`);
+const testFolder = "./public/Imagenes-Autos";
+//ESTE DE ACA ES EL BUENO
+//tenemos que hacer que ponga los nombres en un array *LISTO*
+//ok , esta shit la vamos a hacer de esta manera, vamos a guardar las imagenes a pelo en el server
+// el front es que la va a asignar a algun lugar y eso
+// primero , vamos a cargar 1 imagen a ver que onda
+let arrayDeNombresIMG = [];
+let nombres = fs.readdirSync(testFolder).forEach((file) => {
+  arrayDeNombresIMG.push(file);
+  console.log(file);
+});
+//parte 2, hay que hacer 6 arrays de img, y mandarlos para el front, es lo mismo que antes
+app.get("/TEST_IMAGENES", (req, res) => {
+  //res.sendFile(__dirname + "/Imagenes-Autos/Chevrolet S 10.jpg");
+  nombres;
+  res.send(arrayDeNombresIMG);
+});
+app.get("/TEST_IMAGENESV2", (req, res) => {
+  let arrayCarpetas = [
+    "./public/Chicos",
+    "./public/Medianos",
+    "./public/Grandes",
+    "./public/Camionetas",
+    "./public/Vans",
+    "./public/Premiun",
+  ];
+
+  const nombreDeJsons = [
+    "Chicos",
+    "Medianos",
+    "Grandes",
+    "Camionetas",
+    "Vans",
+    "Premiun",
+  ];
+  let direccionesCompletas = [];
+  let jsonImg = {};
+  for (let x = 0; x < arrayCarpetas.length; x++) {
+    //loop.push({nombreDeJsons[x]: "value_a_" + x , value2: "value_b_" + x});
+
+    direccionesCompletas.push(fs.readdirSync(arrayCarpetas[x]));
+    console.log("FS CARPETAS", direccionesCompletas);
+  }
+  /*for (let x = 0; x < nombreDeJsons.length; x++) {
+    jsonImg.push({
+      key: nombreDeJsons[x],
+      value: direccionesCompletas[x],
+    });
+  }*/
+  //K de key, y V de value
+  nombreDeJsons.forEach(function (k, v) {
+    jsonImg[k] = direccionesCompletas[v];
+  });
+
+  //res.sendFile(__dirname + "/Imagenes-Autos/Chevrolet S 10.jpg");
+
+  res.send(jsonImg);
+});
+
+app.use(express.static(path.join(__dirname, "public")));
+app.use(
+  "/ftp",
+  express.static("public/Imagenes-Autos"),
+  serveIndex("public/Imagenes-Autos", { icons: true })
+);
+app.listen(PUERTO);
+//console.log(`Escuchando en el puerto ${PUERTO}`);

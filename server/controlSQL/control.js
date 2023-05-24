@@ -162,12 +162,25 @@ function comprobarContraseñaV2(tabla, Contraseña, Email) {
 }
 
 ///esto es una herramienta, no se configura
+//no es necesario a partir de ahora, usar el id, por lo que ,hay que quitarlo, pero, vasmos a hacer un test igualmente
 
 function crearUsusario(datos) {
   console.log(" DATOS", datos);
   const crear = db
     .prepare(
       `INSERT INTO "Cuentas" (id,username,role,telefono,email,contraseña) VALUES  (${datos[0]},'${datos[1]}','${datos[2]}',${datos[3]},'${datos[4]}','${datos[5]}')`
+    )
+    .run();
+  console.log(" CAMBIOS", crear.changes);
+
+  console.log(" SQL INTERNO DES", muestro_tabla("cuentas"));
+  return crear;
+}
+function crearUsusarioV2(datos) {
+  console.log(" DATOS", datos);
+  const crear = db
+    .prepare(
+      `INSERT INTO "Cuentas" (username,role,telefono,email,contraseña) VALUES  ('${datos[0]}','${datos[1]}',${datos[2]},'${datos[3]}','${datos[4]}')`
     )
     .run();
   console.log(" CAMBIOS", crear.changes);
@@ -336,4 +349,5 @@ module.exports = {
   seleccionarContraseña,
   seleccionarContraseñaV2,
   comprobarContraseñaV2,
+  crearUsusarioV2,
 };

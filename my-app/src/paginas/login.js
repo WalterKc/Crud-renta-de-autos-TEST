@@ -25,10 +25,14 @@ import "./registroUsuario.css";
  * vamos a tener que modificar todos las funciones que tocan las cuentas, pero, como solo
  * solo hay que agregar 1 campo, va a ser facil
  *
+ * OK,NO TE MATES,HAY UN PROBLEMA CON EL SERVIDOR CUANDO SE USA POR EL CELULAR, PERO, ESO NO ES MALO
+ * ES ALGO QUE SEGURO ES POR COMO ESTAMOS DEPLOYANDO ESTO, POR LO QUE, NO TE MATES EN SOLUCIONARLO
+ * PERO ES BUENO QUE LO SEPAS
  */
 import { obtenerDatosLoginTest } from "../selector api/api";
 import { obtenerDatosIniciales } from "../services/service";
-import { object } from "rsdi";
+import { servicioTestLogin } from "../services/service";
+
 async function testDeDatos() {
   let datos = await obtenerDatosLoginTest();
   console.log(datos);
@@ -86,25 +90,41 @@ async function testDeDatos3(cuenta, email, contraseña) {
 async function procesarFormulario(e) {
   e.preventDefault();
 
-  var miFormulario = document.getElementById("mi-formulario");
-  var datosEnviados = miFormulario.elements.Nombre.value;
+  //var miFormulario = document.getElementById("mi-formulario");
+  let h3Test = document.getElementById("H3-TEST");
+  //var datosEnviados = miFormulario.elements.Nombre.value;
   let numeroTargets = e.target;
   const data = {
     selector: "Cuentas",
-    email: numeroTargets[2].value,
+    email: numeroTargets[0].value,
     contraseña: numeroTargets[1].value,
   };
+  //alert(Object.values(data));
+
+  let estadoLogin = await servicioTestLogin(
+    data.selector,
+    data.email,
+    data.contraseña
+  );
 
   // Procesar los datos enviados aquí
-  console.log(datosEnviados);
+  //console.log(datosEnviados);
   console.log(numeroTargets.length);
   console.log(numeroTargets[0]);
   console.log("CONTRASEÑA ", numeroTargets[1].value);
-  console.log("email del form ", numeroTargets[2].value);
-  console.log(
-    "DATOS DE LA API/SERVER TEST",
-    await testDeDatos3(data.selector, data.email, data.contraseña)
-  );
+  console.log("email del form ", numeroTargets[0].value);
+  console.log("DATOS DE LA API/SERVER TEST", estadoLogin);
+  console.log("ESTADO", estadoLogin.estado);
+  console.log("MENSAJE ", estadoLogin.mensaje[0]);
+  if (estadoLogin.estado === false) {
+    alert(estadoLogin.mensaje);
+    h3Test.hidden = false;
+    h3Test.innerHTML = estadoLogin.mensaje;
+  } else {
+    alert("LOGIN EXITOSO!");
+    h3Test.hidden = false;
+    h3Test.innerHTML = "LOGIN EXITOSO!";
+  }
 }
 
 export function Login(estado) {
@@ -119,36 +139,34 @@ export function Login(estado) {
         <div>{}</div>
       </header>
       <main id="Test">
+        <h3 id="H3-TEST" hidden></h3>
         <section className="Formulario">
           <h4>Login</h4>
           <form id="mi-formulario" onSubmit={(e) => procesarFormulario(e)}>
             <ul id="ListaFormulario">
-              <label>nombre:</label>
-              <input
-                className="inputs"
-                type="text"
-                id="Nombre"
-                placeholder="nombre de usuario"
-              />
-              <label>Contraseña:</label>
-              <input
-                className="inputs"
-                type="password"
-                id="Contraseña"
-                placeholder="tu contraseña"
-              />
               <label>email:</label>
               <input
                 className="inputs"
                 type="email"
                 id="email"
                 placeholder="tu email"
+                required
+              />
+
+              <label>Contraseña:</label>
+              <input
+                className="inputs"
+                type="password"
+                id="Contraseña"
+                placeholder="tu contraseña"
+                required
               />
 
               <input
                 className="botonSubmit"
                 type="submit"
                 value="enviar datos(sin funcion por ahora)"
+                id="BotonSubmit"
               ></input>
             </ul>
           </form>

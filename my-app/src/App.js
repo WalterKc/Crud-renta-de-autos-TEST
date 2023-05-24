@@ -32,6 +32,9 @@ import titulo2 from "./imagenes/ejemplo 3.png";
 import { Login } from "./paginas/login";
 import { Reservas } from "./paginas/reservas";
 import { RegistroUsuarios } from "./paginas/registroUsuarios";
+//servicio imagen
+import { servicionTestUrls } from "./services/service";
+import { servicioTestUrlsV2 } from "./services/service";
 
 async function inicializador() {
   mostratDatosTest(await obtenerDatosIniciales());
@@ -68,6 +71,30 @@ function SelectorPaginaGeneral(estado) {
   const paginaActual = estado.paginaActual;
   const setPaginaActual = estado.setPagina;
   const slidersTest = slidersParaEntregar(imagenes, estadoBotones, setBotones);
+  const imagenesDelServer = estado.imagenesDelServer;
+  const imagenesOrdenadasServer = estado.imagenesOrdenadasServer;
+  const [sliderGeneralTEST, setSliderGeneralTEST] = useState([]);
+
+  useEffect(() => {
+    //console.log("IMAGENES SLIDER GEN TAMAÑO", imagenes.length);
+    /*
+    slidersParaEntregarGeneral(
+      imagenesOrdenadasServer,
+      estadoBotones,
+      setBotones
+    );
+    */
+    const TestSlidersGeneral = async () => {
+      const slidersGenerales = slidersParaEntregarGeneral(
+        imagenesOrdenadasServer,
+        estadoBotones,
+        setBotones
+      );
+      setSliderGeneralTEST(slidersGenerales);
+    };
+    TestSlidersGeneral();
+    console.log("imagenesOrdenadasServer ", imagenesOrdenadasServer);
+  }, [imagenesOrdenadasServer]); //console.log("IMAGENES ESTADO SELENCTOR", imagenesDelServer);
   //if else?
   /**
    * primero vamos a hacer que, por cada click a una pagina, renderize esa pagina VACIA, y que cierre el nav
@@ -187,6 +214,22 @@ function SelectorPaginaGeneral(estado) {
                   ></SliderGeneral>
                 }
                 Sliders={slidersTest[1]}
+                ImagenesTestApi={imagenesDelServer}
+                SliderTestAPI={
+                  <SliderGeneral
+                    estado={estadoBotones}
+                    set={setBotones}
+                    padre={"Header"}
+                    arrayDeImagenes={imagenesDelServer}
+                    ID={0}
+                  ></SliderGeneral>
+                }
+                sliderAutosChicos={sliderGeneralTEST[0]}
+                sliderAutosMedianos={sliderGeneralTEST[1]}
+                sliderAutosGrandes={sliderGeneralTEST[2]}
+                sliderAutosPremiun={sliderGeneralTEST[5]}
+                sliderCamionetas={sliderGeneralTEST[3]}
+                sliderVans={sliderGeneralTEST[4]}
               ></Catalogo>
             }
           ></Route>
@@ -235,7 +278,32 @@ function SelectorPaginaGeneral(estado) {
   //resto (talvez)
 }
 //tengo que crear un generador de sliders, Y ES LO ULTIMO
-//
+/**
+ * esta funcion, recibe un array json completamente ordenado, por lo que es posible
+ * tener un control superior a la funcion anterior
+ *
+ *
+ */
+
+function slidersParaEntregarGeneral(jsonImagenes, estadoBotones, setBotones) {
+  //let keys = Object.keys(jsonImagenes);
+  let slidersListos = [];
+  for (let x = 0; x < Object.keys(jsonImagenes).length; x++) {
+    slidersListos.push(
+      <SliderGeneral
+        estado={estadoBotones}
+        set={setBotones}
+        padre={"Main"}
+        arrayDeImagenes={Object.values(jsonImagenes)[x]}
+        ID={Object.keys(jsonImagenes)[x]}
+      ></SliderGeneral>
+    );
+    //
+    console.log(" IMAGENES DEL SERVER", Object.values(jsonImagenes)[x]);
+  }
+  //console.log("IMAGENES PARA ENTREGAR", slidersListos);
+  return slidersListos;
+}
 function slidersParaEntregar(imagenes, estadoBotones, setBotones) {
   let slidersListos = [];
   for (let x = 0; x < imagenes.length; x++) {
@@ -425,8 +493,12 @@ export function SliderGeneral(estado) {
   //console.log(" selectorSlider GENERAL", selectorSlider);
 
   useEffect(() => {
+    console.log("IMAGENES SLIDER GEN TAMAÑO", imagenes.length);
+
     acomodarImagenes(`slider-${padre}${ID}`, imagenes.length);
-  }, []);
+  }, [imagenes.length]);
+  //este de aca arriba [imagenes.length] es es limitante, si el tamaño del array cambia, se activa
+  //el efecto
 
   return (
     <div className="contedenor-slider ">
@@ -629,14 +701,12 @@ function botones(estado, set, boton, padre) {
 //y lo quite cuando lo volvamos a tocar
 //de la siguiente manera, cuando toquemos el boton de listaDesplegable, cambiamos el estado a true
 //y cuando lo toquemos otra vez, a false
+/**
+ *
+ * PROBAMOS LAS IMAGENES POR SERVIRDOR, HAY QUE PASARLAS COMO ESTADO
+ */
+
 function App() {
-  useEffect(() => {
-    //inicializador("DATOS DE TEST");
-    //inicializador();
-    //let jsonselector = otrafuncion();
-    //console.log(" el log", otrafuncion());
-    //acomodarImagenes(`slider-${"Header"}`, 3);
-  });
   //boton();
   const [estadoBotones, setEstadoBotones] = useState(true);
   const [estadoMenu, setEstadoMenu] = useState(false);
@@ -647,6 +717,32 @@ function App() {
   const arrayDeImagenes2 = [auto5, auto6, auto7];
   const arrayDeImagenes3 = [titulo1, titulo2, auto7];
   console.log("imagenes APP", arrayDeImagenes.length);
+  const [imagenesServer, setImagenesServer] = useState([]);
+  const [imagenesServerFinalesTest, setImagenesServerFinalesTest] = useState();
+  useEffect(() => {
+    //inicializador("DATOS DE TEST");
+    //inicializador();
+    //let jsonselector = otrafuncion();
+    //console.log(" el log", otrafuncion());
+    //acomodarImagenes(`slider-${"Header"}`, 3);
+    const envioUrlsTest = async () => {
+      //let array = await obtenerArrayNombresIMGV2();
+      //let array2 = await obtenerUrlsIMG(array);
+      let urls = await servicionTestUrls();
+      let urlsFinalesTest = await servicioTestUrlsV2();
+      //console.log("URLS V1 SERVER", urls);
+      //console.log("URLS V2 SERVER", urlsFinalesTest);
+      //console.log("URLS V2 KEYS", Object.keys(urlsFinalesTest));
+
+      //let url = await obtener1IMG();
+      //console.log(url);
+      setImagenesServer(urls);
+      setImagenesServerFinalesTest(urlsFinalesTest);
+
+      //return urls;
+    };
+    envioUrlsTest();
+  }, []);
 
   return (
     <div
@@ -676,6 +772,8 @@ function App() {
         arrayDeImagenes={[arrayDeImagenes, arrayDeImagenes2, arrayDeImagenes3]}
         paginaActual={PaginaActual}
         setPagina={setPaginaActual}
+        imagenesDelServer={imagenesServer}
+        imagenesOrdenadasServer={imagenesServerFinalesTest}
       ></SelectorPaginaGeneral>
 
       {/*<SliderTest estado={estadoBotones} set={setEstado}></SliderTest>*/}

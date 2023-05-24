@@ -65,3 +65,10 @@ o una señal de false y luego crear el mensaje de error) *LISTO*
 >> creo que es todo por ahora 
 >> vamos a crear una funcion para crear sliders generales
 >> Vamos a automatizar los links tambien, para que no halla que escribirlos
+>> ya casi terminamos, hoy, vamos a hacer lo de las imagenes por el servidor, y , si se puede
+>> las seciones
+>> imagenes por servidor listas, pero falta hacer el slider general, y cargar todas las imagenes que vamos a usar
+>> vamos a buscar todos los autos que necesitemos *Listo*, y vamos a dejarlo fijo(que tampoco es que se compren
+>> autos todos los dias)*Listo*, ahora, vamos a hacer el slider general y dejemos fijas
+>> las 6 categorias de autos
+

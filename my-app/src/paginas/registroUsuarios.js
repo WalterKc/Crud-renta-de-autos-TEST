@@ -1,4 +1,46 @@
+import { servicioTestRegistro } from "../services/service";
 import "./registroUsuario.css";
+//vamos a hacer lo mismo con el registro de usuarios
+//tengo que poner algun tipo de autoincrement para el id, si o si, luego, ya no tengo que modificar
+//mas la base de datos, al menos , no tanto
+async function procesarFormulario(e) {
+  e.preventDefault();
+  var miFormulario = document.getElementById("mi-formulario");
+  let h3Test = document.getElementById("H3-TEST");
+
+  let numeroTargets = e.target;
+  const data = {
+    selector: "Cuentas",
+    nombreUsuario: numeroTargets[0].value,
+    email: numeroTargets[1].value,
+    contraseña: numeroTargets[2].value,
+    telefono: numeroTargets[3].value,
+  };
+  const estadoRegistro = await servicioTestRegistro(
+    data.selector,
+    data.email,
+    data.contraseña,
+    data.nombreUsuario,
+    data.telefono
+  );
+
+  console.log("Nombre RESGISTRO ", numeroTargets[0].value);
+  console.log("email RESGISTRO ", numeroTargets[1].value);
+  console.log("contraseña RESGISTRO", numeroTargets[2].value);
+  console.log("telefono RESGISTRO", numeroTargets[3].value);
+  if (estadoRegistro.estado === false) {
+    alert(estadoRegistro.mensaje);
+    h3Test.hidden = false;
+    h3Test.innerHTML = estadoRegistro.mensaje;
+  } else {
+    alert("Registro EXITOSO!");
+    h3Test.hidden = false;
+    h3Test.innerHTML = "LOGIN EXITOSO!";
+  }
+
+  //
+}
+
 export function RegistroUsuarios(estado) {
   const paginaActual = estado.paginaActual;
   console.log("pagina Actual", paginaActual);
@@ -12,7 +54,7 @@ export function RegistroUsuarios(estado) {
       <main id="Test">
         <section className="Formulario">
           <h4>Registro</h4>
-          <form>
+          <form id="mi-formulario" onSubmit={(e) => procesarFormulario(e)}>
             <ul id="test">
               <label>nombre:</label>
               <input
@@ -20,6 +62,15 @@ export function RegistroUsuarios(estado) {
                 type="text"
                 id="nombre"
                 placeholder="nombre de usuario"
+                required
+              />
+              <label>email:</label>
+              <input
+                className="inputs"
+                type="email"
+                id="email"
+                placeholder="tu email"
+                required
               />
               <label>Contraseña:</label>
               <input
@@ -27,6 +78,7 @@ export function RegistroUsuarios(estado) {
                 type="password"
                 id="contraseña"
                 placeholder="tu contraseña"
+                required
               />
               <label>numero de telefono</label>
               <input
@@ -34,6 +86,7 @@ export function RegistroUsuarios(estado) {
                 type="number"
                 id="numeroTelefono"
                 placeholder="tu numero de telefono"
+                required
               />
               <p>
                 Estoy de acuerdo con los <a href="#">Terminos y condiciones</a>
