@@ -94,7 +94,10 @@ function SelectorPaginaGeneral(estado) {
     };
     TestSlidersGeneral();
     console.log("imagenesOrdenadasServer ", imagenesOrdenadasServer);
-  }, [imagenesOrdenadasServer]); //console.log("IMAGENES ESTADO SELENCTOR", imagenesDelServer);
+  }, [imagenesOrdenadasServer, estadoBotones]);
+  //ok, si queremos que los botones andes bien, hay que cambiar como funcionan esto, eliminar el limitador
+  //este [imagenesOrdenadasServer], o hay que ponerle el estadoBotones, como se ve arribeño
+  //console.log("IMAGENES ESTADO SELENCTOR", imagenesDelServer);
   //if else?
   /**
    * primero vamos a hacer que, por cada click a una pagina, renderize esa pagina VACIA, y que cierre el nav

@@ -70,5 +70,6 @@ o una señal de false y luego crear el mensaje de error) *LISTO*
 >> imagenes por servidor listas, pero falta hacer el slider general, y cargar todas las imagenes que vamos a usar
 >> vamos a buscar todos los autos que necesitemos *Listo*, y vamos a dejarlo fijo(que tampoco es que se compren
 >> autos todos los dias)*Listo*, ahora, vamos a hacer el slider general y dejemos fijas
->> las 6 categorias de autos
+>> las 6 categorias de autos *LISTO*
+>> ahora, vamos a practicar las seciones y tenemos todo listo para el css final
 

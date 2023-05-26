@@ -30,12 +30,12 @@ const {
   comprobarContraseñaV2,
   crearUsusarioV2,
 } = require("./controlSQL/control.js");
+
 //import { todo } from "./controlSQL/control.js";
 
 const express = require("express");
 var cors = require("cors");
 const session = require("express-session");
-const { object } = require("rsdi");
 const path = require("path");
 const fs = require("fs");
 
@@ -43,35 +43,65 @@ const PUERTO = 8080;
 const app = express();
 app.use(cors());
 app.use(express.json());
+////
+////
+
 //test de seciones//
-/*
+
 app.use(
   session({
     secret: "123",
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 2 * 60000, sameSite: "lax", secure: false },
   })
 );
-*/
+
 const SqliteStore = require("better-sqlite3-session-store")(session);
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
+
+//const dbsession = new sqlite("sessions.db", { verbose: console.log });
+//const session = new session({ path: "../base_test.db" });
+//session.init()
+
 //DESACTIVO ESTO POR QUE ES MOLESTO; ME LLENA LA CONSOLA
-/* 
+/*
 app.use(
   session({
     store: new SqliteStore({
       client: db,
       expired: {
         clear: true,
-        intervalMs: 10000, //ms = 30seg
+        intervalMs: 2 * 60000, //ms = 30seg
       },
     }),
-    key: "galleta",
-    secret: "keyboard cat",
-    resave: false,
-    saveUninitialized: false,
+    secret: "123",
+    resave: true,
+    saveUninitialized: true,
+    cookie: { maxAge: 2 * 60000, sameSite: "lax", secure: false },
+    //key: "HOLA SOY UNA GALLETA",
+    //secret: "123",
+    //resave: false,
+    //saveUninitialized: false,
+    //cookie: { algo: "12345" },
   })
 );
 */
+
+const autenticado = (req, res, next) => {
+  if (req.session.autenticado === true) {
+    //res.redirect("/sessionesRespuesta");
+    console.log(" TEST SECCION SI", req.session);
+    console.log(" TEST SECCION NOMBRE", req.session.usuario);
+
+    next();
+  } else {
+    console.log(" TEST SECCION NO", req.session);
+    res.redirect("/sessiones");
+  }
+};
+
 /**
  * TEST INDEX
  */
@@ -170,18 +200,86 @@ app.put("/test3", (req, res) => {
   //doy los datos nuevos
   //hago el cambio y debuelvo la tabla otra vez
 });
+/**
+ * SECIONES * SECIONES* SECIONES* SECIONES* SECIONES* SECIONES* SECIONES* SECIONES* SECIONES
+ * * SECIONES
+ * * SECIONES
+ * * SECIONES
+ * * SECIONES
+ * * SECIONES
+ * * SECIONES
+ */
 app.get("/sessiones", (req, res) => {
-  (req.session.usuario = "gaston"),
+  /*request.session.start("user_id",()=>{
+    
+  })*/
+  //(req.session.id = "123455"),
+  //(req.sessionID = "12345"),
+
+  (req.session.algo = "12345"),
+    (req.session.usuario = "gaston"),
     (req.session.rol = "admin"),
     (req.session.visitas = req.session.visitas ? ++req.session.visitas : 1);
-  req.session.cookie.maxAge = 30000;
+  req.session.cookie.maxAge = 60000;
+
+  req.session.autenticado = true;
   //req.session.cookie.domain = "galleta";
-  req.session.cookie.path = "/sessiones";
-  console.log("DATOS SECION", req.session);
+  //req.session.cookie.path = "/sessiones";
+  //req.session.cookie.signed = true;
+  //req.sessionID = "galletita";
+  //console.log("DATOS SECION", req.session);
+  //console.log(" SECION ID", req.session.id);
+  //console.log(" SECION cookie", req.session.cookie.signed);
+
+  //res.cookie("HOLA SOY UNA COOCKIE");
+  //console.log(" ESTA ES LA GALLETA", req.cookies);
   res.send(
     `el usuario${req.session.usuario}, con el rol ${req.session.rol}, visito la pagina ${req.session.visitas} veces`
   );
 });
+app.post("/sessionesV2", (req, res) => {
+  let selector = req.body;
+
+  req.session.usuario = selector.usuario;
+  req.session.rol = selector.rol;
+  req.session.cookie.maxAge = 2 * 60000;
+  req.session.autenticado = true;
+  //req.session.cookie.username = "req.body.usuario";
+  /*res.send(
+    `el usuario${req.session.usuario}, con el rol ${req.session.rol}, visito la pagina `
+  );*/
+
+  res.send({
+    mensaje: `el usuario${req.session.usuario} con el rol ${req.session.rol}, visito la pagina `,
+    usuario: req.session.usuario,
+    rol: req.session.rol,
+  });
+});
+
+app.get("/sessionesRespuesta", (req, res) => {
+  //console.log(" ESTA ES LA GALLETA", req.session.get("algo"));
+  //let algo = req.session;
+  res.send({
+    mensaje: `esto es un mensaje de la coockie `,
+    usuario: req.session.usuario,
+    rol: req.session.rol,
+    cookieID: req.session.id,
+  });
+  //res.send("FUNCIONO ?", algo);
+});
+app.get("/cookie-set", (req, res) => {
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header("Access-Control-Allow-Origin", req.headers.origin);
+  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept"
+  );
+
+  res.cookie("NOMBRE DE LA COOCKIE", "VALORES Y COSAS");
+  res.send({ mensaje: "hola, soy una cookie bebe" });
+});
+
 //ok, mira, solo va a haber 3 tablas editables, y la de secciones, vamos a hacer shit, vamos a fijarlas
 //y ya, no es como que van a cambiar, son fijas, el guest no puede tocar ninguna, el user sus cuentas y pedir un auto
 //el admin puede tocar todas, las secciones son automaticas, no se tocan
@@ -189,7 +287,6 @@ app.get("/TEST_tablas", (req, res) => {
   let selector = req.body;
   console.log(" TEST SELECTOR", selector.selector);
   console.log(" SQL", muestro_tabla(selector.selector));
-
   //console.log(" SQL actualizado", muestro_tabla("autos"));
 
   //res.json(muestro_tabla("autos"));
@@ -564,7 +661,7 @@ const testFolder = "./public/Imagenes-Autos";
 let arrayDeNombresIMG = [];
 let nombres = fs.readdirSync(testFolder).forEach((file) => {
   arrayDeNombresIMG.push(file);
-  console.log(file);
+  //console.log(file);
 });
 //parte 2, hay que hacer 6 arrays de img, y mandarlos para el front, es lo mismo que antes
 app.get("/TEST_IMAGENES", (req, res) => {
