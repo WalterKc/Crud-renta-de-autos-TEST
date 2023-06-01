@@ -108,6 +108,7 @@ function crearCookie(nombre, datosSinCodificar, tiempoDeVida) {
 
   Cookies.set(nombre, "j:" + datos, { expires: tiempoDeVida });
 }
+//vamos a meterle el rol
 export async function traerCookieV3(cookieApp, setCookieAPP, usuario, rol) {
   if (document.cookie.length === 0) {
     console.log(" COOKIE INTERNA", cookieApp);

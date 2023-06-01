@@ -30,7 +30,7 @@ import "./registroUsuario.css";
  * PERO ES BUENO QUE LO SEPAS
  */
 import { obtenerDatosLoginTest } from "../selector api/api";
-import { obtenerDatosIniciales } from "../services/service";
+import { obtenerDatosIniciales, traerCookieV3 } from "../services/service";
 import { servicioTestLogin } from "../services/service";
 
 async function testDeDatos() {
@@ -87,8 +87,18 @@ async function testDeDatos3(cuenta, email, contraseña) {
 }
 /** */
 
-async function procesarFormulario(e) {
-  e.preventDefault();
+/**
+ * bueno, aca vamos a completar el login, ya es funcional, pero necesita un poco mas de cariño
+ * //
+ * el login va a funcionar como aqui(que ya funciona), primero, revisa si no hay una cookie/seccion valida
+ *
+ * si no hay, hace el login normal, y con los datos del login normal(cuando se validen)
+ * creamos las cookie que se envia aqui, en caso contrario de que los datos no sean validos, no
+ * tambien, el login tiene que verificar que ya estemos logeados, asi no nos logeamos 2 veces
+ *
+ */
+async function procesarFormulario(e, cookieApp, setCookieAPP) {
+  //e.preventDefault();
 
   //var miFormulario = document.getElementById("mi-formulario");
   let h3Test = document.getElementById("H3-TEST");
@@ -116,11 +126,26 @@ async function procesarFormulario(e) {
   console.log("DATOS DE LA API/SERVER TEST", estadoLogin);
   console.log("ESTADO", estadoLogin.estado);
   console.log("MENSAJE ", estadoLogin.mensaje[0]);
+  //if (cookieApp !== false) {     }
   if (estadoLogin.estado === false) {
     alert(estadoLogin.mensaje);
     h3Test.hidden = false;
     h3Test.innerHTML = estadoLogin.mensaje;
   } else {
+    //aca se crea la seccion y la cookie
+
+    await traerCookieV3(
+      cookieApp,
+      setCookieAPP,
+      estadoLogin.mensaje[0].username,
+      estadoLogin.mensaje[0].role
+    );
+    console.log(
+      "NOMBRE",
+      estadoLogin.mensaje[0].username,
+      "ROL",
+      estadoLogin.mensaje[0].role
+    );
     alert("LOGIN EXITOSO!");
     h3Test.hidden = false;
     h3Test.innerHTML = "LOGIN EXITOSO!";
@@ -131,6 +156,54 @@ export function Login(estado) {
   const paginaActual = estado.paginaActual;
   console.log("pagina Actual", paginaActual);
   const nav = estado.Nav;
+  const cookieApp = estado.cookie;
+  const setCookieAPP = estado.setCookie;
+  //mejor lo hago externo
+  const verificacionLogin = () => {
+    if (cookieApp !== false) {
+      return <h3 id="H3-TEST">Ya ESTAS LOGEADO</h3>;
+      //
+    } else {
+      return (
+        <form
+          id="mi-formulario"
+          onSubmit={(e) => procesarFormulario(e, cookieApp, setCookieAPP)}
+          /** onSubmit={
+          cookieApp !== false
+            ? console.log("YA ESTAS LOGEADO", cookieApp)
+            : (e) => procesarFormulario(e, cookieApp, setCookieAPP)
+        } */
+        >
+          <ul id="ListaFormulario">
+            <label>email:</label>
+            <input
+              className="inputs"
+              type="email"
+              id="email"
+              placeholder="tu email"
+              required
+            />
+
+            <label>Contraseña:</label>
+            <input
+              className="inputs"
+              type="password"
+              id="Contraseña"
+              placeholder="tu contraseña"
+              required
+            />
+
+            <input
+              className="botonSubmit"
+              type="submit"
+              value="enviar datos(sin funcion por ahora)"
+              id="BotonSubmit"
+            ></input>
+          </ul>
+        </form>
+      );
+    }
+  };
 
   return (
     <div>
@@ -142,34 +215,7 @@ export function Login(estado) {
         <h3 id="H3-TEST" hidden></h3>
         <section className="Formulario">
           <h4>Login</h4>
-          <form id="mi-formulario" onSubmit={(e) => procesarFormulario(e)}>
-            <ul id="ListaFormulario">
-              <label>email:</label>
-              <input
-                className="inputs"
-                type="email"
-                id="email"
-                placeholder="tu email"
-                required
-              />
-
-              <label>Contraseña:</label>
-              <input
-                className="inputs"
-                type="password"
-                id="Contraseña"
-                placeholder="tu contraseña"
-                required
-              />
-
-              <input
-                className="botonSubmit"
-                type="submit"
-                value="enviar datos(sin funcion por ahora)"
-                id="BotonSubmit"
-              ></input>
-            </ul>
-          </form>
+          {verificacionLogin()}
         </section>
       </main>
     </div>

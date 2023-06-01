@@ -84,5 +84,6 @@ o una señal de false y luego crear el mensaje de error) *LISTO*
 >>> al front y creamos un estado de verificado en el front, y listo, si no existe, se manda un false
 >>> esta cookie, va a tener 2 cosas, la id, y el nombre de usuario, nada mas, y con eso vamos a trabajar
 >>> tambien hay que hacer el deslogin, para hacer esto, solo hay que buscar la id de la cookie, y borrala
->>> del server y ya, tambien hay que borrarla del front
+>>> del server y ya, tambien hay que borrarla del front *COMPLETO*
+>> ahora vamos a hacer 2 cosas, empesar el css final, y poner en nombre de usuario/estado del login
 

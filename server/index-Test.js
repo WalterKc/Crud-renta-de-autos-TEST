@@ -254,7 +254,11 @@ app.post("/sessionesV2", (req, res) => {
   req.session.cookie.maxAge = 60000;
   req.session.autenticado = true;
 
-  secionesID = { id: req.session.id, nombre: req.session.usuario };
+  secionesID = {
+    id: req.session.id,
+    nombre: req.session.usuario,
+    rol: req.session.rol,
+  };
 
   //req.session.cookie.username = "req.body.usuario";
   /*res.send(

@@ -253,6 +253,8 @@ function SelectorPaginaGeneral(estado) {
               <Login
                 paginaActual={paginaActual}
                 Nav={<Nav estado={estadoMenu} set={setEstado}></Nav>}
+                cookie={cookie}
+                setCookie={setCookie}
               ></Login>
             }
           ></Route>
@@ -826,7 +828,7 @@ function App() {
     unTest();
     //console.log("COOKIE INTERNA APP", cookie);
   }, []);
-  /*
+
   useEffect(() => {
     const unTest = async () => {
       await verificarCookieInicial(cookie, setCookie);
@@ -835,8 +837,7 @@ function App() {
     };
     unTest();
     console.log("COOKIE INTERNA APP", cookie);
-  }, [cookie]);
-  */
+  }, [PaginaActual]);
 
   return (
     <div
