@@ -73,3 +73,16 @@ o una señal de false y luego crear el mensaje de error) *LISTO*
 >> las 6 categorias de autos *LISTO*
 >> ahora, vamos a practicar las seciones y tenemos todo listo para el css final
 
+>> ya podemos enviar lo que se quiera, y podemos leerlo tambien, y casi hacer lo que se quiera, 
+>> pero, primero vamos a ver lo de los tokens y decimos *LISTO, no vale la pena*
+>> guia de sessiones
+>>> lo que vamos a hacer es simple, el programa oriinal, guarda una sesion en una base de datos , con una 
+>>> id especial, esta es la id que vamos a mandar a la cookie, bueno, luego, con una funcion de ayuda
+>>> vamos a verificar que esta es la misma que la enviada
+>>> PERO, para esto, vamos a hacer que lo primero que vamos a hacer , es verificar la cookie en el front,
+>>> como?, hacemos un reques a una pagina verificadora, si esta cookie existe, se envia una señal de true
+>>> al front y creamos un estado de verificado en el front, y listo, si no existe, se manda un false
+>>> esta cookie, va a tener 2 cosas, la id, y el nombre de usuario, nada mas, y con eso vamos a trabajar
+>>> tambien hay que hacer el deslogin, para hacer esto, solo hay que buscar la id de la cookie, y borrala
+>>> del server y ya, tambien hay que borrarla del front
+

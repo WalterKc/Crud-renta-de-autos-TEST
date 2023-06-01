@@ -1,4 +1,5 @@
 export const BASE_URL = "http://localhost:8080";
+const IP_GENERAL = "http://192.168.0.3:8080";
 const urlTest = "http://localhost:8080/TEST_EMAIL";
 const datosTest = {
   selector: "Cuentas",
@@ -24,8 +25,8 @@ export async function obtenerDatosLoginTest() {
 //llamo a la api del login aca, pero no hace nada
 //OK; ACA VA MI IP, o la lo que haga del servidor, pero como es algo inicial, lo vamos a dejar
 //hardcoreado por ahora
-const urlLoginTemporal = "http://192.168.0.3:8080/TEST_LOGIN1";
-const urlRegistroTemporal = " http://192.168.0.3:8080/TEST_REGISTRO1";
+const urlLoginTemporal = `${IP_GENERAL}/TEST_LOGIN1`;
+const urlRegistroTemporal = `${IP_GENERAL}/TEST_REGISTRO1`;
 
 export async function mensajeDeLogin(cuenta, email, contraseña) {
   const dataInterna = {
@@ -91,11 +92,11 @@ export async function mensajeDeRegistro(
 }
 
 //API DE IMAGENES, son 2 funciones, 1 la api en si, y otra de apoyo
-const UrlIMGTEST1 = "http://192.168.0.3:8080/TEST_IMAGENES";
-const UrlIMGTEST1V2 = "http://192.168.0.3:8080/TEST_IMAGENESV2";
+const UrlIMGTEST1 = `${IP_GENERAL}/TEST_IMAGENES`;
+const UrlIMGTEST1V2 = `${IP_GENERAL}/TEST_IMAGENESV2`;
 
-const UrlIMGTEST2 = "http://192.168.0.3:8080/Imagenes-Autos/";
-const UrlIMGTEST2V2 = "http://192.168.0.3:8080/";
+const UrlIMGTEST2 = `${IP_GENERAL}/Imagenes-Autos/`;
+const UrlIMGTEST2V2 = `${IP_GENERAL}/`;
 
 //obtiene el nombre de las imagenes
 async function obtenerNombresIMGs() {
@@ -195,5 +196,89 @@ obtenerUrlsIMGV2();
         )}`
       );
  */
+
+//API de sincronia y verificancion de login
+//traigo las funciones de el area de test *LISTO*
+//hay que modificarlas ,por que no son muy convenientes ahora(aunque funcionales)
+//recorda que el envio de datos y el retorno es al mismo tiempo, por lo que van que compartir servicio
+//hay que recordar que, solo se puede setear la cookie cuando no existe una
+const urlcoockie1 = `${IP_GENERAL}/sessionesV2`;
+const urlcoockie2 = `${IP_GENERAL}/cookie`;
+const testSeccion = `${IP_GENERAL}/seccionesTestCookie`;
+const testEliminoSeccion = `${IP_GENERAL}/eliminoSeccion`;
+export async function enviarDatosSeccion(usuario, rol) {
+  //
+  const dataInterna = {
+    usuario: usuario,
+    rol: rol,
+  };
+  //aca tengo que pasar los datos, mas tarde voy a hacer la contraseña
+  const response = await fetch(urlcoockie1, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(dataInterna),
+  });
+  const result = await response.json();
+  //console.log(result);
+  return result;
+}
+//esta funcion de aca abajo tiene un error, no se va a usar por encontrar un nuevo metodo
+//pero hay que arreglarla
+export async function setCookie() {
+  const response = await fetch("http://192.168.0.3:8080/cookie", {
+    method: "GET",
+    //body: JSON.stringify(dataInterna),
+    credentials: "include",
+    /*
+    headers: {
+      "Content-Type": "application/json",
+    },
+    */
+  });
+  const result = await response.json();
+  //console.log(result);
+  return result;
+}
+
+export async function verificoSeccionAPI() {
+  const dataInterna = {
+    cookie: document.cookie,
+  };
+  const response = await fetch(testSeccion, {
+    method: "POST",
+    //body: JSON.stringify(dataInterna),
+    credentials: "same-origin",
+    "Set-Cookie": document.cookie,
+
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(dataInterna),
+  });
+  const result = await response.json();
+  //console.log(result);
+  return result;
+}
+export async function eliminoSeccionApi() {
+  const dataInterna = {
+    cookie: document.cookie,
+  };
+  const response = await fetch(testEliminoSeccion, {
+    method: "POST",
+    //body: JSON.stringify(dataInterna),
+    credentials: "same-origin",
+    "Set-Cookie": document.cookie,
+
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(dataInterna),
+  });
+  const result = await response.json();
+  //console.log(result);
+  return result;
+}
 
 //el resto de apis va aca abajo(cuando se me ocurran o sean necesarios)

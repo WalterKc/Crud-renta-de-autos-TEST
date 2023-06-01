@@ -2,7 +2,7 @@ import logo from "./logo.svg";
 import "./App.css";
 import { useEffect, useState } from "react";
 import { boton, botonV2, eventos, mostratDatosTest, eventosV2 } from "./ui/ui";
-import { obtenerDatosIniciales } from "./services/service";
+import { obtenerDatosIniciales, verificarSeccion } from "./services/service";
 import { obtenerDatosAPI } from "./selector api/api";
 import { Nav } from "./componentes/nav";
 import {
@@ -74,6 +74,8 @@ function SelectorPaginaGeneral(estado) {
   const imagenesDelServer = estado.imagenesDelServer;
   const imagenesOrdenadasServer = estado.imagenesOrdenadasServer;
   const [sliderGeneralTEST, setSliderGeneralTEST] = useState([]);
+  const cookie = estado.cookie;
+  const setCookie = estado.setCookie;
 
   useEffect(() => {
     //console.log("IMAGENES SLIDER GEN TAMAÑO", imagenes.length);
@@ -269,6 +271,8 @@ function SelectorPaginaGeneral(estado) {
               <Reservas
                 paginaActual={paginaActual}
                 Nav={<Nav estado={estadoMenu} set={setEstado}></Nav>}
+                cookie={cookie}
+                setCookie={setCookie}
               ></Reservas>
             }
           ></Route>
@@ -709,6 +713,74 @@ function botones(estado, set, boton, padre) {
  * PROBAMOS LAS IMAGENES POR SERVIRDOR, HAY QUE PASARLAS COMO ESTADO
  */
 
+/**
+ * aca se hace la primera comprobacion de login, asi que hay que traer las funciones de apoyo
+ * y modificar el server con los true y false adecuados(que todavia no estan puestos*LISTO*)
+ * a las funciones que llaman a la api, van en la api, asi que hay que moverlas alla y darle un nombre
+ * decente
+ */
+/**
+ * anteultima modificacion de la app principal, vamos a agregar la comprobacion automatica final
+ * todos los servicios son funcionales completamente, pero, hay que crear algunas funciones extra
+ * para hacer las comprobaciones automaticas, aca vamos traer la expliacion que hicimos antes y la
+ * vamos a terminar y completar
+ *
+ */
+
+/**
+ * lo primero que hace la app, es verificar que ya estemos logeados, de la siguiente manera
+ * primero, verifica que tenga una cookie en la pagina, si no la tiene, no esta logeado y se acaba
+ * tambien, ahy que setear la cookie interna a false,
+ * pero si la tiene, verifica que esa cookie sea correcta, usando los verifiadores de aqui,
+ * si recibe un true como respuesta, esta logeado, y escribe un estado de logeado(esto se puede mejorar
+ * con un local storage), y este estado, es el que se va a usar para todos las paginas que los necesiten
+ * una vez echo esto, no es necesario volver a hacer esto, hasta que se cierre la pagina(esto puede cambiar)
+ * caso contrario , de que la cookie no sea correcta, la borra
+
+ */
+
+const verificarCookieInicial = async (cookieAPP, setCookieAPP) => {
+  if (document.cookie.length > 0) {
+    const verificoSeccion = await verificarSeccion();
+    console.log("DATOS VERIFICACION", verificoSeccion);
+    if (verificoSeccion.estadoVerificacion) {
+      //pasa verificacion
+
+      const cookies = document.cookie;
+      const cookieBruta = decodeURIComponent(cookies);
+      const cookiePares = cookieBruta.split("j:");
+      const valoresCookie = JSON.parse(cookiePares[1]);
+      //console.log(valoresCookie);
+      //si la cookie externa no es igual a la interna
+      if (cookieAPP !== valoresCookie) {
+        setCookieAPP(valoresCookie);
+      } else {
+        console.log("se seteo la cookie", cookieAPP);
+      }
+
+      console.log(
+        " paso la verificacion,  es una cookie valida",
+        "cookie interna",
+        cookieAPP
+      );
+    } else {
+      setCookieAPP(false);
+      document.cookie =
+        "UnaCookieEspecial  =; expires=Thu, 1 Jan 1970 00:00:00 UTC";
+      console.log("no paso la verificacion, no es una cookie valida");
+    }
+
+    /*
+    document.cookie =
+      "UnaCookieEspecial  =; expires=Thu, 1 Jan 1970 00:00:00 UTC";
+    setCookieAPP(false);
+    console.log("cookies despues de quitarla", cookieApp);*/
+  } else {
+    setCookieAPP(false);
+    console.log("No hay cookie, no se puede quitar lo que no hay");
+  }
+};
+
 function App() {
   //boton();
   const [estadoBotones, setEstadoBotones] = useState(true);
@@ -722,6 +794,7 @@ function App() {
   console.log("imagenes APP", arrayDeImagenes.length);
   const [imagenesServer, setImagenesServer] = useState([]);
   const [imagenesServerFinalesTest, setImagenesServerFinalesTest] = useState();
+  const [cookie, setCookie] = useState({});
   useEffect(() => {
     //inicializador("DATOS DE TEST");
     //inicializador();
@@ -745,7 +818,25 @@ function App() {
       //return urls;
     };
     envioUrlsTest();
+    const unTest = async () => {
+      await verificarCookieInicial(cookie, setCookie);
+      //setCookie({ mensaje: "algo" });
+      console.log("COOKIE INTERNA APP", cookie);
+    };
+    unTest();
+    //console.log("COOKIE INTERNA APP", cookie);
   }, []);
+  /*
+  useEffect(() => {
+    const unTest = async () => {
+      await verificarCookieInicial(cookie, setCookie);
+      //setCookie({ mensaje: "algo" });
+      console.log("COOKIE INTERNA APP", cookie);
+    };
+    unTest();
+    console.log("COOKIE INTERNA APP", cookie);
+  }, [cookie]);
+  */
 
   return (
     <div
@@ -777,6 +868,8 @@ function App() {
         setPagina={setPaginaActual}
         imagenesDelServer={imagenesServer}
         imagenesOrdenadasServer={imagenesServerFinalesTest}
+        cookie={cookie}
+        setCookie={setCookie}
       ></SelectorPaginaGeneral>
 
       {/*<SliderTest estado={estadoBotones} set={setEstado}></SliderTest>*/}

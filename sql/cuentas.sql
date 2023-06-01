@@ -8,7 +8,8 @@ SELECT * FROM Cuentas
 INSERT INTO Cuentas (username,role,telefono,email,contraseña) VALUES ('sarahjane','guest',123456,"email@ejemplo3.com","contraseña3");
 
 DROP TABLE IF EXISTS sessions
-SELECT * FROM sessions
+SELECT * FROM sessions 
+WHERE sid = "TbW-TiKvYwYfCFVPnPg35JPq6JaIIGoV"
 
 SELECT * FROM Cuentas WHERE email= "email@ejemplo1.com" AND contraseña ="contraseña1";
 

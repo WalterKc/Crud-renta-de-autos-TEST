@@ -47,7 +47,7 @@ app.use(express.json());
 ////
 
 //test de seciones//
-
+/*
 app.use(
   session({
     secret: "123",
@@ -56,6 +56,7 @@ app.use(
     cookie: { maxAge: 2 * 60000, sameSite: "lax", secure: false },
   })
 );
+*/
 
 const SqliteStore = require("better-sqlite3-session-store")(session);
 const cookieParser = require("cookie-parser");
@@ -66,20 +67,20 @@ app.use(cookieParser());
 //session.init()
 
 //DESACTIVO ESTO POR QUE ES MOLESTO; ME LLENA LA CONSOLA
-/*
+
 app.use(
   session({
     store: new SqliteStore({
       client: db,
       expired: {
         clear: true,
-        intervalMs: 2 * 60000, //ms = 30seg
+        intervalMs: 60000, //ms = 30seg
       },
     }),
     secret: "123",
-    resave: true,
-    saveUninitialized: true,
-    cookie: { maxAge: 2 * 60000, sameSite: "lax", secure: false },
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 60000 },
     //key: "HOLA SOY UNA GALLETA",
     //secret: "123",
     //resave: false,
@@ -87,7 +88,6 @@ app.use(
     //cookie: { algo: "12345" },
   })
 );
-*/
 
 const autenticado = (req, res, next) => {
   if (req.session.autenticado === true) {
@@ -106,6 +106,8 @@ const autenticado = (req, res, next) => {
  * TEST INDEX
  */
 var serveIndex = require("serve-index");
+const { stringify } = require("querystring");
+const { object } = require("rsdi");
 /**
  * TEST 2 INDEX
  */
@@ -237,22 +239,37 @@ app.get("/sessiones", (req, res) => {
     `el usuario${req.session.usuario}, con el rol ${req.session.rol}, visito la pagina ${req.session.visitas} veces`
   );
 });
+//ok, detesto esta shit con toda mi alma, pero esta es la solucion
+/**
+ * lo que hay que hacer, es fijar la cookie con esto, y luego buscarla con otra funcion, y ya
+ * se acabo, finito
+ */
+let secionesID = {};
+/** */
 app.post("/sessionesV2", (req, res) => {
   let selector = req.body;
 
   req.session.usuario = selector.usuario;
   req.session.rol = selector.rol;
-  req.session.cookie.maxAge = 2 * 60000;
+  req.session.cookie.maxAge = 60000;
   req.session.autenticado = true;
+
+  secionesID = { id: req.session.id, nombre: req.session.usuario };
+
   //req.session.cookie.username = "req.body.usuario";
   /*res.send(
     `el usuario${req.session.usuario}, con el rol ${req.session.rol}, visito la pagina `
   );*/
-
+  //res.cookie("name", req.session.id, req.session.cookie.expires);
   res.send({
     mensaje: `el usuario${req.session.usuario} con el rol ${req.session.rol}, visito la pagina `,
     usuario: req.session.usuario,
     rol: req.session.rol,
+    id: req.session.id,
+    cookie: req.session.cookie,
+    tiempo: req.session.cookie.maxAge,
+    tiempoEstandar: 1 / 1440, //1 dia =1440 min, 1 min =1d/1440min
+    datosParaLaCookie: secionesID,
   });
 });
 
@@ -268,16 +285,173 @@ app.get("/sessionesRespuesta", (req, res) => {
   //res.send("FUNCIONO ?", algo);
 });
 app.get("/cookie-set", (req, res) => {
+  //let selector = req.body;
+  //req.session.nombre = selector.nombre;
+  //let nombreTest = stringify(selector.nombre);
+  console.log("TEST DE NOMBRE", req.session.usuario);
+  console.log("TEST DE ROL", req.session.rol);
+  console.log("TEST DE ID", req.sessionID);
+
   res.header("Access-Control-Allow-Credentials", true);
   res.header("Access-Control-Allow-Origin", req.headers.origin);
-  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE");
+
   res.header(
     "Access-Control-Allow-Headers",
-    "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept"
+    "Origin, X-Requested-With, Content-Type, Accept"
   );
 
-  res.cookie("NOMBRE DE LA COOCKIE", "VALORES Y COSAS");
+  //res.cookie("NOMBRE DE LA COOCKIE", `ABCDE`);
   res.send({ mensaje: "hola, soy una cookie bebe" });
+});
+/*
+const seccion = (req, res, next) => {
+  console.log(req.session);
+  next();
+};
+*/
+app.get("/cookie", (req, res) => {
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header("Access-Control-Allow-Origin", req.headers.origin);
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE");
+  console.log("TEST DE NOMBRE", secionesID);
+  //aca vamos a hacer el test  general de la cookie
+  // seteamos la cookie a 2 minutos
+  //le pasamos la id de la session
+  //le pasamos el nombre de usuario
+  //verificamos
+
+  const value = "my cookie value";
+  const path = "/";
+
+  const cookieOptions = {
+    maxAge: 60000,
+    secure: true, // set the cookie to be secure
+    sameSite: "lax", // set the cookie to be accessible to all sites and allow all cross-origin requests that are lax with cookie blocking
+  };
+
+  const cookie = req.headers.cookie;
+
+  res.cookie("Otracookie", secionesID, cookieOptions);
+  console.log("ESTA ES LA COOKIE", cookie);
+  console.log("ESTA ES LA secionesID", secionesID);
+  console.log("ESTA ES LA IP", req.ip);
+  //console.log("ESTA ES LA origin", req.headers);
+
+  res.send({ mensaje: "hola, soy una cookie bebe" });
+});
+//aca se va a practicar el sincronismo, es facil lo que tenemos que hace, vamos a hacer un get, y con este get
+//vamos a revisar si exite la cookie enviada desde el front, si existe, se envia el mensaje exite
+//caso contrario, se envia que no se acabo
+/**
+ * funcion de ayuda
+ */
+function seleccionarSID(tabla, ID) {
+  const IdSelecionado = db
+    .prepare(`SELECT * FROM ${tabla} WHERE sid = '${ID}'`)
+    .all();
+  return IdSelecionado;
+}
+
+app.post("/seccionesTestCookie", (req, res) => {
+  //res.header("Access-Control-Allow-Credentials", true);
+  //res.header("Access-Control-Allow-Origin", req.headers.origin);
+  //res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE");
+
+  //const cookieDelFront = req.headers.cookie;
+  const cookieDelFront = req.body.cookie;
+  console.log("cookieDelFront", cookieDelFront);
+  console.log("QUE LLEGA?", req.headers);
+  console.log("ME CAGO EN TODO Y HAGO LO QUE QUIERO", req.body.cookie);
+
+  //trabajamos la cookie para que nos de un resultado aceptable
+  //llamamos al selecotor de id(por suerte es de proposito general)
+  //la funcion asi nomas no funciona, vamos a hacerle una modificaion
+  /**
+   * como esto tiene que funciona?
+   * asi, primero, revisamos si la pagina tiene una cookie, si no la tiene, se envia false
+   * si la tiene, se revisa si esta esta dentro de las secciones,
+   * si esta no esta dentro de las secciones, se manda un false
+   * si esta esta dentro de la seccion, se envia un true
+   * estas señales de false o true, se van a usar para borrar la cookie en caso de que este expirada
+   *
+   * agrego los false/true
+   */
+  const funcionApoyoValidacionJson = (obj) => {
+    try {
+      const parsed = JSON.parse(obj[1]); // This will throw an error if input is not a valid JSON string
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
+  if (cookieDelFront !== "") {
+    const cookieBruta = decodeURIComponent(cookieDelFront);
+    const cookiePares = cookieBruta.split("j:");
+    if (funcionApoyoValidacionJson(cookiePares)) {
+      const valoresCookie = JSON.parse(cookiePares[1]);
+      const idSeccion = seleccionarSID("sessions", valoresCookie.id);
+
+      if (idSeccion) {
+        console.log("ACA SE MUESTRA LA TABLA DE LA BASE DE DATOS", idSeccion);
+
+        res.send({
+          mensaje: "LA SECCION EXISTE",
+          datos: idSeccion,
+          estadoVerificacion: true,
+        });
+      } else {
+        res.send({
+          mensaje: "LA SECCION NOOO EXISTE",
+          estadoVerificacion: false,
+        });
+      }
+    } else {
+      console.log("no es una cookie valida");
+      res.send({
+        mensaje: "no es una cookie valida",
+        estadoVerificacion: false,
+      });
+    }
+  } else {
+    res.send({ mensaje: "NO HAY COOKIE", estadoVerificacion: false });
+  }
+  //console.log("COOKIE PURA ESTADO 0", cookieDelFront);
+  //res.send({ mensaje: cookieDelFront });
+});
+//para hacer la eliminacion de la seccion es facil, hay que modificar la funcin delete que ya tenemos
+//y, ASUMIENDO QUE, alguien envio la señal de eliminar algo, se elimina con respecto a la id y ya
+/**
+ * funcion de apoyo (estas van en el control del sql)
+ */
+function eliminoSID(id) {
+  const eliminar = db.prepare(`DELETE FROM sessions WHERE sid = '${id}'`).run();
+
+  return eliminar;
+}
+
+app.post("/eliminoSeccion", (req, res) => {
+  /** guia de que hay que hacer aqui
+   * capturamos la cookie
+   * le sacamos la id
+   * borramos esa id, y mandamos la señal de listo
+   * se acabo
+   *
+   */
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header("Access-Control-Allow-Origin", req.headers.origin);
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE");
+
+  //const cookieDelFront = req.headers.cookie;
+  const cookieDelFront = req.body.cookie;
+  const cookieBruta = decodeURIComponent(cookieDelFront);
+  const cookiePares = cookieBruta.split("j:");
+  const valoresCookie = JSON.parse(cookiePares[1]);
+  eliminoSID(valoresCookie.id);
+  //const idSeccion = eliminoSID(valoresCookie.id);
+  console.log("Seccion ELIMINADA");
+  res.send({ mensaje: " Seccion ELIMINADA", estadoEliminacion: true });
 });
 
 //ok, mira, solo va a haber 3 tablas editables, y la de secciones, vamos a hacer shit, vamos a fijarlas
