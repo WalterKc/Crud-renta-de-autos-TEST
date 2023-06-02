@@ -85,5 +85,6 @@ o una señal de false y luego crear el mensaje de error) *LISTO*
 >>> esta cookie, va a tener 2 cosas, la id, y el nombre de usuario, nada mas, y con eso vamos a trabajar
 >>> tambien hay que hacer el deslogin, para hacer esto, solo hay que buscar la id de la cookie, y borrala
 >>> del server y ya, tambien hay que borrarla del front *COMPLETO*
->> ahora vamos a hacer 2 cosas, empesar el css final, y poner en nombre de usuario/estado del login
+>> ahora vamos a hacer 2 cosas, empesar el css final, y poner en nombre de usuario/estado del login *LISTO EL LOGIN*
+>> y finalmente, el ccs, ahora si que si, todo funciona , y no hay problemas en nada mas :)
 

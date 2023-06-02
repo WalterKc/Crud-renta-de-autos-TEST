@@ -196,7 +196,7 @@ export function Login(estado) {
             <input
               className="botonSubmit"
               type="submit"
-              value="enviar datos(sin funcion por ahora)"
+              value="Continuar"
               id="BotonSubmit"
             ></input>
           </ul>
@@ -209,10 +209,8 @@ export function Login(estado) {
     <div>
       <header>
         <div>{nav}</div>
-        <div>{}</div>
       </header>
       <main id="Test">
-        <h3 id="H3-TEST" hidden></h3>
         <section className="Formulario">
           <h4>Login</h4>
           {verificacionLogin()}

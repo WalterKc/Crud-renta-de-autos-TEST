@@ -1,0 +1,37 @@
+#imagen-nav {
+  max-height: 100px;
+  position: relative;
+}
+#menu-Desplegable {
+  background: #ce232b;
+  border-color: #ce232b;
+  position: relative;
+  /*left: 60%;
+  bottom: 1em;*/
+  transform: translateX(62vw);
+}
+
+#Titulo {
+  position: relative;
+  right: 50vw;
+  color: white;
+}
+
+#nav2 {
+  position: relative;
+  width: 101vw;
+  height: 6em;
+  z-index: 10;
+}
+/*
+#nav1 {
+  position: relative;
+}*/
+#menu {
+  position: relative;
+  width: 80vw;
+}
+#linkHome {
+  position: absolute;
+  left: 1em;
+}

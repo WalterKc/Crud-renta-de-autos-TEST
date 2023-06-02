@@ -1,4 +1,5 @@
 //import React from "react";
+import "./home.css";
 
 export function Home(estado) {
   const paginaActual = estado.paginaActual;
@@ -15,11 +16,12 @@ export function Home(estado) {
   return (
     <div>
       <header>
-        <div>{nav}</div>
+        <div id="navPrincial">{nav}</div>
+      </header>
+      <main id="Test">
         <div>slider 1{slider1}</div>
         <div>slider 2{slider2}</div>
-      </header>
-      <main id="Test">slider 2</main>
+      </main>
     </div>
   );
 }

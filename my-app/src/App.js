@@ -97,6 +97,15 @@ function SelectorPaginaGeneral(estado) {
     TestSlidersGeneral();
     console.log("imagenesOrdenadasServer ", imagenesOrdenadasServer);
   }, [imagenesOrdenadasServer, estadoBotones]);
+  useEffect(() => {
+    let ocultoSegundoMain = document.querySelectorAll("main");
+    if (ocultoSegundoMain[1] !== undefined) {
+      console.log("SEGUNDOMAIN", ocultoSegundoMain[1]);
+      ocultoSegundoMain[1].hidden = true;
+    } else {
+      console.log("NADA DE NADA");
+    }
+  }, [estadoMenu]);
   //ok, si queremos que los botones andes bien, hay que cambiar como funcionan esto, eliminar el limitador
   //este [imagenesOrdenadasServer], o hay que ponerle el estadoBotones, como se ve arribeño
   //console.log("IMAGENES ESTADO SELENCTOR", imagenesDelServer);
@@ -112,7 +121,7 @@ function SelectorPaginaGeneral(estado) {
           <Nav estado={estadoMenu} set={setEstado}></Nav>
         </header>
         <main>
-          {DatosMainFinales(estadoMenu)}
+          {/*DatosMainFinales(estadoMenu)*/}
           <Routes>
             <Route
               path="/"
@@ -844,7 +853,6 @@ function App() {
       className="App"
       //onClick={(e) => eventosV2(e.target, estado, setEstado)}
     >
-      <h1>RUTAS</h1>
       {/*TestEstadosAjenos()*/}
       {/*console.log(estadoMenu)*/}
       {/*Nav(estadoMenu)*/}
