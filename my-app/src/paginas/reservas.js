@@ -4,9 +4,9 @@ import Cookies from "js-cookie";
 import { useEffect } from "react";
 import { useState } from "react";
 import {
-  traerCookieV1,
+  crearSeccion,
   traerCookieV2,
-  traerCookieV3,
+  crearSeccionYcookie,
   verificarSeccion,
   eliminarCookieYseccion,
 } from "../services/service";
@@ -173,7 +173,7 @@ export function Reservas(estado) {
   const setCookieAPP = estado.setCookie;
 
   const logA = async () => {
-    //traerCookieV1(" jose", " admin", cookieApp);
+    //crearSeccion(" jose", " admin", cookieApp);
     //este de aca arriba funciona bien
 
     if (document.cookie.length === 0) {
@@ -190,19 +190,6 @@ export function Reservas(estado) {
     logTest(await testCoockie(" jose", " admin"));
     console.log(" COOKIE INTERNA despues", cookies);
     */
-  };
-  //logA();
-  const test1 = async () => {
-    await testCoockie("jose", "admin");
-  };
-  const test2 = async () => {
-    await testCoockieRecibo();
-  };
-  //test1();
-  const testTiempo = async () => {
-    setTimeout(() => {
-      setExpirado(true);
-    }, 30100);
   };
 
   const logb = async () => {
@@ -223,7 +210,7 @@ export function Reservas(estado) {
     }
   };
   const crearCookieEspecial = async () => {
-    traerCookieV3(cookieApp, setCookieAPP, "jose", "admin");
+    crearSeccionYcookie(cookieApp, setCookieAPP, "jose", "admin");
     //este de aqui funciona bien :)
     /*
     if (document.cookie.length === 0) {

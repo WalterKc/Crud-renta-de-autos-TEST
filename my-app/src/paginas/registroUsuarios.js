@@ -1,11 +1,10 @@
-import { servicioTestRegistro } from "../services/service";
+import { servicioRegistro } from "../services/service";
 import "./registroUsuario.css";
 //vamos a hacer lo mismo con el registro de usuarios
 //tengo que poner algun tipo de autoincrement para el id, si o si, luego, ya no tengo que modificar
 //mas la base de datos, al menos , no tanto
 async function procesarFormulario(e) {
   e.preventDefault();
-  var miFormulario = document.getElementById("mi-formulario");
   let h3Test = document.getElementById("H3-TEST");
 
   let numeroTargets = e.target;
@@ -16,7 +15,7 @@ async function procesarFormulario(e) {
     contraseña: numeroTargets[2].value,
     telefono: numeroTargets[3].value,
   };
-  const estadoRegistro = await servicioTestRegistro(
+  const estadoRegistro = await servicioRegistro(
     data.selector,
     data.email,
     data.contraseña,
@@ -24,10 +23,6 @@ async function procesarFormulario(e) {
     data.telefono
   );
 
-  console.log("Nombre RESGISTRO ", numeroTargets[0].value);
-  console.log("email RESGISTRO ", numeroTargets[1].value);
-  console.log("contraseña RESGISTRO", numeroTargets[2].value);
-  console.log("telefono RESGISTRO", numeroTargets[3].value);
   if (estadoRegistro.estado === false) {
     alert(estadoRegistro.mensaje);
     h3Test.hidden = false;
@@ -37,8 +32,6 @@ async function procesarFormulario(e) {
     h3Test.hidden = false;
     h3Test.innerHTML = "LOGIN EXITOSO!";
   }
-
-  //
 }
 
 export function RegistroUsuarios(estado) {

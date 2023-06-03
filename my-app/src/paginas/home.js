@@ -8,11 +8,6 @@ export function Home(estado) {
   const slider1 = estado.Slider1;
   const slider2 = estado.Slider2;
 
-  //setPagina("home");
-  //console.log("EXTRA", extra);
-  //aca va el main, tiene header,main, y footer, lleva 2 sliders
-  //el footer es igual en todos lados, por lo que se va a importar y ya
-
   return (
     <div>
       <header>

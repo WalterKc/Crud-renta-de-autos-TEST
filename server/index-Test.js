@@ -1,14 +1,10 @@
 //aca van las direcciones
-//vamos a jugar un poco con las cuentas, y vasmos a convertiral en api, y luego en sql, esa va a ser mi
-//ojetivo aca
-//ya se muestran las cuentas, no voy a perder el tiempo en volver a practicar, vamos a convertirlas en sql
 const {
   todo,
   selecciono_1_tabla,
   selecciono_un_ID_en_particular,
   //inserto_un_nuevo_objeto,
   //elimino_un_objeto_particular,
-  crearUsusario,
   eliminoCliente,
   muestro_tabla,
   seleccionarID,
@@ -19,7 +15,6 @@ const {
   crearAuto,
   eliminoAuto,
   eliminarFilaDeTabla,
-  updateTEST,
   funcionDeApoyoPut_Indice,
   funcionDeApoyoPut_DatosNuevos,
   comprobarEMAIL,
@@ -28,11 +23,10 @@ const {
   seleccionarContraseña,
   seleccionarContraseñaV2,
   comprobarContraseñaV2,
-  crearUsusarioV2,
+  crearUsuarioV2,
 } = require("./controlSQL/control.js");
 
-//import { todo } from "./controlSQL/control.js";
-
+//esto no se toca por ahora
 const express = require("express");
 var cors = require("cors");
 const session = require("express-session");
@@ -47,26 +41,10 @@ app.use(express.json());
 ////
 
 //test de seciones//
-/*
-app.use(
-  session({
-    secret: "123",
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 2 * 60000, sameSite: "lax", secure: false },
-  })
-);
-*/
 
 const SqliteStore = require("better-sqlite3-session-store")(session);
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
-
-//const dbsession = new sqlite("sessions.db", { verbose: console.log });
-//const session = new session({ path: "../base_test.db" });
-//session.init()
-
-//DESACTIVO ESTO POR QUE ES MOLESTO; ME LLENA LA CONSOLA
 
 app.use(
   session({
@@ -74,33 +52,15 @@ app.use(
       client: db,
       expired: {
         clear: true,
-        intervalMs: 60000, //ms = 30seg
+        intervalMs: 60000, //ms = 60seg
       },
     }),
     secret: "123",
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 60000 },
-    //key: "HOLA SOY UNA GALLETA",
-    //secret: "123",
-    //resave: false,
-    //saveUninitialized: false,
-    //cookie: { algo: "12345" },
   })
 );
-
-const autenticado = (req, res, next) => {
-  if (req.session.autenticado === true) {
-    //res.redirect("/sessionesRespuesta");
-    console.log(" TEST SECCION SI", req.session);
-    console.log(" TEST SECCION NOMBRE", req.session.usuario);
-
-    next();
-  } else {
-    console.log(" TEST SECCION NO", req.session);
-    res.redirect("/sessiones");
-  }
-};
 
 /**
  * TEST INDEX
@@ -112,140 +72,7 @@ const { object } = require("rsdi");
  * TEST 2 INDEX
  */
 
-let cuentas = [
-  {
-    id: 1,
-    username: "paulhal",
-    role: "admin",
-  },
-  {
-    id: 2,
-    username: "johndoe",
-    role: "guest",
-  },
-  {
-    id: 3,
-    username: "sarahjane",
-    role: "guest",
-  },
-];
-// hay que usar algun tipo de selector aca
-app.get("/", (req, res) => {
-  //console.log(cuentas);
-  console.log(" SQL", muestro_tabla("autos"));
-  console.log(" SQL TABLA ", selecciono_1_tabla);
-  console.log(" SQL ID 1 ", seleccionarID("autos", 1));
-  //elimino_un_objeto_particular;
-  //elimino();
-  console.log(" SQL actualizado", muestro_tabla("autos"));
-
-  res.json(muestro_tabla("autos"));
-  comprobarId("autos", 1);
-  res.end;
-});
-app.post("/", (req, res) => {
-  crearUsusario([5, "martin", "gonzales"]);
-  console.log(" XXXXXXXXXXXXXX");
-  res.json(muestro_tabla("cuentas"));
-});
-app.delete("/", (req, res) => {
-  eliminoCliente(5);
-  console.log(" YYYYYYYYYYYYYYYY");
-  res.json(muestro_tabla("cuentas"));
-});
-app.post("/Test", (req, res) => {
-  console.log(req.body);
-  const obj = req.body;
-  console.log(" KEYS ", Object.keys(obj));
-  console.log(" VALUES ", Object.values(obj));
-
-  console.log(obj.id);
-
-  comprobarId("cuentas", obj.id);
-  console.log(" EL ID NO ESTA DISPONIBLE? ", comprobarId("cuentas", obj.id));
-
-  res.send(req.body);
-});
-app.post("/Test2", (req, res) => {
-  const datos = req.body;
-
-  console.log("compruebo", comprobarId("cuentas", datos.id));
-  if (comprobarId("cuentas", datos.id)) {
-    res.send(`EL ID SELECIONADO NO ESTA DISPONIBLE elije otro por favor `);
-  } else {
-    crearUsusario(Object.values(datos));
-
-    res.json(muestro_tabla("cuentas"));
-  }
-});
-app.put("/test3", (req, res) => {
-  //seleciono una cuenta
-  const nuevosDatos = req.body;
-  console.log("DATOS A MODIFICAR ", nuevosDatos[0].id);
-  console.log(" COLUMNAS A MOD ", Object.values(nuevosDatos[1]));
-  console.log(" NUEVOS DATOS ", Object.values(nuevosDatos[2]));
-  //const DatosB = Object.values(nuevosDatos[2]);
-  if (comprobarId("cuentas", nuevosDatos[0].id) === false) {
-    //
-    res.send(`EL ID SELECIONADO NO EXISTE elije otro por favor `);
-  } else {
-    modificoCliente(
-      nuevosDatos[0].id,
-      Object.values(nuevosDatos[1]),
-      Object.values(nuevosDatos[2])
-    );
-    //res.send(nuevosDatos[0]);
-    res.json(muestro_tabla("cuentas"));
-  }
-
-  //digo lo que quiero cambiar
-  //doy los datos nuevos
-  //hago el cambio y debuelvo la tabla otra vez
-});
-/**
- * SECIONES * SECIONES* SECIONES* SECIONES* SECIONES* SECIONES* SECIONES* SECIONES* SECIONES
- * * SECIONES
- * * SECIONES
- * * SECIONES
- * * SECIONES
- * * SECIONES
- * * SECIONES
- */
-app.get("/sessiones", (req, res) => {
-  /*request.session.start("user_id",()=>{
-    
-  })*/
-  //(req.session.id = "123455"),
-  //(req.sessionID = "12345"),
-
-  (req.session.algo = "12345"),
-    (req.session.usuario = "gaston"),
-    (req.session.rol = "admin"),
-    (req.session.visitas = req.session.visitas ? ++req.session.visitas : 1);
-  req.session.cookie.maxAge = 60000;
-
-  req.session.autenticado = true;
-  //req.session.cookie.domain = "galleta";
-  //req.session.cookie.path = "/sessiones";
-  //req.session.cookie.signed = true;
-  //req.sessionID = "galletita";
-  //console.log("DATOS SECION", req.session);
-  //console.log(" SECION ID", req.session.id);
-  //console.log(" SECION cookie", req.session.cookie.signed);
-
-  //res.cookie("HOLA SOY UNA COOCKIE");
-  //console.log(" ESTA ES LA GALLETA", req.cookies);
-  res.send(
-    `el usuario${req.session.usuario}, con el rol ${req.session.rol}, visito la pagina ${req.session.visitas} veces`
-  );
-});
-//ok, detesto esta shit con toda mi alma, pero esta es la solucion
-/**
- * lo que hay que hacer, es fijar la cookie con esto, y luego buscarla con otra funcion, y ya
- * se acabo, finito
- */
-let secionesID = {};
-/** */
+//este no se borra
 app.post("/sessionesV2", (req, res) => {
   let selector = req.body;
 
@@ -277,43 +104,7 @@ app.post("/sessionesV2", (req, res) => {
   });
 });
 
-app.get("/sessionesRespuesta", (req, res) => {
-  //console.log(" ESTA ES LA GALLETA", req.session.get("algo"));
-  //let algo = req.session;
-  res.send({
-    mensaje: `esto es un mensaje de la coockie `,
-    usuario: req.session.usuario,
-    rol: req.session.rol,
-    cookieID: req.session.id,
-  });
-  //res.send("FUNCIONO ?", algo);
-});
-app.get("/cookie-set", (req, res) => {
-  //let selector = req.body;
-  //req.session.nombre = selector.nombre;
-  //let nombreTest = stringify(selector.nombre);
-  console.log("TEST DE NOMBRE", req.session.usuario);
-  console.log("TEST DE ROL", req.session.rol);
-  console.log("TEST DE ID", req.sessionID);
-
-  res.header("Access-Control-Allow-Credentials", true);
-  res.header("Access-Control-Allow-Origin", req.headers.origin);
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE");
-
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-
-  //res.cookie("NOMBRE DE LA COOCKIE", `ABCDE`);
-  res.send({ mensaje: "hola, soy una cookie bebe" });
-});
-/*
-const seccion = (req, res, next) => {
-  console.log(req.session);
-  next();
-};
-*/
+//esta es la que tiene el error
 app.get("/cookie", (req, res) => {
   res.header("Access-Control-Allow-Credentials", true);
   res.header("Access-Control-Allow-Origin", req.headers.origin);
@@ -344,19 +135,21 @@ app.get("/cookie", (req, res) => {
 
   res.send({ mensaje: "hola, soy una cookie bebe" });
 });
+
 //aca se va a practicar el sincronismo, es facil lo que tenemos que hace, vamos a hacer un get, y con este get
 //vamos a revisar si exite la cookie enviada desde el front, si existe, se envia el mensaje exite
 //caso contrario, se envia que no se acabo
 /**
  * funcion de ayuda
  */
+//esta de aca, es probable que valla en el control sql
 function seleccionarSID(tabla, ID) {
   const IdSelecionado = db
     .prepare(`SELECT * FROM ${tabla} WHERE sid = '${ID}'`)
     .all();
   return IdSelecionado;
 }
-
+//no se que poner aca
 app.post("/seccionesTestCookie", (req, res) => {
   //res.header("Access-Control-Allow-Credentials", true);
   //res.header("Access-Control-Allow-Origin", req.headers.origin);
@@ -424,17 +217,20 @@ app.post("/seccionesTestCookie", (req, res) => {
   //console.log("COOKIE PURA ESTADO 0", cookieDelFront);
   //res.send({ mensaje: cookieDelFront });
 });
+
 //para hacer la eliminacion de la seccion es facil, hay que modificar la funcin delete que ya tenemos
 //y, ASUMIENDO QUE, alguien envio la señal de eliminar algo, se elimina con respecto a la id y ya
 /**
  * funcion de apoyo (estas van en el control del sql)
  */
+//esta de aca, es probable que valla en el control sql
+
 function eliminoSID(id) {
   const eliminar = db.prepare(`DELETE FROM sessions WHERE sid = '${id}'`).run();
 
   return eliminar;
 }
-
+//OK
 app.post("/eliminoSeccion", (req, res) => {
   /** guia de que hay que hacer aqui
    * capturamos la cookie
@@ -458,49 +254,7 @@ app.post("/eliminoSeccion", (req, res) => {
   res.send({ mensaje: " Seccion ELIMINADA", estadoEliminacion: true });
 });
 
-//ok, mira, solo va a haber 3 tablas editables, y la de secciones, vamos a hacer shit, vamos a fijarlas
-//y ya, no es como que van a cambiar, son fijas, el guest no puede tocar ninguna, el user sus cuentas y pedir un auto
-//el admin puede tocar todas, las secciones son automaticas, no se tocan
-app.get("/TEST_tablas", (req, res) => {
-  let selector = req.body;
-  console.log(" TEST SELECTOR", selector.selector);
-  console.log(" SQL", muestro_tabla(selector.selector));
-  //console.log(" SQL actualizado", muestro_tabla("autos"));
-
-  //res.json(muestro_tabla("autos"));
-  //comprobarId("autos", 1);
-  //res.end;
-  res.send(muestro_tabla(selector.selector));
-});
-app.get("/TEST_ID", (req, res) => {
-  let selector = req.body;
-  if (comprobarId(selector.selector, selector.id) === false) {
-    //
-    res.send(`EL ID SELECIONADO NO EXISTE elije otro por favor `);
-  } else {
-    console.log(
-      ` SQL ID ${selector.id} `,
-      seleccionarID(selector.selector, selector.id)
-    );
-    res.send(seleccionarID(selector.selector, selector.id));
-  }
-});
-app.post("/TEST_EMAIL", (req, res) => {
-  let selector = req.body;
-  console.log("DATOS LLEGADOS DESDE EL FRONT", selector);
-
-  if (comprobarEMAIL(selector.selector, selector.email) === false) {
-    //
-    res.send(`EL EMAIL SELECIONADO NO EXISTE elije otro por favor `);
-  } else {
-    console.log(
-      ` SQL ID ${selector.email} `,
-      seleccionarEMAIL(selector.selector, selector.email)
-    );
-    res.send(seleccionarEMAIL(selector.selector, selector.email));
-  }
-  //res.send(selector);
-});
+//igual, no se que nombre ponerle
 app.post("/TEST_LOGIN1", (req, res) => {
   //aca vamos a testear el login completo, vamos a enviar datos correctos y tiene que devolver
   //una señal de correcto, y tenermos que enviar datos inconrrectos, y devolver una señal de incorrecto
@@ -564,6 +318,8 @@ app.post("/TEST_LOGIN1", (req, res) => {
 
   //res.send(selector);
 });
+//igual, no se que nombre ponerle
+
 app.post("/TEST_REGISTRO1", (req, res) => {
   const nuevosDatos = req.body;
   //no hay que verificar la id, ya que es autoincremental, pero, hay que verificar el email, solo eso
@@ -580,7 +336,7 @@ app.post("/TEST_REGISTRO1", (req, res) => {
     //, caso contraio, pasa al la contraseña, la contraseña es libre, no hay limitantes
   } else {
     console.log("DATOS LLEGADOS DESDE EL FRONT", nuevosDatos);
-    crearUsusarioV2(Object.values(nuevosDatos[1]));
+    crearUsuarioV2(Object.values(nuevosDatos[1]));
     res.send({ mensaje: "Usuario Creado", estado: true });
 
     //
@@ -593,6 +349,8 @@ app.post("/TEST_REGISTRO1", (req, res) => {
 //vamos a hacer puro frot para tener una pagina completa(aunque fea al principio), en la guia a a decir como
 //va a estar estrucutrada
 //SELECTOR AUTOS LISTO, siguiente, el de cuentas(que es un copypaste casi)
+
+//ESTO ES PARA LOS AUTOS SE DEJA
 app.post("/TEST_crear_datos", (req, res) => {
   //selector
   //el selector tiene que verificar 2 cosas, 1 que sea la tabla correcta, y otra es que los datos
@@ -648,7 +406,7 @@ app.post("/TEST_crear_datos", (req, res) => {
       console.log("es una tabla de cuentas");
       console.log("el tamaño de la tabla es");
 
-      crearUsusario(Object.values(nuevosDatos[1]));
+      crearUsuarioV2(Object.values(nuevosDatos[1]));
       console.log(`EL ID SELECIONADO esta disponible y es valido para ser un nuevo auto, es posible usarlo,
       se ha creado un nuevo auto`);
 
@@ -697,8 +455,7 @@ app.post("/TEST_crear_datos", (req, res) => {
   //res.send("HECHO");
 });
 
-//este tambien necesita un selector, pero mas pequeño
-//NUEVO, no es necesario tener separado esto, vamos a crear una nueva funcion y ya
+//PARA LOS AUTOS
 app.delete("/TEST_delete", (req, res) => {
   let idAEliminar = req.body;
   // aca se seleciona los autos
@@ -735,6 +492,7 @@ app.delete("/TEST_delete", (req, res) => {
 
   //res.json(muestro_tabla("cuentas"));
 });
+//PARA LOS AUTOS/usuarios
 app.put("/TEST_PUT", (req, res) => {
   //seleciono un auto
   /**
@@ -829,6 +587,8 @@ app.put("/TEST_PUT", (req, res) => {
   //doy los datos nuevos
   //hago el cambio y debuelvo la tabla otra vez
 });
+
+//Control de imagenes por servidor
 
 const testFolder = "./public/Imagenes-Autos";
 //ESTE DE ACA ES EL BUENO

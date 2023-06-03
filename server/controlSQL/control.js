@@ -1,13 +1,5 @@
-//import Database from "better-sqlite3";
-//const sqlite = require("better-sqlite3");
-//el database es fijo
-//esto esta casi listo para ponerlo en el contenedor, solo hay que hacerlo mas modular
 const Database = require("better-sqlite3");
-const { object } = require("rsdi");
 
-//este de aca, se va a cambiar, al contenedor
-//este esta bien asi como esta, no necestia nada mas
-/////esto se puede configurar
 function selectorDB(baseDeDatos) {
   const db = new Database(baseDeDatos, {
     verbose: console.log,
@@ -16,16 +8,7 @@ function selectorDB(baseDeDatos) {
 }
 //Modular
 let db = selectorDB("../base_test.db");
-/*
-const db = new Database("../base_test.db", {
-  verbose: console.log,
-});
-*/
 
-//const db = new Database("../base_test.db", { verbose: console.log });
-//db.pragma("journal_mode = WAL");
-
-//este es fijo, por que siempre da todo
 const todo = db.prepare("SELECT * FROM Cuentas");
 //esta esta perfecta, no es necesario cambios
 ///esto es una herramienta, no se configura
@@ -164,19 +147,8 @@ function comprobarContraseñaV2(tabla, Contraseña, Email) {
 ///esto es una herramienta, no se configura
 //no es necesario a partir de ahora, usar el id, por lo que ,hay que quitarlo, pero, vasmos a hacer un test igualmente
 
-function crearUsusario(datos) {
-  console.log(" DATOS", datos);
-  const crear = db
-    .prepare(
-      `INSERT INTO "Cuentas" (id,username,role,telefono,email,contraseña) VALUES  (${datos[0]},'${datos[1]}','${datos[2]}',${datos[3]},'${datos[4]}','${datos[5]}')`
-    )
-    .run();
-  console.log(" CAMBIOS", crear.changes);
-
-  console.log(" SQL INTERNO DES", muestro_tabla("cuentas"));
-  return crear;
-}
-function crearUsusarioV2(datos) {
+//cuando hay una version V2, la primera queda invalida
+function crearUsuarioV2(datos) {
   console.log(" DATOS", datos);
   const crear = db
     .prepare(
@@ -189,6 +161,7 @@ function crearUsusarioV2(datos) {
   return crear;
 }
 ///esto es una herramienta, no se configura
+//esto sirve, se deja
 
 function eliminoCliente(id) {
   const eliminar = db.prepare(`DELETE FROM Cuentas WHERE id = ${id}`).run();
@@ -199,8 +172,8 @@ function eliminoCliente(id) {
 }
 //crearAuto
 ///esto es una herramienta, no se configura
-//tarde, literalmente 10 segundos en actualizar/modificar esto, no me rompas las pelotas con esto, por que te voy
-//a mandar a la mierda, tarde mas en escribir esto que en modificarlo
+//esto sirve, se deja
+//tarde, literalmente 10 segundos en actualizar/modificar esto
 function crearAuto(datos) {
   console.log(" DATOS", datos);
   const crear = db
@@ -216,6 +189,7 @@ function crearAuto(datos) {
 
 //modificocliente
 ///esto es una herramienta, no se configura
+//esto sirve, se deja
 
 function modificoCliente(id, columnasACAmbiar, datosNuevos) {
   //seleciono un user
@@ -223,17 +197,16 @@ function modificoCliente(id, columnasACAmbiar, datosNuevos) {
   //seleciono lo que quiero cambiar
   let update = db
     .prepare(
-      `UPDATE cuentas SET '${columnasACAmbiar[0]}' = '${datosNuevos[0]}','${columnasACAmbiar[1]}' = '${datosNuevos[1]}','${columnasACAmbiar[2]}' = '${datosNuevos[2]}','${columnasACAmbiar[3]}' = '${datosNuevos[3]}','${columnasACAmbiar[4]}' = '${datosNuevos[4]}','${columnasACAmbiar[5]}' = '${datosNuevos[5]}' WHERE id =${id}`
+      `UPDATE cuentas SET '${columnasACAmbiar[0]}' = '${datosNuevos[0]}','${columnasACAmbiar[1]}' = '${datosNuevos[1]}',${columnasACAmbiar[2]} = ${datosNuevos[2]},'${columnasACAmbiar[3]}' = '${datosNuevos[3]}','${columnasACAmbiar[4]}' = '${datosNuevos[4]}' WHERE id =${id}`
     )
     .run();
   return update;
-  console.log(" NUEVO DATO ID", id);
-
-  console.log(" NUEVO DATO INTERNO 0", datosNuevos);
   //cambio
 }
-//modificoauto
+//modifi coauto
 ///esto es una herramienta, no se configura
+//esto sirve, se deja
+
 //ok, lo que tengo que hace es simple, pero es lo ultimo que tengo que hacer
 //el front siempre va a mandar todo el json, pero si alguna columna no tiene cambios, se envia null y ya
 //y lo que tiene que hacer el server es, nonde apareec ese null, llenarlo con los datos viejos y ya
@@ -311,24 +284,12 @@ function eliminarFilaDeTabla(id, tabla) {
   console.log(" SQL INTERNO DES", todo.all());
   return eliminar;
 }
-/*vale la pena hacer esto?mmmmmmm */
-function updateTEST(id, columnasACAmbiar, datosNuevos) {
-  let update = db
-    .prepare(
-      `UPDATE cuentas SET "${columnasACAmbiar.forEach((element) => {
-        element = datosNuevos;
-      })}" WHERE id =${id}`
-    )
-    .run();
-  return update;
-}
 
 module.exports = {
   todo: todo.all(),
   selecciono_1_tabla: selecciono_1_tabla.all(),
   selecciono_un_ID_en_particular: selecciono_un_ID_en_particular.all(),
   //inserto_un_nuevo_objeto: inserto_un_nuevo_objeto.run(),
-  crearUsusario,
   //elimino_un_objeto_particular: elimino_un_objeto_particular.run(),
   eliminoCliente,
   muestro_tabla,
@@ -340,7 +301,6 @@ module.exports = {
   modificoAuto,
   eliminoAuto,
   eliminarFilaDeTabla,
-  updateTEST,
   funcionDeApoyoPut_Indice,
   funcionDeApoyoPut_DatosNuevos,
   comprobarEMAIL,
@@ -349,5 +309,5 @@ module.exports = {
   seleccionarContraseña,
   seleccionarContraseñaV2,
   comprobarContraseñaV2,
-  crearUsusarioV2,
+  crearUsuarioV2,
 };
