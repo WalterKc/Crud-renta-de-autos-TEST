@@ -4,7 +4,7 @@ import { crearSeccionYcookie } from "../services/service";
 import { servicioLogin } from "../services/service";
 
 async function procesarFormulario(e, cookieApp, setCookieAPP) {
-  //e.preventDefault();
+  e.preventDefault();
 
   let h3Test = document.getElementById("H3-TEST");
   let numeroTargets = e.target;

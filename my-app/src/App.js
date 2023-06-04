@@ -61,7 +61,7 @@ function SelectorPaginaGeneral(estado) {
     return (
       <>
         <header>
-          <Nav estado={estadoMenu} set={setEstado}></Nav>
+          <Nav estado={estadoMenu} set={setEstado} cookie={cookie}></Nav>
         </header>
         <main>
           <Routes>
@@ -117,7 +117,13 @@ function SelectorPaginaGeneral(estado) {
             element={
               <Home
                 paginaActual={paginaActual}
-                Nav={<Nav estado={estadoMenu} set={setEstado}></Nav>}
+                Nav={
+                  <Nav
+                    estado={estadoMenu}
+                    set={setEstado}
+                    cookie={cookie}
+                  ></Nav>
+                }
                 Slider1={
                   <SliderGeneral
                     estado={estadoBotones}
@@ -144,7 +150,13 @@ function SelectorPaginaGeneral(estado) {
             element={
               <Catalogo
                 paginaActual={paginaActual}
-                Nav={<Nav estado={estadoMenu} set={setEstado}></Nav>}
+                Nav={
+                  <Nav
+                    estado={estadoMenu}
+                    set={setEstado}
+                    cookie={cookie}
+                  ></Nav>
+                }
                 sliderAutosChicos={sliderGeneralTEST[0]}
                 sliderAutosMedianos={sliderGeneralTEST[1]}
                 sliderAutosGrandes={sliderGeneralTEST[2]}
@@ -159,7 +171,13 @@ function SelectorPaginaGeneral(estado) {
             element={
               <Default
                 paginaActual={paginaActual}
-                Nav={<Nav estado={estadoMenu} set={setEstado}></Nav>}
+                Nav={
+                  <Nav
+                    estado={estadoMenu}
+                    set={setEstado}
+                    cookie={cookie}
+                  ></Nav>
+                }
               ></Default>
             }
           ></Route>
@@ -168,7 +186,13 @@ function SelectorPaginaGeneral(estado) {
             element={
               <Login
                 paginaActual={paginaActual}
-                Nav={<Nav estado={estadoMenu} set={setEstado}></Nav>}
+                Nav={
+                  <Nav
+                    estado={estadoMenu}
+                    set={setEstado}
+                    cookie={cookie}
+                  ></Nav>
+                }
                 cookie={cookie}
                 setCookie={setCookie}
               ></Login>
@@ -179,7 +203,13 @@ function SelectorPaginaGeneral(estado) {
             element={
               <RegistroUsuarios
                 paginaActual={paginaActual}
-                Nav={<Nav estado={estadoMenu} set={setEstado}></Nav>}
+                Nav={
+                  <Nav
+                    estado={estadoMenu}
+                    set={setEstado}
+                    cookie={cookie}
+                  ></Nav>
+                }
               ></RegistroUsuarios>
             }
           ></Route>
@@ -188,7 +218,13 @@ function SelectorPaginaGeneral(estado) {
             element={
               <Reservas
                 paginaActual={paginaActual}
-                Nav={<Nav estado={estadoMenu} set={setEstado}></Nav>}
+                Nav={
+                  <Nav
+                    estado={estadoMenu}
+                    set={setEstado}
+                    cookie={cookie}
+                  ></Nav>
+                }
                 cookie={cookie}
                 setCookie={setCookie}
               ></Reservas>

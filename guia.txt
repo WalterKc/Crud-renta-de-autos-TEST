@@ -88,8 +88,8 @@ o una señal de false y luego crear el mensaje de error) *LISTO*
 >> ahora vamos a hacer 2 cosas, empesar el css final, y poner en nombre de usuario/estado del login *LISTO EL LOGIN*
 >> y finalmente, el ccs, ahora si que si, todo funciona , y no hay problemas en nada mas :)
 >>>>>>> nuevo objetivos
->> hacer que el nav, mueste quien esta logeado, y si no hay nadie, solo mostrar login
->> llenar la base de datos con datos reales y agregar tambien el tipo de auto de los que hay disponible
+>> hacer que el nav, mueste quien esta logeado, y si no hay nadie, solo mostrar login *LISTO*
+>> llenar la base de datos con datos reales y agregar tambien el tipo de auto de los que hay disponible *LISTO*
 >> hacer el popUp de los datos de los autos
 >> hacer las transacciones
 >> hacer los contenedores

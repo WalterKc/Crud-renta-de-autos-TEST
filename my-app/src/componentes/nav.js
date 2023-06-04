@@ -5,14 +5,43 @@ import "./nav.css";
 /**
  * ok, ahora que tenemos algo mas limpio esto, vamos a hacer lo que falta
  * tenemos que muestre el login, para eso, vamos a hacer 2 cosas
- * primero, vamos a poner la imagen de login(la persona) y las letras de login
+ * primero, vamos a poner la imagen de login(la persona) y las letras de login *LISTO*
  * estas van a tener un link, para cuando NO SE ESTE LOGEADO, se pueda logear
+ * //para hacer este de arriba, hay que traer el estado del log, si esta logeado,una cosa, sino otra
  * segundo, cuando se este logeado, este boton se desactivara, y
- * aparecera el nombre de el user y si es admin, que es admin
+ * aparecera el nombre de el user y si es admin, que es admin *LISTO*
+ * extra, poner el boton de deslogeo(traerlo de las reservas,ya lo tenes hecho :)
  */
 export function Nav(estado) {
   const estadoActual = estado.estado;
   const setEstado = estado.set;
+  const cookieApp = estado.cookie;
+
+  const selectorLogin = () => {
+    if (cookieApp === false) {
+      console.log(" NO esta logeado");
+      console.log(" cookieApp", cookieApp);
+      return (
+        <div id="login">
+          <a href="/Login" id="linkLogin">
+            <i class="bi-person-circle " id="iconoLogin"></i>
+          </a>
+          <p id="texto">Login</p>
+        </div>
+      );
+    } else {
+      console.log(" esta logeado");
+      console.log(" cookieApp", cookieApp);
+      return (
+        <div id="login">
+          <a id="linkLogin">
+            <i class="bi-person-circle " id="iconoLogin"></i>
+          </a>
+          <p id="texto">{cookieApp.nombre}</p>
+        </div>
+      );
+    }
+  };
   return (
     <nav className="navbar navbar-dark bg-dark" id="nav2">
       <a className="navbar-brand" href="" id="nav-bar-nombre"></a>
@@ -21,12 +50,7 @@ export function Nav(estado) {
       </a>
 
       <div id="menu">
-        <div id="login">
-          <a href="/Login" id="linkLogin">
-            <i class="bi-person-circle " id="iconoLogin"></i>
-          </a>
-          <p id="texto">Login</p>
-        </div>
+        {selectorLogin()}
 
         <button
           onClick={() => setEstado(!estadoActual)}
