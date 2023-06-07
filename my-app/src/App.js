@@ -227,6 +227,7 @@ function SelectorPaginaGeneral(estado) {
                 }
                 cookie={cookie}
                 setCookie={setCookie}
+                sliderVans={sliderGeneralTEST[4]}
               ></Reservas>
             }
           ></Route>

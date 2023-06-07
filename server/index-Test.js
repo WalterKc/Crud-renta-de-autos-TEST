@@ -24,6 +24,7 @@ const {
   seleccionarContraseñaV2,
   comprobarContraseñaV2,
   crearUsuarioV2,
+  seleccionarAutoXTipo,
 } = require("./controlSQL/control.js");
 
 //esto no se toca por ahora
@@ -586,6 +587,24 @@ app.put("/TEST_PUT", (req, res) => {
   //digo lo que quiero cambiar
   //doy los datos nuevos
   //hago el cambio y debuelvo la tabla otra vez
+});
+app.get("/Autos", (req, res) => {
+  const autosChicos = seleccionarAutoXTipo("chico");
+  const autosMedianos = seleccionarAutoXTipo("mediano");
+  const autosGrandes = seleccionarAutoXTipo("grande");
+  const camioneta = seleccionarAutoXTipo("camioneta");
+  const vans = seleccionarAutoXTipo("van");
+  const premiun = seleccionarAutoXTipo("premiun");
+  console.log("VANS ", vans);
+  res.send({
+    autosChicos: autosChicos,
+    autosMedianos: autosMedianos,
+    autosGrandes: autosGrandes,
+    camioneta: camioneta,
+    vans: vans,
+    premiun: premiun,
+  });
+  //
 });
 
 //Control de imagenes por servidor

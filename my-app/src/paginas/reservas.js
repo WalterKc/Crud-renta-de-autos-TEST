@@ -10,7 +10,6 @@ import {
   verificarSeccion,
   eliminarCookieYseccion,
 } from "../services/service";
-import { func } from "rsdi";
 
 const urlcoockie1 = "http://localhost:8080/sessionesV2";
 const urlcoockie2 = "http://localhost:8080/sessionesRespuesta";
@@ -160,6 +159,37 @@ function cookieFrontTestV2(nombre, datosSinCodificar, tiempoDeVida) {
  *
  */
 
+/**
+ * aca vamos a practicar lo de los cuadros de imagenes cuando se hacen click y vamos a pasarle los datos
+ * requeridos, luego, una vez completos aca, vamos a exportarlos, como hicimos con el con las otras
+ * funciones
+ *
+ * OK,ya tenemos 1 funcional, ignoremos el css por ahora,
+ * ahora lo que vamos a hacer es simple, primero, vamos a traer todos los datos de los autos del servidor
+ * y enviarlos ordenadamente, luego, vamos a traer aca un slider , el mas chico, y vamos a hacer que
+ * muestre estos datos correctamente, eso es todo
+ * como hacemos esto?, primero, vamos a hacer que , cuando se toque el slider, se abra el modal
+ */
+//traigo los autos desde el server, TODOS
+async function obtengoAutos() {
+  const response = await fetch("http://192.168.0.3:8080/Autos", {
+    method: "Get",
+    //body: JSON.stringify(dataInterna),
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+    /*
+    headers: {
+      "Content-Type": "application/json",
+    },
+    */
+  });
+  const result = await response.json();
+  //console.log(result);
+  return result;
+}
+
 export function Reservas(estado) {
   const paginaActual = estado.paginaActual;
   console.log("pagina Actual", paginaActual);
@@ -171,6 +201,8 @@ export function Reservas(estado) {
   const [expirado, setExpirado] = useState();
   const cookieApp = estado.cookie;
   const setCookieAPP = estado.setCookie;
+  const [arrayAutos, setArrayAutos] = useState();
+  const sliderdeTest = estado.sliderVans;
 
   const logA = async () => {
     //crearSeccion(" jose", " admin", cookieApp);
@@ -333,6 +365,122 @@ export function Reservas(estado) {
     // Update the state variable with the cookie value
   });
 */
+  const [autoActual, setAutoActual] = useState();
+  const [autoActualV2, setAutoActualV2] = useState();
+  const autos = async () => {
+    const autos = await obtengoAutos();
+    console.log("ESTOS SON LOS AUTOS", autos.vans[0]);
+
+    /*return {
+      Marca: autos.vans[0].Marca,
+      Modelo: autos.vans[0].Modelo,
+      Año: autos.vans[0].Año,
+      Kms: autos.vans[0].Kms,
+      Color: autos.vans[0].Color,
+      Aire_acondicionado: autos.vans[0].Aire_acondicionado,
+      Pasajeros: autos.vans[0].Pasajeros,
+      trasmision: autos.vans[0].trasmision,
+      Tipo: autos.vans[0].Tipo,
+    };*/
+    setAutoActual([Object.keys(autos.vans[1]), Object.values(autos.vans[1])]);
+    setAutoActualV2([autos.vans]);
+
+    //return [Object.keys(autos.vans[0]), Object.values(autos.vans[0])];
+  };
+  //autos();
+  const unModal = document.querySelector("#modal");
+
+  //imagenes();
+  const modalCambiante = () => {
+    //const valores = Object.values(await autos());
+    //const keys = Object.keys(await autos());
+    //console.log("VALORES ", datos);
+    //console.log("VALUES de json", valores);
+    //console.log("tamaño de json", valores.length);
+
+    console.log("SoyUnmodal");
+    //console.log("Keys de json", autoActual[0]);
+    //console.log("tamaño de json", autoActual[1].length);
+    let mensaje = "un mensaje";
+
+    if (autoActual === undefined) {
+      mensaje = "un mensaje";
+    } else {
+      mensaje = autoActual[0][1];
+    }
+
+    return (
+      <div className="container">
+        <dialog id="modal">
+          {/*<p>{`${autoActual[0][1]}:${autoActual[1][1]}`}</p>*/}
+          <p> {mensaje}</p>
+          <form method="dialog">
+            <button>OK</button>
+          </form>
+        </dialog>
+      </div>
+    );
+  };
+
+  /// bueno bueno bueno, este funciona, mas o menos, pero funciona
+  //pero le falta trabajo, aca vamos a escribir lo que le haga falta
+  //ok, NO HAY QUE METER NINGUNA promesa asi nomas en dentro de algo que se renderiza directamente en la pagina
+  // por que , entra en un bucle, y mata el rendimiento
+  //y no se llega a nada, los datos que se requieran de la api, tiene que estar ya procesados en alguna otra funcion
+
+  const modalCambianteV2 = () => {
+    if (autoActual === undefined) {
+      return (
+        <div className="container">
+          <dialog id="modal">
+            <p> NO HAY AUTO</p>
+            <form method="dialog">
+              <button>OK</button>
+            </form>
+          </dialog>
+        </div>
+      );
+    } else {
+      return (
+        <div className="container">
+          <dialog id="modal">
+            <p> {`${autoActual[0][1]}:${autoActual[1][1]}`}</p>
+            <form method="dialog">
+              <button>OK</button>
+            </form>
+          </dialog>
+        </div>
+      );
+    }
+  };
+
+  //modalCambiante();
+
+  useEffect(() => {
+    autos();
+  }, []);
+
+  useEffect(() => {
+    const imagenes = async () => {
+      //aca tengo que hacer "Rotar" el array de datos de vans, y sincronizarlo con cada 1,
+      const imagenSlider = document.querySelectorAll(".seccion-slider"); //la imagen 1 es la principal siempre
+
+      console.log("SLIDERS ", imagenSlider[1]);
+      //unModal.showModal()
+      //setAutoActual("un auto");
+      console.log("DATOS AUTOS", autoActual);
+      console.log("DATOS AUTOS V2", autoActualV2[0][1]);
+
+      imagenSlider[1].addEventListener("click", () => unModal.showModal());
+    };
+    imagenes();
+    const rotoDatos = () => {
+      //idea, cuando se toque el boton derecha/izquierda, el array de datos rote de la misma forma que rotan las imagenes
+      const derecha = document.querySelector("#derecha");
+      const izquierda = document.querySelector("#izquierda");
+    };
+  });
+
   return (
     <div>
       <header>
@@ -366,6 +514,25 @@ export function Reservas(estado) {
             SetCookieGeneral
           </button>
         </div>
+        <button id="openModal" onClick={() => unModal.showModal()}>
+          abrir modal
+        </button>
+        <img
+          src="https://cdn.group.renault.com/ren/ar/modelos/kangoo/ph2/kangoo-k61-ph2-desktop-header-002.jpg.ximg.xsmall.jpg/c9ee5e1b80.jpg"
+          className="imgTest"
+          onClick={() => unModal.showModal()}
+        ></img>
+        {sliderdeTest}
+
+        {/*<div className="container">
+          <dialog id="modal">
+            <p>desu</p>
+            <form method="dialog">
+              <button>OK</button>
+            </form>
+          </dialog>
+  </div>*/}
+        {modalCambianteV2()}
       </main>
     </div>
   );

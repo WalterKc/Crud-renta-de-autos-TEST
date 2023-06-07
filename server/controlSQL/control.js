@@ -30,6 +30,12 @@ function seleccionarID(tabla, ID) {
     .all();
   return IdSelecionado;
 }
+function seleccionarAutoXTipo(tipo) {
+  const IdSelecionado = db
+    .prepare(`SELECT * FROM "autos" WHERE Tipo = '${tipo}'`)
+    .all();
+  return IdSelecionado;
+}
 
 //console.log(todo);
 //module.exports = todo.all();
@@ -310,4 +316,5 @@ module.exports = {
   seleccionarContraseñaV2,
   comprobarContraseñaV2,
   crearUsuarioV2,
+  seleccionarAutoXTipo,
 };

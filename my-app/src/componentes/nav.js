@@ -24,7 +24,7 @@ export function Nav(estado) {
       return (
         <div id="login">
           <a href="/Login" id="linkLogin">
-            <i class="bi-person-circle " id="iconoLogin"></i>
+            <i className="bi-person-circle " id="iconoLogin"></i>
           </a>
           <p id="texto">Login</p>
         </div>
@@ -35,7 +35,7 @@ export function Nav(estado) {
       return (
         <div id="login">
           <a id="linkLogin">
-            <i class="bi-person-circle " id="iconoLogin"></i>
+            <i className="bi-person-circle " id="iconoLogin"></i>
           </a>
           <p id="texto">{cookieApp.nombre}</p>
         </div>
@@ -54,7 +54,7 @@ export function Nav(estado) {
 
         <button
           onClick={() => setEstado(!estadoActual)}
-          class="navbar-toggler collapsed"
+          className="navbar-toggler collapsed"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarToggleExternalContent"
@@ -63,7 +63,7 @@ export function Nav(estado) {
           aria-label="Toggle navigation"
           id="menu-Desplegable"
         >
-          <span class="navbar-toggler-icon"></span>
+          <span className="navbar-toggler-icon"></span>
         </button>
       </div>
     </nav>
