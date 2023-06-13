@@ -228,6 +228,10 @@ function SelectorPaginaGeneral(estado) {
                 cookie={cookie}
                 setCookie={setCookie}
                 sliderVans={sliderGeneralTEST[4]}
+                sliderPremiun={sliderGeneralTEST[5]}
+                sliderGeneralEstado={sliderGeneralTEST}
+                estadoBotones={estadoBotones}
+                imagenesOrdenadas={imagenesOrdenadasServer}
               ></Reservas>
             }
           ></Route>
@@ -256,7 +260,7 @@ function slidersParaEntregarGeneral(jsonImagenes, estadoBotones, setBotones) {
 }
 
 export function SliderGeneral(estado) {
-  const estadoMenu = estado.estado;
+  const estadoBotones = estado.estado;
   const setEstado = estado.set;
   const padre = estado.padre;
   const imagenes = estado.arrayDeImagenes;
@@ -269,24 +273,28 @@ export function SliderGeneral(estado) {
   }, [imagenes.length]);
 
   return (
-    <div className="contedenor-slider ">
+    <div className="contedenor-slider " id={ID}>
       <div className="slider" id={"slider-" + padre + ID}>
         {obtenerListaImagenes(imagenes)}
       </div>
 
       <div
         className="slider-boton slider-boton-derecha"
-        id="derecha"
-        onClick={() => nuevoBoton(padre + ID, estadoMenu, setEstado, "derecha")}
+        id={"derecha" + ID}
+        onClick={() =>
+          nuevoBoton(padre + ID, estadoBotones, setEstado, "derecha")
+        }
+        hidden={!estadoBotones}
       >
         {">"}
       </div>
       <div
         className="slider-boton slider-boton-izquierda"
-        id="izquierda"
+        id={"izquierda" + ID}
         onClick={() =>
-          nuevoBoton(padre + ID, estadoMenu, setEstado, "izquierda")
+          nuevoBoton(padre + ID, estadoBotones, setEstado, "izquierda")
         }
+        hidden={!estadoBotones}
       >
         {"<"}
       </div>

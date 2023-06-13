@@ -597,12 +597,12 @@ app.get("/Autos", (req, res) => {
   const premiun = seleccionarAutoXTipo("premiun");
   console.log("VANS ", vans);
   res.send({
-    autosChicos: autosChicos,
-    autosMedianos: autosMedianos,
-    autosGrandes: autosGrandes,
-    camioneta: camioneta,
-    vans: vans,
-    premiun: premiun,
+    Chicos: autosChicos,
+    Medianos: autosMedianos,
+    Grandes: autosGrandes,
+    Camioneta: camioneta,
+    Vans: vans,
+    Premiun: premiun,
   });
   //
 });
