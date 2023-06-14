@@ -374,6 +374,8 @@ export function Reservas(estado) {
   const [autoActual, setAutoActual] = useState();
   const [autoActualV2, setAutoActualV2] = useState();
   const [datosAutos, setDatosAutos] = useState();
+  const [Vans, setVans] = useState();
+  const [Premiun, setPremiun] = useState();
 
   const autos = async () => {
     const autos = await obtengoAutos();
@@ -393,6 +395,8 @@ export function Reservas(estado) {
     setAutoActual([Object.keys(autos.Vans[1]), Object.values(autos.Vans[1])]);
     setAutoActualV2([autos.Vans]);
     setDatosAutos([autos]);
+    setVans(autos.Vans[1]);
+    setPremiun(autos.Premiun[1]);
 
     //return [Object.keys(autos.vans[0]), Object.values(autos.vans[0])];
   };
@@ -436,9 +440,13 @@ export function Reservas(estado) {
   //ok, NO HAY QUE METER NINGUNA promesa asi nomas en dentro de algo que se renderiza directamente en la pagina
   // por que , entra en un bucle, y mata el rendimiento
   //y no se llega a nada, los datos que se requieran de la api, tiene que estar ya procesados en alguna otra funcion
+  const cerrarModal = document.querySelector("#cerrarModal");
 
-  const modalCambianteV2 = () => {
-    if (autoActual === undefined) {
+  const modalCambianteV2 = (algo) => {
+    //hay que hacer el selector externo y ya
+
+    console.log("Vans ", Vans);
+    if (autoActual === undefined || algo === undefined) {
       return (
         <div className="container">
           <dialog id="modal">
@@ -453,15 +461,33 @@ export function Reservas(estado) {
       return (
         <div className="container">
           <dialog id="modal">
-            <p> {`${autoActual[0][1]}:${autoActual[1][1]}`}</p>
+            <p> {`Marca:${eval(algo).Marca}`}</p>
+            <p> {`Modelo:${eval(algo).Modelo}`}</p>
+            <p> {`Año:${eval(algo).Año}`}</p>
+            <p> {`Kms:${eval(algo).Kms}`}</p>
+            <p> {`Color:${eval(algo).Color}`}</p>
+            <p> {`Pasajeros:${eval(algo).Pasajeros}`}</p>
+            <p> {`trasmision:${eval(algo).trasmision}`}</p>
+            <p> {`Aire acondicionado: Si`}</p>
+
+            {/*<p>{eval(algo).Marca}</p>*/}
+
             <form method="dialog">
-              <button>OK</button>
+              <button onClick={() => unModal.close()}>OK</button>
             </form>
+            {/*<button id="cerrarModal">Cerrar</button>*/}
           </dialog>
         </div>
       );
     }
   };
+  function siOno(estado) {
+    if (estado) {
+      return modalCambianteV2;
+    } else {
+      console.log("no ahce nada");
+    }
+  }
 
   //modalCambiante();
   /*
@@ -470,11 +496,13 @@ export function Reservas(estado) {
     autos();
   }, [estadoSliders]);
 */
-  /*
+  const [selectorModal, setSelectorModal] = useState();
+
   useEffect(() => {
     const imagenes = async () => {
       //aca tengo que hacer "Rotar" el array de datos de vans, y sincronizarlo con cada 1,
       const imagenSlider = document.querySelectorAll(".seccion-slider"); //la imagen 1 es la principal siempre
+      const imagenpadre = document.querySelectorAll(".slider");
 
       console.log("SLIDERS ", imagenSlider[1]);
       //unModal.showModal()
@@ -483,8 +511,52 @@ export function Reservas(estado) {
       console.log("DATOS AUTOS V2", autoActualV2[0][1]);
       console.log("TODOS LOS DATOS JUNTOS", datosAutos);
       console.log("TODOS LOS DATOS JUNTOS TIPOS", datosAutos[0]);
+      //tengo que darle a TODOS los sliders esto de abajo, se va a hacer ahora
+      for (let x = 0; x < imagenpadre.length; x++) {
+        console.log("ARRAYS DE SLIDERS", imagenpadre[x].childNodes[1]);
+        console.log("ARRAYS DE SLIDERS PADRE", imagenpadre[x].id);
+        console.log(
+          "ARRAYS DE SLIDERS ABUELO ID",
+          imagenpadre[x].parentElement.id
+        );
 
-      //imagenSlider[1].addEventListener("click", () => unModal.showModal());
+        imagenpadre[x].childNodes[1].addEventListener("click", () => [
+          unModal.close(),
+          unModal.showModal(),
+          setSelectorModal(imagenpadre[x].parentElement.id),
+        ]);
+      }
+      const TestSelectorEstado = () => {
+        let selector = `set${imagenpadre[1].parentElement.id};`;
+        let selectorConvertido = eval(selector);
+        console.log("Selector ESTADO", selector);
+        //setPremiun(true);
+        //eval, transforma un string en una funcion, pero solo eso, nada mas, es util para selecionar funciones
+        //YA CREADAS
+        if (eval(selector) === setPremiun) {
+          console.log("Selector ESTADO", "ES VERDAD");
+          selectorConvertido(true);
+        } else {
+          console.log(
+            "Selector ESTADO",
+            "ES FALSE",
+            "setPremiun es de tipo",
+            typeof setPremiun,
+            "y Selector es de tipo",
+            typeof selector
+          );
+        }
+      };
+      //TestSelectorEstado();
+      console.log("ESTADO SELECCION PREMIUN", Premiun);
+      console.log("ESTADO SELECCION VANS", Vans);
+
+      //cerrarModal.addEventListener("click", () => unModal.close());
+      window.onclick = function (event) {
+        if (event.target === unModal) {
+          unModal.close();
+        }
+      };
     };
     imagenes();
     const rotoDatos = async () => {
@@ -525,9 +597,9 @@ export function Reservas(estado) {
       //console.log("MAP", map);
       //ahora vamos a probarlo con botones reales, sin shit ni nada
     };
-    rotoDatos();
+    //rotoDatos();
   }, [estadoSliders]);
-  */
+
   //este funciona perfecto, bueno, ahora vamos a escribir lo que tenemos que hacer de verdad
 
   const rotoDatosV2 = async (boton) => {
@@ -701,9 +773,23 @@ export function Reservas(estado) {
      * eso es todo, FIN EXPLICACION <-x
      * hora de llenar los datos de los modales con esto, darle un nombre final sacarlo de aca
      *
+     * hay varias ideas para hacer los modales,pero, primero antes de hacer cualquier automatizacion, vamos a controlar 1 bien
+     * y luego automatizo el resto, algo me dice que a a ser similar a al rotador *LISTO*
+     * ya funciona perfectamente con 1, ahora, hay que hacerlo de proposito general
+     * a esto, hay que hacerlo similar a lo de abajo
+     *
      *
      *
      */
+    const SelectorEstado = (elemento) => {
+      let selector = `set${elemento};`;
+      let selectorConvertido = eval(selector);
+      console.log("Selector ESTADO", selector);
+      //setPremiun(true);
+      //eval, transforma un string en una funcion, pero solo eso, nada mas, es util para selecionar funciones
+      //YA CREADAS
+      return selectorConvertido;
+    };
 
     const rotoDatosV3 = async (boton, estadoBoton) => {
       const cosa = document.querySelectorAll("#slider-MainVans");
@@ -743,6 +829,8 @@ export function Reservas(estado) {
             "ESTE ES EL ARRAY QUE HAY QUE ROTAR",
             selecion2.nombre,
             boton.id.split("izquierda")[1],
+            "seleccionGeneral",
+            selecionGeneral,
             mapV2[0][selecionGeneral]
           );
           //console.log("cosa", cosa2);
@@ -772,6 +860,10 @@ export function Reservas(estado) {
 
             //arrayTest.insertAdjacentElement("beforeend", arrayTest[0]);
             console.log("array despues", mapV2[0][selecionGeneral][1]);
+
+            //setVans(mapV2[0][selecionGeneral][1]);
+            const selectorEstado = SelectorEstado(selecionGeneral);
+            selectorEstado(mapV2[0][selecionGeneral][1]);
             //tocamos el boton izquierda, temenos que hacer lo contrario, con un pop()
             //let pop = rotoVansTest.pop();
             //se mete este pop al principio  con un unshift
@@ -809,6 +901,9 @@ export function Reservas(estado) {
             //mapV2[0][selecionGeneral].unshift(popV2);
             mapV2[0][selecionGeneral].push(shiftV2);
             console.log("array despues", mapV2[0][selecionGeneral][1]);
+            //setVans(mapV2[0][selecionGeneral][1]);
+            const selectorEstado = SelectorEstado(selecionGeneral);
+            selectorEstado(mapV2[0][selecionGeneral][1]);
           } else {
             //console.log("LA COSA NO EXISTE",  cosa3[1], cosa2[1]);
             console.log("LA COSA NO EXISTE");
@@ -1049,7 +1144,7 @@ export function Reservas(estado) {
             </form>
           </dialog>
   </div>*/}
-        {modalCambianteV2()}
+        {modalCambianteV2(selectorModal)}
       </main>
     </div>
   );
