@@ -5,7 +5,11 @@ import { obtenerObjetoLocalStorage } from "../storage/controlador.js";
 import { guardarObjetoLocalStorage } from "../storage/controlador.js";
 */
 //
-import { estadoDeLogin, verificoSeccionAPI } from "../selector api/api.js";
+import {
+  estadoDeLogin,
+  obtenerAutosAPI,
+  verificoSeccionAPI,
+} from "../selector api/api.js";
 import { obtenerDatosAPI } from "../selector api/api.js";
 import { estadoDeRegistro } from "../selector api/api.js";
 import { obtenerUrlsIMG } from "../selector api/api.js";
@@ -134,4 +138,10 @@ export async function eliminarCookieYseccion(setCookieAPP) {
   setCookieAPP(false);
   return eliminoSecion;
 }
+//obtengo autos
+export async function obtenerAutos() {
+  const datosAutos = await obtenerAutosAPI();
+  return datosAutos;
+}
+
 //TODAS LAS APIS Y SERVICIOS LISTOS, LISTO PARA INTEGRARLAS A LA APP PRIMARIA

@@ -9,7 +9,9 @@ import {
   crearSeccionYcookie,
   verificarSeccion,
   eliminarCookieYseccion,
+  obtenerAutos,
 } from "../services/service";
+import { rotoinjeccionaxialV3 } from "../App";
 
 const urlcoockie1 = "http://localhost:8080/sessionesV2";
 const urlcoockie2 = "http://localhost:8080/sessionesRespuesta";
@@ -172,6 +174,8 @@ function cookieFrontTestV2(nombre, datosSinCodificar, tiempoDeVida) {
  */
 //traigo los autos desde el server, TODOS
 
+//esta tengo que llevarla a la api
+/*
 async function obtengoAutos() {
   const response = await fetch("http://192.168.0.3:8080/Autos", {
     method: "Get",
@@ -184,12 +188,12 @@ async function obtengoAutos() {
     headers: {
       "Content-Type": "application/json",
     },
-    */
+    
   });
   const result = await response.json();
   //console.log(result);
   return result;
-}
+}*/
 
 export function Reservas(estado) {
   const paginaActual = estado.paginaActual;
@@ -374,11 +378,13 @@ export function Reservas(estado) {
   const [autoActual, setAutoActual] = useState();
   const [autoActualV2, setAutoActualV2] = useState();
   const [datosAutos, setDatosAutos] = useState();
+  const [datosAutosV2, setDatosAutosV2] = useState();
+
   const [Vans, setVans] = useState();
   const [Premiun, setPremiun] = useState();
 
   const autos = async () => {
-    const autos = await obtengoAutos();
+    const autos = await obtenerAutos();
     console.log("ESTOS SON LOS AUTOS", autos.Vans[0]);
 
     /*return {
@@ -395,6 +401,8 @@ export function Reservas(estado) {
     setAutoActual([Object.keys(autos.Vans[1]), Object.values(autos.Vans[1])]);
     setAutoActualV2([autos.Vans]);
     setDatosAutos([autos]);
+    setDatosAutosV2(autos);
+
     setVans(autos.Vans[1]);
     setPremiun(autos.Premiun[1]);
 
@@ -510,7 +518,7 @@ export function Reservas(estado) {
       console.log("DATOS AUTOS", autoActual);
       console.log("DATOS AUTOS V2", autoActualV2[0][1]);
       console.log("TODOS LOS DATOS JUNTOS", datosAutos);
-      console.log("TODOS LOS DATOS JUNTOS TIPOS", datosAutos[0]);
+      //console.log("TODOS LOS DATOS JUNTOS TIPOS", datosAutos[0]);
       //tengo que darle a TODOS los sliders esto de abajo, se va a hacer ahora
       for (let x = 0; x < imagenpadre.length; x++) {
         console.log("ARRAYS DE SLIDERS", imagenpadre[x].childNodes[1]);
@@ -660,7 +668,6 @@ export function Reservas(estado) {
   }, [estadoBotones]);
   //hace falta dividir esto, si o si
   useEffect(() => {
-    console.log("CARGADO");
     const cargarAutos = async () => {
       await autos();
     };
@@ -669,7 +676,12 @@ export function Reservas(estado) {
     setCARGA(true);
   }, [imagenesOrdenadas]);
   //
-  const controladorDeDatosYModalsGeneralTest = async (estadoBoton) => {
+  const controladorDeDatosYModalsGeneralTest = async (
+    estadoBoton,
+    DatosDelServidor,
+    unaVez,
+    setUnaVez
+  ) => {
     //console.log("ESTADO BONOTES", estadoBotones);
 
     //await autos();
@@ -678,8 +690,10 @@ export function Reservas(estado) {
 
     console.log("DATOS PUROS A PELO", datosAutos);
 
-    console.log("TODOS LOS DATOS DE LOS AUTOS x TIPOS", datosAutos[0]);
-    const keys = Object.keys(datosAutos[0]);
+    console.log("TODOS LOS DATOS DE LOS AUTOS x TIPOS", DatosDelServidor);
+    console.log("TODOS LOS DATOS DE LOS AUTOS x TIPOSV2", datosAutosV2);
+
+    const keys = Object.keys(DatosDelServidor);
     //creamos los onclick solo despues de que se cargen las imagenes
     const derecha = document.querySelector("#derecha");
     const izquierda = document.querySelector("#izquierda");
@@ -777,6 +791,8 @@ export function Reservas(estado) {
      * y luego automatizo el resto, algo me dice que a a ser similar a al rotador *LISTO*
      * ya funciona perfectamente con 1, ahora, hay que hacerlo de proposito general
      * a esto, hay que hacerlo similar a lo de abajo
+     * FUNCIONES COMPLETAS!, hay que cambiar los nombres, limpiarlas y moverlas a la app momentaneametne , y luego importarlas
+     * para ver si funcionan
      *
      *
      *
@@ -807,8 +823,10 @@ export function Reservas(estado) {
         let map = await autoActualV2[0];
         //este es que hay que selecionar
         let mapV2 = await datosAutos;
-        let mapV3 = await datosAutos[0][selecion3];
-        let rotoVansTest = datosAutos[0].Vans;
+        let mapV3 = await DatosDelServidor;
+
+        //let mapV3 = await datosAutos[0][selecion3];
+        //let rotoVansTest = datosAutos[0].Vans;
         //let mapaDeDatos=await datosAutos[0][selecionGeneral]
         //console.log("ESTE ES EL ARRAY QUE HAY QUE ROTAR V2", mapV3);
         console.log("cosa CUENTA 2");
@@ -836,7 +854,6 @@ export function Reservas(estado) {
           //console.log("cosa", cosa2);
           let cosa3 = cosa[0].childNodes;
           console.log("cosa3", cosa3);
-          console.log("cosa ESTADO", estado);
           console.log("cosa CUENTA");
           //ESTA AL REVEZ!
 
@@ -851,19 +868,19 @@ export function Reservas(estado) {
             //let shift = rotoVansTest.shift();
             console.log("array antes", mapV2[0][selecionGeneral][1]);
             //let shiftV2 = arrayTest.shift();
-            let popV2 = mapV2[0][selecionGeneral].pop();
+            let popV2 = mapV3[selecionGeneral].pop();
 
             //se mete este shift al final con un push
             //rotoVansTest.push(shift);
             //arrayTest.push(shiftV2);
-            mapV2[0][selecionGeneral].unshift(popV2);
+            mapV3[selecionGeneral].unshift(popV2);
 
             //arrayTest.insertAdjacentElement("beforeend", arrayTest[0]);
             console.log("array despues", mapV2[0][selecionGeneral][1]);
 
             //setVans(mapV2[0][selecionGeneral][1]);
             const selectorEstado = SelectorEstado(selecionGeneral);
-            selectorEstado(mapV2[0][selecionGeneral][1]);
+            selectorEstado(mapV3[selecionGeneral][1]);
             //tocamos el boton izquierda, temenos que hacer lo contrario, con un pop()
             //let pop = rotoVansTest.pop();
             //se mete este pop al principio  con un unshift
@@ -894,16 +911,16 @@ export function Reservas(estado) {
             console.log("array antes", mapV2[0][selecionGeneral][1]);
             //tocamos el boton izquierda, temenos que hacer lo contrario, con un pop()
             //let pop = rotoVansTest.pop();
-            let shiftV2 = mapV2[0][selecionGeneral].shift();
+            let shiftV2 = mapV3[selecionGeneral].shift();
             //let popV2 = mapV2[0][selecionGeneral].pop();
             //se mete este pop al principio  con un unshift
             //rotoVansTest.unshift(pop);
             //mapV2[0][selecionGeneral].unshift(popV2);
-            mapV2[0][selecionGeneral].push(shiftV2);
+            mapV3[selecionGeneral].push(shiftV2);
             console.log("array despues", mapV2[0][selecionGeneral][1]);
             //setVans(mapV2[0][selecionGeneral][1]);
             const selectorEstado = SelectorEstado(selecionGeneral);
-            selectorEstado(mapV2[0][selecionGeneral][1]);
+            selectorEstado(mapV3[selecionGeneral][1]);
           } else {
             //console.log("LA COSA NO EXISTE",  cosa3[1], cosa2[1]);
             console.log("LA COSA NO EXISTE");
@@ -1032,7 +1049,7 @@ export function Reservas(estado) {
       console.log("estadoBoton", estadoBoton);
     } else {
       console.log("NO UNAVEZ");
-      funcionComparacionV2(unaVez);
+      //funcionComparacionV2(unaVez);
 
       //rotoDatosV3("", estadoBoton);
       console.log("estadoBoton", estadoBoton);
@@ -1060,12 +1077,21 @@ export function Reservas(estado) {
 
     //
   };
+
   const funcionTestV2 = async (algo) => {
     console.log("ALGO", algo);
   };
   useEffect(() => {
     console.log("ESTADO BOTONES Y CARGA", estadoBotones);
-    controladorDeDatosYModalsGeneralTest(estadoBotones);
+
+    controladorDeDatosYModalsGeneralTest(
+      estadoBotones,
+      datosAutosV2,
+      unaVez,
+      setUnaVez
+    );
+
+    //rotoinjeccionaxialV3(estadoBotones, datosAutosV2, unaVez, setUnaVez);
     funcionTestV2(estadoBotones);
   }, [datosAutos, estadoBotones]);
   /////////

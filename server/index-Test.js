@@ -600,7 +600,7 @@ app.get("/Autos", (req, res) => {
     Chicos: autosChicos,
     Medianos: autosMedianos,
     Grandes: autosGrandes,
-    Camioneta: camioneta,
+    Camionetas: camioneta,
     Vans: vans,
     Premiun: premiun,
   });

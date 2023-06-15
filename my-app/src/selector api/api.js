@@ -218,5 +218,16 @@ export async function eliminoSeccionApi() {
   //console.log(result);
   return result;
 }
+//obtengo datos de los autos
+export async function obtenerAutosAPI() {
+  const response = await fetch("http://192.168.0.3:8080/Autos", {
+    method: "Get",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const result = await response.json();
+  return result;
+}
 
 //el resto de apis va aca abajo(cuando se me ocurran o sean necesarios)
