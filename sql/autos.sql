@@ -9,7 +9,7 @@ INSERT INTO Autos (id,modelo,catidad_Total,cantidad_disponible) VALUES (5,'auto 
 SELECT * FROM Autos
                 
 DROP TABLE IF EXISTS Autos
-CREATE TABLE Autos(id DOUBLE NOT NULL,Marca VARCHAR(10) NOT NULL,Modelo VARCHAR(10) NOT NULL,Año INT NOT NULL,Kms INT NOT NULL,Color VARCHAR(10) NOT NULL,Aire_acondicionado BOOLEAN NOT NULL,Pasajeros NOT NULL,trasmision NOT NULL,Tipo);
+CREATE TABLE Autos(id INTEGER PRIMARY KEY NOT null,Marca VARCHAR(10) NOT NULL,Modelo VARCHAR(10) NOT NULL,Año INT NOT NULL,Kms INT NOT NULL,Color VARCHAR(10) NOT NULL,Aire_acondicionado BOOLEAN NOT NULL,Pasajeros NOT NULL,trasmision NOT NULL,Tipo);
 INSERT INTO Autos (id,Marca,Modelo,Año,Kms,Color,Aire_acondicionado ,Pasajeros,trasmision,Tipo ) VALUES (1,'Chevrolet ','celta',2013,20000,'gris',TRUE,5,"manual" ,"chico");
 INSERT INTO Autos (id,Marca,Modelo,Año,Kms,Color,Aire_acondicionado ,Pasajeros,trasmision,Tipo ) VALUES (2,'Chevrolet','Onix',2017,20000,'blanco',TRUE,5,"manual","chico" );
 INSERT INTO Autos (id,Marca,Modelo,Año,Kms,Color,Aire_acondicionado ,Pasajeros,trasmision,Tipo ) VALUES (3,'Ford','Ka 1.6',2012,20000,'negro',TRUE,5,"manual","chico" );

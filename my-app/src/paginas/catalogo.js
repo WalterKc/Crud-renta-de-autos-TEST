@@ -1,6 +1,7 @@
 import { obtenerAutos } from "../services/service";
 import { useState } from "react";
 import { useEffect } from "react";
+import "./catalogo.css";
 export function Catalogo(estado) {
   const paginaActual = estado.paginaActual;
   console.log("pagina Actual", paginaActual);
@@ -86,10 +87,11 @@ export function Catalogo(estado) {
       );
     }
   };
-  const unModal = document.querySelector("#modal");
 
   useEffect(() => {
     const imagenes = async () => {
+      const unModal = document.querySelector("#modal");
+
       const imagenSlider = document.querySelectorAll(".seccion-slider"); //la imagen 1 es la principal siempre
       const imagenpadre = document.querySelectorAll(".slider");
 

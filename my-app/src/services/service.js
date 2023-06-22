@@ -59,11 +59,11 @@ export async function envioUrlsImgs() {
   //
 }
 
-export async function crearSeccion(usuario, rol, cookieApp) {
+export async function crearSeccion(usuario, rol, email, cookieApp) {
   if (document.cookie.length === 0) {
     console.log(" COOKIE INTERNA", cookieApp);
     //logTest(await testCoockie(" jose", " admin"));
-    const seccion = await enviarDatosSeccion(usuario, rol);
+    const seccion = await enviarDatosSeccion(usuario, rol, email);
     return seccion;
   } else {
     //logTest(await testCoockie(" jose", " admin"));
@@ -99,11 +99,12 @@ export async function crearSeccionYcookie(
   cookieApp,
   setCookieAPP,
   usuario,
-  rol
+  rol,
+  email
 ) {
   if (document.cookie.length === 0) {
     console.log(" COOKIE INTERNA", cookieApp);
-    const datos = await crearSeccion(usuario, rol);
+    const datos = await crearSeccion(usuario, rol, email);
     //logTest(datos);
     console.log("DATOS SECCION", datos.datosParaLaCookie);
     crearCookie(

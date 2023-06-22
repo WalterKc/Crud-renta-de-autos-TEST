@@ -93,6 +93,26 @@ o una señal de false y luego crear el mensaje de error) *LISTO*
 >> hacer el popUp de los datos de los autos *LISTO*
 >>> primero vamos a hacer popUp vacios, que son mas faciles , vamos a jugar con ellos en el reservas *LISTO*
 >> hacer las transacciones
+>>> es hora de hacer las transacciones,basicamente, es poner una id de auto, la id del user y las fechas de alquiler y entrega
+>>> mmm, esto esta bien hasta el momento, pero, estoy perdido, voy a hacer una guia mas detallada
+>>> por que ya estoy fulminado para crear todo al Aire
+>>> guia
+>>> el usuario se logea , si el usuario no esta logeado, no puede hacer transaciones 
+>>> el usuario va al catalogo, y mira un auto que le interese, toca un auto y mira su info, luego si le interesa
+>>> toca el boton "ALQUILAR", cuando eso pasa, se agrega este auto ,con sus datos actuales, a un array/estado del front
+>>> por si es mas de 1 auto, luego, se cierra la pestaña, y puede repetirse el lo mismo cuantas veces se requiera
+>>> en el nav, si no hay un auto en el array este, no hay cambios, pero si se seleciona un auto, se pondra, "carrito de autos"
+>>> y el numero de autos selecionados(el que sea)
+>>> luego, en transacciones, se mostraran en una lista automatica, que autos tenemos selecionados, y si queremos alquilarlo o no
+>>> si no tocamos nada , no se alquila(no se usa), si tocamos que si, se pasa al siguiente paso
+>>> en el siguiente paso, lo primero que se hace, es verificar que la cookie existe en el registro, si es asi
+>>> se pasa a alquilar el auto, en este, se van a pedir, la id del auto, la id de user, el tiempo actual, y el tiempo de alquiler
+>>> la id del auto, viene del front, pero la id del user, viene de la cookie, hay que leer la cookie/registro de usuario
+>>> de parte del server, y sacar la id del usuario, esta NUNCA se envia al front, solo al back
+>>> una ultima cosita, verifiquemos la coquie cuando se envie la transaccion del parte del front, dejemos al usuario
+>>> poner todos los autos que quiera ,pero si no esta logeado, no va a poder enviar nada y saltara un alert
+>>> tambien hagamos un boton de reset en las transacciones
+>>> una ves tenemos esto, se hace la transaccion y se termina
 >> hacer los contenedores
 >> hacer la configuracion inicial y la ip automatica
 >> se deja afuera por el momento, la modificacion de datos de autos/usuario por parte de los mismos

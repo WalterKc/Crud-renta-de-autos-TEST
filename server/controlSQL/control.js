@@ -290,6 +290,31 @@ function eliminarFilaDeTabla(id, tabla) {
   console.log(" SQL INTERNO DES", todo.all());
   return eliminar;
 }
+/**
+ * aca van a ir las transacciones, recorda que va a ver mas de una version
+ * la primera version solo se va a encargar de meter los autos y clientes dentro de un sql, a pelo
+ * sin comprobaciones mas alla de que existan ambos
+ * FUNCION V2, hay que agregar el array de id de los autos, y hacer que cada se cree una fila por cada id
+ * FUNCION V3, agregar fecha
+ */
+function transaccionesV1(id_Cliente, array_IdAUTOS, fecha_Devolucion) {
+  //primero, activamos el pragma
+  db.exec("PRAGMA foreign_keys = ON;");
+  //luego selecionamos la tabla, esto es agregar datos, no modificarlos, asi que no es put ,
+  //se trabaja igual a crear un auto/cliente
+  //console.log(" DATOS", datos);
+  for (let x = 0; x < array_IdAUTOS.length; x++) {
+    const crear = db
+      .prepare(
+        `INSERT INTO transaccionesTESTV2 (id_Cliente,id_Auto,fecha_de_devolucion) VALUES ('${id_Cliente}','${array_IdAUTOS[x]}','${fecha_Devolucion[x]}')`
+      )
+      .run();
+    console.log(" CAMBIOS", crear.changes);
+  }
+
+  console.log(" SQL INTERNO DES", muestro_tabla("transaccionesTESTV2"));
+  //return crear;
+}
 
 module.exports = {
   todo: todo.all(),
@@ -317,4 +342,5 @@ module.exports = {
   comprobarContraseñaV2,
   crearUsuarioV2,
   seleccionarAutoXTipo,
+  transaccionesV1,
 };

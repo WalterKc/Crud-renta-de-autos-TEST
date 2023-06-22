@@ -143,11 +143,12 @@ const testSeccion = `${IP_GENERAL}/seccionesTestCookie`;
 const testEliminoSeccion = `${IP_GENERAL}/eliminoSeccion`;
 //
 //OK
-export async function enviarDatosSeccion(usuario, rol) {
+export async function enviarDatosSeccion(usuario, rol, email) {
   //
   const dataInterna = {
     usuario: usuario,
     rol: rol,
+    email: email,
   };
   //aca tengo que pasar los datos, mas tarde voy a hacer la contraseña
   const response = await fetch(urlcoockie1, {

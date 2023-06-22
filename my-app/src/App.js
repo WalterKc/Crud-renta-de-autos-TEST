@@ -39,6 +39,8 @@ function SelectorPaginaGeneral(estado) {
   const [sliderGeneralTEST, setSliderGeneralTEST] = useState([]);
   const cookie = estado.cookie;
   const setCookie = estado.setCookie;
+  const arrayDeAutosSelecionados = estado.arrayDeAutosSelecionados;
+  const setArrayDeAutosSelecionados = estado.setArrayDeAutosSelecionados;
 
   useEffect(() => {
     const TestSlidersGeneral = async () => {
@@ -239,6 +241,8 @@ function SelectorPaginaGeneral(estado) {
                 sliderGeneralEstado={sliderGeneralTEST}
                 estadoBotones={estadoBotones}
                 imagenesOrdenadas={imagenesOrdenadasServer}
+                arrayDeAutosSelecionados={arrayDeAutosSelecionados}
+                setArrayDeAutosSelecionados={setArrayDeAutosSelecionados}
               ></Reservas>
             }
           ></Route>
@@ -760,6 +764,7 @@ function App() {
   const arrayDeImagenes3 = [titulo1, titulo2, auto7];
   const [imagenesServerFinalesTest, setImagenesServerFinalesTest] = useState();
   const [cookie, setCookie] = useState({});
+  const [arrayDeAutosSelecionados, setArrayDeAutosSelecionados] = useState([]);
   useEffect(() => {
     const envioUrlsTest = async () => {
       let urlsFinalesTest = await envioUrlsImgs();
@@ -796,6 +801,8 @@ function App() {
         imagenesOrdenadasServer={imagenesServerFinalesTest}
         cookie={cookie}
         setCookie={setCookie}
+        arrayDeAutosSelecionados={arrayDeAutosSelecionados}
+        setArrayDeAutosSelecionados={setArrayDeAutosSelecionados}
       ></SelectorPaginaGeneral>
     </div>
   );

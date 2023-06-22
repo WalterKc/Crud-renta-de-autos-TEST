@@ -25,6 +25,7 @@ const {
   comprobarContraseñaV2,
   crearUsuarioV2,
   seleccionarAutoXTipo,
+  transaccionesV1,
 } = require("./controlSQL/control.js");
 
 //esto no se toca por ahora
@@ -77,15 +78,21 @@ const { object } = require("rsdi");
 app.post("/sessionesV2", (req, res) => {
   let selector = req.body;
 
+  req.session.email = selector.email;
   req.session.usuario = selector.usuario;
   req.session.rol = selector.rol;
   req.session.cookie.maxAge = 60000;
   req.session.autenticado = true;
+  console.log(
+    "DATOS/ID DEL EMAIL SELECIONADO",
+    seleccionarEMAIL("Cuentas", selector.email)
+  );
 
   secionesID = {
     id: req.session.id,
     nombre: req.session.usuario,
     rol: req.session.rol,
+    email: req.session.email,
   };
 
   //req.session.cookie.username = "req.body.usuario";
@@ -98,6 +105,7 @@ app.post("/sessionesV2", (req, res) => {
     usuario: req.session.usuario,
     rol: req.session.rol,
     id: req.session.id,
+    email: req.session.email,
     cookie: req.session.cookie,
     tiempo: req.session.cookie.maxAge,
     tiempoEstandar: 1 / 1440, //1 dia =1440 min, 1 min =1d/1440min
@@ -606,7 +614,77 @@ app.get("/Autos", (req, res) => {
   });
   //
 });
+app.post("/TransaccionesTest", (req, res) => {
+  let selector = req.body;
+  //let id = selector.id;//el id, hay que sacarlo por medio del email
 
+  //ok, aca tenemos varias opciones la verdad, podemos copiar lo de la verificiacion de session(que
+  //para eso la hicimos), o podemos hacerlo por medio de el front, de cualquier manera, esto va a recibir un estado de verificacion
+  //asi que, vamos a tener que elejir una, pero por ahora, vamos a dejarlo simple con una verificacion mokeada
+  /*
+  console.log(
+    "DATOS/ID DEL EMAIL SELECIONADO TRANSACIONESTEST",
+    seleccionarEMAIL("Cuentas", selector.email)
+  );
+  let datosCuenta = seleccionarEMAIL("Cuentas", selector.email);
+  console.log("datosCuenta ID SELECIONADO TRANSACIONESTEST", datosCuenta[0].id);
+  transaccionesV1(datosCuenta[0].id);
+  */
+  /**
+   * idea de como hacer esto, es algo bastante completo y mas seguro que lo otro que habiamos pensado
+   * y sencillo, pero, puede consumir algo mas de recursos, pero , como las transaciones son muy
+   * importantes y no se hacen tantas, creo que vale la pena
+   * primero, verificamos si hay cookie, si no hay, se termina y listo
+   * segundo , si hay cookie, extraemos su id y email, luego extraemos el email de la seccion, y si estos son iguales pasa
+   * pero si no son iguales, o la seccion no existe, se para
+   * si pasa esta comprobacion, entonces, esta habilidato para hacer la transaccion(esto sin incluir el pago, que esta mokeado)
+   * esto va despues de que tenemos selecionado el auto y eso en si,
+   * asi que vamos a hacer lo siguiente, vamos a selecionar una id de un auto, una de un user, el email y vamos a enviarlo
+   * la id de los autos debe de estar en un array, por si son mas de 1
+   *
+   *
+   */
+  const cookieDelFront = req.body.cookie;
+  //primero, verificamos si hay cookie, si no hay, se termina y listo
+  if (cookieDelFront !== "") {
+    //segundo , si hay cookie, extraemos su id y email, luego extraemos el email de la seccion, y si estos son iguales pasa
+    //pero si no son iguales, o la seccion no existe, se para
+    const cookieBruta = decodeURIComponent(cookieDelFront);
+    const cookiePares = cookieBruta.split("j:");
+    const valoresCookie = JSON.parse(cookiePares[1]);
+    const emailCookie = valoresCookie.email;
+    const idSeccion = seleccionarSID("sessions", valoresCookie.id);
+    const datosSeccionOrdenados = JSON.parse(idSeccion[0].sess);
+    const emailDeLASeccion = datosSeccionOrdenados.email;
+
+    let verificacion = selector.verificacion;
+    console.log("valores COOKIES BRUTA", cookieDelFront);
+    console.log("valores COOKIES", valoresCookie);
+    console.log("valores SECCION", idSeccion[0].sess);
+    console.log("Datos SECCION", datosSeccionOrdenados);
+    console.log("Email COOKIE", emailCookie);
+    console.log("Email SECCION", emailDeLASeccion);
+    if (emailCookie === emailDeLASeccion) {
+      res.send(selector);
+      console.log("DATOS DEL FRONT AUTOS", selector.autos);
+      console.log(
+        "Email SECCION ID",
+        seleccionarEMAIL("Cuentas", emailDeLASeccion)[0].id
+      );
+      const idSeccion = seleccionarEMAIL("Cuentas", emailDeLASeccion)[0].id;
+
+      transaccionesV1(idSeccion, selector.autos, selector.fechaDeDevolucion);
+
+      //pasa, aca vamos a llamar al body, tenemos que traer al menos 2 ids, el del user y un array de id de autos
+      //la id   del user, se saca del servidor(aca), y la de los autos , viene del front, esta no tiene tiempo limite ni nada
+    } else {
+      console.log("NO PASA, SE TERMINO");
+    }
+  } else {
+    console.log("NO HAY COOKIE, SE TERMINO");
+    res.send(selector);
+  }
+});
 //Control de imagenes por servidor
 
 const testFolder = "./public/Imagenes-Autos";

@@ -1,6 +1,8 @@
 //vamos a usar esta pagina para hacer test de coockies y secciones, espero que funcione por que ya estoy
 //arto
 import Cookies from "js-cookie";
+import "./reservas.css";
+
 import { useEffect } from "react";
 import { useState } from "react";
 import {
@@ -194,6 +196,104 @@ async function obtengoAutos() {
   //console.log(result);
   return result;
 }*/
+async function verificoSeccionAPITransacciones(datos) {
+  const dataInterna = {
+    cookie: document.cookie,
+    autos: datos.autos, //esto esta mokeado, en la version real, es un array de la app
+    fechaDeDevolucion: datos.fechaDeDevolucion,
+  };
+  const response = await fetch("http://192.168.0.3:8080/TransaccionesTest", {
+    method: "POST",
+    //body: JSON.stringify(dataInterna),
+    credentials: "same-origin",
+    "Set-Cookie": document.cookie,
+
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(dataInterna),
+  });
+  const result = await response.json();
+  //console.log(result);
+  return result;
+}
+async function procesarFormulario(e, arrayDeAutosSelecionados, cookieAPP) {
+  e.preventDefault();
+  //tengo que verificar el dia tambien
+  const date = new Date();
+  let dia = String(date.getDate()).padStart(2, "0");
+
+  let mes = String(date.getMonth() + 1).padStart(2, "0");
+
+  let año = date.getFullYear();
+
+  // YYYY-MM-DD
+
+  let fechaActual = `${año}-${mes}-${dia}`;
+
+  console.log("The current date is " + fechaActual);
+
+  let autos = [];
+  let fechaDeDevolucion = [];
+  const datos = {
+    autos: autos,
+    fechaDeDevolucion: fechaDeDevolucion,
+  };
+
+  let numeroTargets = e.target;
+  for (let x = 0; x < arrayDeAutosSelecionados.length; x++) {
+    console.log(" FORMULARIO A", numeroTargets[x]);
+    if (
+      document.querySelector(`#CheckAlquilerAuto${x}`).checked === false ||
+      cookieAPP === false
+    ) {
+      console.log(
+        "FORMULARIO ESTADO",
+        "NO HAY NADA CHEKEADO Y/O NO SE ESTA LOGEADO, NO SE ENVIA NADA NI SE GUARDA"
+      );
+    } else if (
+      document.querySelector(`#FechaAlquilerAuto${x}`).value.length === 0
+    ) {
+      console.log(
+        "FORMULARIO ESTADO",
+        "NO HAY FECHA ESTABLECIDA ,NO SE ENVIA NADA NI SE GUARDA"
+      );
+    } else if (
+      Date.parse(document.querySelector(`#FechaAlquilerAuto${x}`).value) <
+      Date.parse(fechaActual)
+    ) {
+      console.log(
+        "FORMULARIO ESTADO",
+        "LA FECHA NO PUEDE SER MENOR A LA ACTUAL ,NO SE ENVIA NADA NI SE GUARDA"
+      );
+    } else {
+      console.log(
+        "FORMULARIO ESTADO fechaDeDevolucion",
+        Date.parse(document.querySelector(`#FechaAlquilerAuto${x}`).value)
+      );
+      console.log("FORMULARIO ESTADO fechaActual", Date.parse(fechaActual));
+      console.log("FORMULARIO ESTADO cookie");
+
+      autos.push(arrayDeAutosSelecionados[x].id);
+      fechaDeDevolucion.push(
+        document.querySelector(`#FechaAlquilerAuto${x}`).value
+      );
+      verificoSeccionAPITransacciones(datos);
+    }
+    //console.log(" FORMULARIO B", numeroTargets[x + 1]);
+  }
+  console.log(" FORMULARIO AUTOS", autos);
+  console.log(" FORMULARIO FECHA", fechaDeDevolucion);
+  //console.log(" FORMULARIO", numeroTargets[2]);
+  //console.log(" FORMULARIO", numeroTargets[3]);
+
+  /*
+  const data = {
+    selector: "Cuentas",
+    email: numeroTargets[0].value,
+    contraseña: numeroTargets[1].value,
+  };*/
+}
 
 export function Reservas(estado) {
   const paginaActual = estado.paginaActual;
@@ -213,6 +313,8 @@ export function Reservas(estado) {
   const estadoSliders = estado.sliderGeneralEstado;
   const estadoBotones = estado.estadoBotones;
   const imagenesOrdenadas = estado.imagenesOrdenadas;
+  const arrayDeAutosSelecionados = estado.arrayDeAutosSelecionados;
+  const setArrayDeAutosSelecionados = estado.setArrayDeAutosSelecionados;
 
   const logA = async () => {
     //crearSeccion(" jose", " admin", cookieApp);
@@ -252,7 +354,13 @@ export function Reservas(estado) {
     }
   };
   const crearCookieEspecial = async () => {
-    crearSeccionYcookie(cookieApp, setCookieAPP, "jose", "admin");
+    crearSeccionYcookie(
+      cookieApp,
+      setCookieAPP,
+      "jose",
+      "admin",
+      "email@ejemplo1.com"
+    );
     //este de aqui funciona bien :)
     /*
     if (document.cookie.length === 0) {
@@ -409,7 +517,7 @@ export function Reservas(estado) {
     //return [Object.keys(autos.vans[0]), Object.values(autos.vans[0])];
   };
   //autos();
-  const unModal = document.querySelector("#modal");
+  //const unModal = document.querySelector("#modal");
 
   //imagenes();
   const modalCambiante = () => {
@@ -450,9 +558,9 @@ export function Reservas(estado) {
   //y no se llega a nada, los datos que se requieran de la api, tiene que estar ya procesados en alguna otra funcion
   const cerrarModal = document.querySelector("#cerrarModal");
 
+  //const unModal = document.querySelector("#modal");
   const modalCambianteV2 = (algo) => {
     //hay que hacer el selector externo y ya
-
     console.log("Vans ", Vans);
     if (autoActual === undefined || algo === undefined) {
       return (
@@ -481,9 +589,21 @@ export function Reservas(estado) {
             {/*<p>{eval(algo).Marca}</p>*/}
 
             <form method="dialog">
-              <button onClick={() => unModal.close()}>OK</button>
+              <button>OK</button>
             </form>
-            {/*<button id="cerrarModal">Cerrar</button>*/}
+            <button
+              id="selecionarAuto"
+              onClick={() => [
+                setArrayDeAutosSelecionados((current) => [
+                  ...current,
+                  eval(algo),
+                ]),
+                alert("AUTOS SELECIONADO"),
+                document.querySelector("#modal").close(),
+              ]}
+            >
+              Quiero Alquilarlo
+            </button>
           </dialog>
         </div>
       );
@@ -508,6 +628,11 @@ export function Reservas(estado) {
 
   useEffect(() => {
     const imagenes = async () => {
+      const unModal = document.querySelector("#modal");
+
+      const selecionarAuto = document.querySelector("#selecionarAuto");
+
+      //
       //aca tengo que hacer "Rotar" el array de datos de vans, y sincronizarlo con cada 1,
       const imagenSlider = document.querySelectorAll(".seccion-slider"); //la imagen 1 es la principal siempre
       const imagenpadre = document.querySelectorAll(".slider");
@@ -565,6 +690,14 @@ export function Reservas(estado) {
           unModal.close();
         }
       };
+      /*
+      selecionarAuto.addEventListener("click", () =>
+        console.log(
+          "selecionarAuto BOTON",
+          setArrayDeAutosSelecionados(eval(selectorModal))
+        )
+      );
+      */
     };
     imagenes();
     const rotoDatos = async () => {
@@ -1110,6 +1243,166 @@ export function Reservas(estado) {
     setContador(contador + 1);
     console.log("CONTADOR DE CAMBIOS", contador);
   }, [imagenesOrdenadas]);
+  // LISTA AUTOS SELECIONADOS
+  useEffect(() => {
+    let BaseArrayUl = document.querySelector("#BaseArrayUl");
+    let BaseTablaV1 = document.querySelector("#BaseTablaV1");
+
+    if (arrayDeAutosSelecionados === undefined) {
+      //nada
+    } else {
+      for (let x = 0; x < arrayDeAutosSelecionados.length; x++) {
+        console.log(
+          `LISTA VARIABLE DE AUTOS ${x}`,
+          arrayDeAutosSelecionados[x],
+          "TAMAÑO DE LA SELECION",
+          Object.keys(arrayDeAutosSelecionados[x]).length
+        );
+        let tr = document.createElement("tr");
+        for (
+          let x2 = 0;
+          x2 < Object.keys(arrayDeAutosSelecionados[x]).length;
+          x2++
+        ) {
+          /*console.log(
+            `LISTA VARIABLE DE AUTOS TD ${x2}`,
+            Object.keys(arrayDeAutosSelecionados[x])[x2]
+          )*/ let td = document.createElement("td");
+          let classTd = document.createAttribute("className");
+          classTd.value = "Auto";
+          td.setAttributeNode(classTd);
+          td.innerText = Object.values(arrayDeAutosSelecionados[x])[x2];
+          tr.appendChild(td);
+        }
+        let td = document.createElement("td");
+        let td2 = document.createElement("td");
+        let classTd = document.createAttribute("className");
+        let classTd2 = document.createAttribute("className");
+        classTd.value = "Auto";
+        classTd2.value = "Auto";
+        td.setAttributeNode(classTd);
+        td2.setAttributeNode(classTd2);
+        //td.innerText = "algo";
+        //td2.innerText = "algo2";
+
+        let input = document.createElement("input");
+        let checkbox = document.createElement("input");
+        //let IDType = document.createElement("id");
+        let idcheckbox = document.createAttribute("id");
+        let idFecha = document.createAttribute("id");
+        idFecha.value = `FechaAlquilerAuto${x}`;
+        idcheckbox.value = `CheckAlquilerAuto${x}`;
+        //tipo.value = "date";
+        input.setAttributeNode(idFecha);
+        checkbox.setAttributeNode(idcheckbox);
+        input.type = "date";
+        checkbox.type = "checkbox";
+
+        //input.setAttributeNode(tipo);
+
+        //let classTd = document.createAttribute("className");
+        //classTd.value = "Auto";
+        //td.setAttributeNode(classTd);
+        //input.setAttributeNode(classTd);
+        //input.setAttributeNode(type);
+        //input.setAttributeNode(IDType);
+
+        //td.innerText = "TIEMPO DE ALQUILER";
+        td.appendChild(input);
+        td2.appendChild(checkbox);
+        tr.appendChild(td);
+        tr.appendChild(td2);
+
+        BaseTablaV1.appendChild(tr);
+
+        /*let li = document.createElement("li");
+        let classLi = document.createAttribute("className");
+        classLi.value = "Auto";
+        li.setAttributeNode(classLi);
+        let label = document.createElement("label");
+        label.innerHTML = `Auto${x}`;
+        let id = document.createAttribute("id");
+        id.value = `Auto${x}`;
+        li.setAttributeNode(id);
+        //label.setAttributeNode(id);
+        BaseArrayUl.appendChild(li);
+        li.appendChild(label);*/
+      }
+    }
+  }, []);
+
+  const listaVariableTransacciones = () => {
+    return (
+      <form
+        onSubmit={(e) =>
+          procesarFormulario(e, arrayDeAutosSelecionados, cookieApp)
+        }
+      >
+        <table id="BaseTablaV1">
+          <tr>
+            <th>ID</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Año</th>
+            <th>Kms</th>
+            <th>Color</th>
+            <th>Aire acondicionado</th>
+            <th>Pasajeros</th>
+            <th>trasmision</th>
+            <th>Tipo</th>
+            <th>Tiempo de alquiler</th>
+            <th>Confirmo alquiler?</th>
+          </tr>
+        </table>
+        <ul id="BaseArrayUl">
+          {/*<li id="test2">
+            <label class="test3" for="sueldo">
+              Autos
+            </label>
+            <input
+              class="test3"
+              type="number"
+              id="edad"
+              placeholder="numero de integrantes"
+            />
+            <input
+              class="test3"
+              type="button"
+              id="botonAgregarInicial"
+              value="agregar familiares"
+              onClick="creadorDelista(capturarNumero());creadorDeInputs(arrayTrabajo(),0)"
+            />
+            <input
+              class="test3"
+              type="button"
+              id="botonAgregarSecundario"
+              value="agregar mas familiares"
+              hidden
+            />
+            <input
+              class="test3"
+              type="button"
+              id="botonQuitarFamiliar"
+              value="quitar 1 familiar"
+              hidden
+            />
+            <input
+              class="test3"
+              type="button"
+              id="botonCalcular"
+              value="calcular"
+            />
+    </li>*/}
+        </ul>
+        <input
+          className="botonSubmit"
+          type="submit"
+          value="Confirmar"
+          id="BotonSubmit"
+        ></input>
+      </form>
+    );
+  };
 
   return (
     <div>
@@ -1143,8 +1436,17 @@ export function Reservas(estado) {
           <button id="SetCookieGeneral" onClick={() => eliminoTest()}>
             SetCookieGeneral
           </button>
+          <button
+            id="EnvioCookieATransacciones"
+            onClick={() => verificoSeccionAPITransacciones()}
+          >
+            EnvioCookieATransacciones
+          </button>
         </div>
-        <button id="openModal" onClick={() => unModal.showModal()}>
+        <button
+          id="openModal"
+          onClick={() => document.querySelector("#modal").showModal()}
+        >
           abrir modal
         </button>
         <button id="izquierdaTEST" onClick={() => rotoDatosV2("izquierda")}>
@@ -1153,11 +1455,19 @@ export function Reservas(estado) {
         <button id="derechaTEST" onClick={() => rotoDatosV2("derecha")}>
           derecha
         </button>
+        <button
+          id="VER ARRAYS"
+          onClick={() =>
+            console.log("VER ARRAYS AUTOS", arrayDeAutosSelecionados)
+          }
+        >
+          VER ARRAYS AUTOS
+        </button>
 
         <img
           src="https://cdn.group.renault.com/ren/ar/modelos/kangoo/ph2/kangoo-k61-ph2-desktop-header-002.jpg.ximg.xsmall.jpg/c9ee5e1b80.jpg"
           className="imgTest"
-          onClick={() => unModal.showModal()}
+          onClick={() => document.querySelector("#modal").showModal()}
         ></img>
         {sliderdeTest}
         {sliderdeTest2}
@@ -1171,6 +1481,150 @@ export function Reservas(estado) {
           </dialog>
   </div>*/}
         {modalCambianteV2(selectorModal)}
+        {listaVariableTransacciones()}
+        {/*aca voy a poner las tablas */}
+        <table>
+          <tr>
+            <td>Hola, soy tu primera celda.</td>
+            <td>Soy tu segunda celda.</td>
+            <td>Soy tu tercera celda.</td>
+            <td>Soy tu cuarta celda.</td>
+          </tr>
+          <tr>
+            <td>Soy tu primera celda.</td>
+            <td>Soy tu segunda celda.</td>
+            <td>Soy tu tercera celda.</td>
+            <td>Soy tu cuarta celda.</td>
+          </tr>
+        </table>
+        <table>
+          <tr>
+            <th>&nbsp;</th>
+            <th>Knocky</th>
+            <th>Flor</th>
+            <th>Ella</th>
+            <th>Juan</th>
+          </tr>
+          <tr>
+            <th>Breed</th>
+            <td>Jack Russell</td>
+            <td>Poodle</td>
+            <td>Streetdog</td>
+            <td>Cocker Spaniel</td>
+          </tr>
+          <tr>
+            <th>Age</th>
+            <td>16</td>
+            <td>9</td>
+            <td>10</td>
+            <td>5</td>
+          </tr>
+          <tr>
+            <th>Owner</th>
+            <td>Mother-in-law</td>
+            <td>Me</td>
+            <td>Me</td>
+            <td>Sister-in-law</td>
+          </tr>
+          <tr>
+            <th>Eating Habits</th>
+            <td>Eats everyone's leftovers</td>
+            <td>Nibbles at food</td>
+            <td>Hearty eater</td>
+            <td>Will eat till he explodes</td>
+          </tr>
+        </table>
+        <table>
+          <tr>
+            <th colspan="2">Animals</th>
+          </tr>
+          <tr>
+            <th colspan="2">Hippopotamus</th>
+          </tr>
+          <tr>
+            <th rowspan="2">Horse</th>
+            <td>Mare</td>
+          </tr>
+          <tr>
+            <td>Stallion</td>
+          </tr>
+          <tr>
+            <th colspan="2">Crocodile</th>
+          </tr>
+          <tr>
+            <th rowspan="2">Chicken</th>
+            <td>Hen</td>
+          </tr>
+          <tr>
+            <td>Rooster</td>
+          </tr>
+        </table>
+        <table>
+          <tr>
+            <th>Dato 1</th>
+            <th>Dato 2</th>
+          </tr>
+          <tr>
+            <td>Calcuta</td>
+            <td>Pizza</td>
+          </tr>
+          <tr>
+            <td>Robots</td>
+            <td>Jazz</td>
+          </tr>
+        </table>
+        <table>
+          <tr>
+            <td>&nbsp;</td>
+            <th>Mon</th>
+            <th>Tues</th>
+            <th>Wed</th>
+            <th>Thurs</th>
+            <th>Fri</th>
+            <th>Sat</th>
+            <th>Sun</th>
+          </tr>
+          <tr>
+            <th>1st period</th>
+            <td>English</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>German</td>
+            <td>Dutch</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <th>2nd period</th>
+            <td>English</td>
+            <td>English</td>
+            <td>&nbsp;</td>
+            <td>German</td>
+            <td>Dutch</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <th>3rd period</th>
+            <td>&nbsp;</td>
+            <td>German</td>
+            <td>&nbsp;</td>
+            <td>German</td>
+            <td>Dutch</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <th>4th period</th>
+            <td>&nbsp;</td>
+            <td>English</td>
+            <td>&nbsp;</td>
+            <td>English</td>
+            <td>Dutch</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+        </table>
       </main>
     </div>
   );
