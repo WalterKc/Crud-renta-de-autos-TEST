@@ -31,6 +31,9 @@ export function Catalogo(estado) {
   const [Camionetas, setCamionetas] = useState();
   const [unaVez, setUnaVez] = useState(false);
   const [selectorModal, setSelectorModal] = useState();
+  //agregamos la lista de autos
+  const arrayDeAutosSelecionados = estado.arrayDeAutosSelecionados;
+  const setArrayDeAutosSelecionados = estado.setArrayDeAutosSelecionados;
 
   const autos = async () => {
     const autos = await obtenerAutos();
@@ -49,6 +52,7 @@ export function Catalogo(estado) {
   };
   const modalCambianteV2 = (algo) => {
     //hay que hacer el selector externo y ya
+    //agregamos el boton selector
 
     console.log("Vans ", Vans);
     if (algo === undefined) {
@@ -81,6 +85,19 @@ export function Catalogo(estado) {
               {/*<button onClick={() => unModal.close()}>OK</button>*/}
               <button>OK</button>
             </form>
+            <button
+              id="selecionarAuto"
+              onClick={() => [
+                setArrayDeAutosSelecionados((current) => [
+                  ...current,
+                  eval(algo),
+                ]),
+                alert("AUTOS SELECIONADO"),
+                document.querySelector("#modal").close(),
+              ]}
+            >
+              Quiero Alquilarlo
+            </button>
             {/*<button id="cerrarModal">Cerrar</button>*/}
           </dialog>
         </div>

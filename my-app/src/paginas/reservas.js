@@ -12,6 +12,7 @@ import {
   verificarSeccion,
   eliminarCookieYseccion,
   obtenerAutos,
+  transaccionesAutos,
 } from "../services/service";
 import { rotoinjeccionaxialV3 } from "../App";
 
@@ -196,6 +197,7 @@ async function obtengoAutos() {
   //console.log(result);
   return result;
 }*/
+//este hay que mandarlo a la api
 async function verificoSeccionAPITransacciones(datos) {
   const dataInterna = {
     cookie: document.cookie,
@@ -217,6 +219,7 @@ async function verificoSeccionAPITransacciones(datos) {
   //console.log(result);
   return result;
 }
+//este se queda aca, este es el unico que SI merece quedarse aca
 async function procesarFormulario(e, arrayDeAutosSelecionados, cookieAPP) {
   e.preventDefault();
   //tengo que verificar el dia tambien
@@ -251,6 +254,7 @@ async function procesarFormulario(e, arrayDeAutosSelecionados, cookieAPP) {
         "FORMULARIO ESTADO",
         "NO HAY NADA CHEKEADO Y/O NO SE ESTA LOGEADO, NO SE ENVIA NADA NI SE GUARDA"
       );
+      alert("NO HAY NADA CHEKEADO Y/O NO SE ESTA LOGEADO");
     } else if (
       document.querySelector(`#FechaAlquilerAuto${x}`).value.length === 0
     ) {
@@ -258,6 +262,7 @@ async function procesarFormulario(e, arrayDeAutosSelecionados, cookieAPP) {
         "FORMULARIO ESTADO",
         "NO HAY FECHA ESTABLECIDA ,NO SE ENVIA NADA NI SE GUARDA"
       );
+      alert("NO HAY FECHA ESTABLECIDA");
     } else if (
       Date.parse(document.querySelector(`#FechaAlquilerAuto${x}`).value) <
       Date.parse(fechaActual)
@@ -266,6 +271,7 @@ async function procesarFormulario(e, arrayDeAutosSelecionados, cookieAPP) {
         "FORMULARIO ESTADO",
         "LA FECHA NO PUEDE SER MENOR A LA ACTUAL ,NO SE ENVIA NADA NI SE GUARDA"
       );
+      alert("LA FECHA NO PUEDE SER MENOR A LA ACTUAL");
     } else {
       console.log(
         "FORMULARIO ESTADO fechaDeDevolucion",
@@ -278,7 +284,8 @@ async function procesarFormulario(e, arrayDeAutosSelecionados, cookieAPP) {
       fechaDeDevolucion.push(
         document.querySelector(`#FechaAlquilerAuto${x}`).value
       );
-      verificoSeccionAPITransacciones(datos);
+      alert("TRANSACCION COMPLETA");
+      transaccionesAutos(datos);
     }
     //console.log(" FORMULARIO B", numeroTargets[x + 1]);
   }
@@ -1244,6 +1251,7 @@ export function Reservas(estado) {
     console.log("CONTADOR DE CAMBIOS", contador);
   }, [imagenesOrdenadas]);
   // LISTA AUTOS SELECIONADOS
+  // este tambien se queda aqui
   useEffect(() => {
     let BaseArrayUl = document.querySelector("#BaseArrayUl");
     let BaseTablaV1 = document.querySelector("#BaseTablaV1");
@@ -1330,6 +1338,10 @@ export function Reservas(estado) {
       }
     }
   }, []);
+  //este se queda aca, por que aqui pertenece
+  const refreshPage = () => {
+    window.location.reload(false);
+  };
 
   const listaVariableTransacciones = () => {
     return (
@@ -1399,6 +1411,13 @@ export function Reservas(estado) {
           type="submit"
           value="Confirmar"
           id="BotonSubmit"
+        ></input>
+        <input
+          className="Reset"
+          type="button"
+          value="Reset"
+          id="BotonReset"
+          onClick={() => [setArrayDeAutosSelecionados([]), refreshPage()]}
         ></input>
       </form>
     );

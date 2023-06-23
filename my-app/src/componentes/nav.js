@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import logo from "../imagenes/logotipo renta.png";
 import "./nav.css";
+import { eliminarCookieYseccion } from "../services/service";
 /**
  * ok, ahora que tenemos algo mas limpio esto, vamos a hacer lo que falta
  * tenemos que muestre el login, para eso, vamos a hacer 2 cosas
@@ -13,9 +14,37 @@ import "./nav.css";
  * extra, poner el boton de deslogeo(traerlo de las reservas,ya lo tenes hecho :)
  */
 export function Nav(estado) {
-  const estadoActual = estado.estado;
-  const setEstado = estado.set;
+  const estadoActual = estado.estadoMenuDespleglable;
+  const setEstado = estado.setEstadoMenuDesplegable;
   const cookieApp = estado.cookie;
+  const setCookieAPP = estado.setCookie;
+  //traigo funciones del area de test/juego
+  //funcion para eliminar el estado de la cookie
+  const eliminoCookie = () => {
+    if (cookieApp !== undefined) {
+      document.cookie =
+        "UnaCookieEspecial  =; expires=Thu, 1 Jan 1970 00:00:00 UTC";
+      setCookieAPP(false);
+      console.log("cookies despues de quitarla", cookieApp);
+    } else {
+      console.log(
+        "No hay cookie, no se pueden quitar lo que no hay",
+        cookieApp
+      );
+    }
+  };
+  //funcion para eliminar la seccion
+  const eliminoTest = async () => {
+    const eliminoSeccion = await eliminarCookieYseccion(setCookieAPP);
+    console.log(eliminoSeccion);
+    eliminoCookie();
+    /*
+    const sincro = await testsEliminoCookieServer();
+    setCookieAPP(false);
+
+    console.log(sincro);*/
+  };
+  //termino de traer las funciones del area de test
 
   const selectorLogin = () => {
     if (cookieApp === false) {
@@ -35,7 +64,15 @@ export function Nav(estado) {
       return (
         <div id="login">
           <a id="linkLogin">
-            <i className="bi-person-circle " id="iconoLogin"></i>
+            <p id="deslogearse">Salir</p>
+            <i
+              class="bi bi-box-arrow-right"
+              id="iconoLogin"
+              onClick={async () => [
+                console.log("deslogearse", cookieApp),
+                eliminoTest(),
+              ]}
+            ></i>
           </a>
           <p id="texto">{cookieApp.nombre}</p>
         </div>

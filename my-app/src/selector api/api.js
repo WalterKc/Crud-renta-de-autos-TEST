@@ -141,6 +141,8 @@ const urlcoockie1 = `${IP_GENERAL}/sessionesV2`;
 const urlcoockie2 = `${IP_GENERAL}/cookie`;
 const testSeccion = `${IP_GENERAL}/seccionesTestCookie`;
 const testEliminoSeccion = `${IP_GENERAL}/eliminoSeccion`;
+const obtenerAutos = `${IP_GENERAL}/Autos`;
+const TransaccionesTest = `${IP_GENERAL}/TransaccionesTest`;
 //
 //OK
 export async function enviarDatosSeccion(usuario, rol, email) {
@@ -221,11 +223,31 @@ export async function eliminoSeccionApi() {
 }
 //obtengo datos de los autos
 export async function obtenerAutosAPI() {
-  const response = await fetch("http://192.168.0.3:8080/Autos", {
+  const response = await fetch(obtenerAutos, {
     method: "Get",
     headers: {
       "Content-Type": "application/json",
     },
+  });
+  const result = await response.json();
+  return result;
+}
+
+//transacciones V1
+export async function TransaccionesApiAutos(datos) {
+  const dataInterna = {
+    cookie: document.cookie,
+    autos: datos.autos, //esto esta mokeado, en la version real, es un array de la app
+    fechaDeDevolucion: datos.fechaDeDevolucion,
+  };
+  const response = await fetch(TransaccionesTest, {
+    method: "POST",
+    credentials: "same-origin",
+    "Set-Cookie": document.cookie,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(dataInterna),
   });
   const result = await response.json();
   return result;

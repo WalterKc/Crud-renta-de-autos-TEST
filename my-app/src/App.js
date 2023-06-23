@@ -28,8 +28,8 @@ async function otroTEST(valor) {
 }
 //const test1 = otroTEST(obtenerDatosIniciales());
 function SelectorPaginaGeneral(estado) {
-  const estadoMenu = estado.estadoMenu;
-  const setEstado = estado.setMenu;
+  const estadoMenuDespleglable = estado.estadoMenuDespleglable;
+  const setEstadoMenuDesplegable = estado.setEstadoMenuDesplegable;
   const estadoBotones = estado.estadoBotones;
   const setBotones = estado.setBotones;
   const imagenes = estado.arrayDeImagenes;
@@ -37,8 +37,8 @@ function SelectorPaginaGeneral(estado) {
   const setPaginaActual = estado.setPagina;
   const imagenesOrdenadasServer = estado.imagenesOrdenadasServer;
   const [sliderGeneralTEST, setSliderGeneralTEST] = useState([]);
-  const cookie = estado.cookie;
-  const setCookie = estado.setCookie;
+  const cookie = estado.cookieApp;
+  const setCookie = estado.setCookieApp;
   const arrayDeAutosSelecionados = estado.arrayDeAutosSelecionados;
   const setArrayDeAutosSelecionados = estado.setArrayDeAutosSelecionados;
 
@@ -62,12 +62,17 @@ function SelectorPaginaGeneral(estado) {
     } else {
       console.log("NADA DE NADA");
     }
-  }, [estadoMenu]);
-  if (estadoMenu) {
+  }, [estadoMenuDespleglable]);
+  if (estadoMenuDespleglable) {
     return (
       <>
         <header>
-          <Nav estado={estadoMenu} set={setEstado} cookie={cookie}></Nav>
+          <Nav
+            estadoMenuDespleglable={estadoMenuDespleglable}
+            setEstadoMenuDesplegable={setEstadoMenuDesplegable}
+            cookie={cookie}
+            setCookie={setCookie}
+          ></Nav>
         </header>
         <main>
           <Routes>
@@ -76,7 +81,7 @@ function SelectorPaginaGeneral(estado) {
               element={
                 <Layount
                   setPagina={setPaginaActual}
-                  setNav={setEstado}
+                  setNav={setEstadoMenuDesplegable}
                 ></Layount>
               }
             >
@@ -125,9 +130,10 @@ function SelectorPaginaGeneral(estado) {
                 paginaActual={paginaActual}
                 Nav={
                   <Nav
-                    estado={estadoMenu}
-                    set={setEstado}
+                    estadoMenuDespleglable={estadoMenuDespleglable}
+                    setEstadoMenuDesplegable={setEstadoMenuDesplegable}
                     cookie={cookie}
+                    setCookie={setCookie}
                   ></Nav>
                 }
                 Slider1={
@@ -158,9 +164,10 @@ function SelectorPaginaGeneral(estado) {
                 paginaActual={paginaActual}
                 Nav={
                   <Nav
-                    estado={estadoMenu}
-                    set={setEstado}
+                    estadoMenuDespleglable={estadoMenuDespleglable}
+                    setEstadoMenuDesplegable={setEstadoMenuDesplegable}
                     cookie={cookie}
+                    setCookie={setCookie}
                   ></Nav>
                 }
                 sliderAutosChicos={sliderGeneralTEST[0]}
@@ -172,6 +179,8 @@ function SelectorPaginaGeneral(estado) {
                 estadoBotones={estadoBotones}
                 imagenesOrdenadas={imagenesOrdenadasServer}
                 sliderGeneralEstado={sliderGeneralTEST}
+                arrayDeAutosSelecionados={arrayDeAutosSelecionados}
+                setArrayDeAutosSelecionados={setArrayDeAutosSelecionados}
               ></Catalogo>
             }
           ></Route>
@@ -182,9 +191,10 @@ function SelectorPaginaGeneral(estado) {
                 paginaActual={paginaActual}
                 Nav={
                   <Nav
-                    estado={estadoMenu}
-                    set={setEstado}
+                    estadoMenuDespleglable={estadoMenuDespleglable}
+                    setEstadoMenuDesplegable={setEstadoMenuDesplegable}
                     cookie={cookie}
+                    setCookie={setCookie}
                   ></Nav>
                 }
               ></Default>
@@ -197,9 +207,10 @@ function SelectorPaginaGeneral(estado) {
                 paginaActual={paginaActual}
                 Nav={
                   <Nav
-                    estado={estadoMenu}
-                    set={setEstado}
+                    estadoMenuDespleglable={estadoMenuDespleglable}
+                    setEstadoMenuDesplegable={setEstadoMenuDesplegable}
                     cookie={cookie}
+                    setCookie={setCookie}
                   ></Nav>
                 }
                 cookie={cookie}
@@ -214,9 +225,10 @@ function SelectorPaginaGeneral(estado) {
                 paginaActual={paginaActual}
                 Nav={
                   <Nav
-                    estado={estadoMenu}
-                    set={setEstado}
+                    estadoMenuDespleglable={estadoMenuDespleglable}
+                    setEstadoMenuDesplegable={setEstadoMenuDesplegable}
                     cookie={cookie}
+                    setCookie={setCookie}
                   ></Nav>
                 }
               ></RegistroUsuarios>
@@ -229,9 +241,10 @@ function SelectorPaginaGeneral(estado) {
                 paginaActual={paginaActual}
                 Nav={
                   <Nav
-                    estado={estadoMenu}
-                    set={setEstado}
+                    estadoMenuDespleglable={estadoMenuDespleglable}
+                    setEstadoMenuDesplegable={setEstadoMenuDesplegable}
                     cookie={cookie}
+                    setCookie={setCookie}
                   ></Nav>
                 }
                 cookie={cookie}
@@ -272,7 +285,7 @@ function slidersParaEntregarGeneral(jsonImagenes, estadoBotones, setBotones) {
 
 export function SliderGeneral(estado) {
   const estadoBotones = estado.estado;
-  const setEstado = estado.set;
+  const setEstadoMenuDesplegable = estado.setEstadoMenuDesplegable;
   const padre = estado.padre;
   const imagenes = estado.arrayDeImagenes;
   const ID = estado.ID;
@@ -293,7 +306,12 @@ export function SliderGeneral(estado) {
         className="slider-boton slider-boton-derecha"
         id={"derecha" + ID}
         onClick={() =>
-          nuevoBoton(padre + ID, estadoBotones, setEstado, "derecha")
+          nuevoBoton(
+            padre + ID,
+            estadoBotones,
+            setEstadoMenuDesplegable,
+            "derecha"
+          )
         }
         hidden={!estadoBotones}
       >
@@ -303,7 +321,12 @@ export function SliderGeneral(estado) {
         className="slider-boton slider-boton-izquierda"
         id={"izquierda" + ID}
         onClick={() =>
-          nuevoBoton(padre + ID, estadoBotones, setEstado, "izquierda")
+          nuevoBoton(
+            padre + ID,
+            estadoBotones,
+            setEstadoMenuDesplegable,
+            "izquierda"
+          )
         }
         hidden={!estadoBotones}
       >
@@ -756,10 +779,10 @@ const rotoinjeccionaxialV3 = async (
 function App() {
   //boton();
   const [estadoBotones, setEstadoBotones] = useState(true);
-  const [estadoMenu, setEstadoMenu] = useState(false);
+  const [estadoMenuDespleglable, setEstadoMenu] = useState(false);
   const [PaginaActual, setPaginaActual] = useState("Home");
   //id="menu-Desplegable"
-  console.log("ESTADO INTERNO", estadoMenu);
+  console.log("ESTADO INTERNO", estadoMenuDespleglable);
 
   const arrayDeImagenes3 = [titulo1, titulo2, auto7];
   const [imagenesServerFinalesTest, setImagenesServerFinalesTest] = useState();
@@ -791,16 +814,16 @@ function App() {
   return (
     <div className="App">
       <SelectorPaginaGeneral
-        estadoMenu={estadoMenu}
-        setMenu={setEstadoMenu}
+        estadoMenuDespleglable={estadoMenuDespleglable}
+        setEstadoMenuDesplegable={setEstadoMenu}
         estadoBotones={estadoBotones}
         setBotones={setEstadoBotones}
         arrayDeImagenes={[arrayDeImagenes3]}
         paginaActual={PaginaActual}
         setPagina={setPaginaActual}
         imagenesOrdenadasServer={imagenesServerFinalesTest}
-        cookie={cookie}
-        setCookie={setCookie}
+        cookieApp={cookie}
+        setCookieApp={setCookie}
         arrayDeAutosSelecionados={arrayDeAutosSelecionados}
         setArrayDeAutosSelecionados={setArrayDeAutosSelecionados}
       ></SelectorPaginaGeneral>

@@ -18,6 +18,7 @@ import { enviarDatosSeccion } from "../selector api/api.js";
 import { setCookie } from "../selector api/api.js";
 import Cookies from "js-cookie";
 import { eliminoSeccionApi } from "../selector api/api.js";
+import { TransaccionesApiAutos } from "../selector api/api.js";
 
 //import { obtenerNombresIMGs } from "../selector api/api.js";
 //sin funcion por ahora, solo de test
@@ -143,6 +144,10 @@ export async function eliminarCookieYseccion(setCookieAPP) {
 export async function obtenerAutos() {
   const datosAutos = await obtenerAutosAPI();
   return datosAutos;
+}
+export async function transaccionesAutos(datos) {
+  const transaccion = await TransaccionesApiAutos(datos);
+  return transaccion;
 }
 
 //TODAS LAS APIS Y SERVICIOS LISTOS, LISTO PARA INTEGRARLAS A LA APP PRIMARIA

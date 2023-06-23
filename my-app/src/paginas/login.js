@@ -33,7 +33,7 @@ async function procesarFormulario(e, cookieApp, setCookieAPP) {
     );
 
     alert("LOGIN EXITOSO!");
-    h3Test.hidden = false;
+    //h3Test.hidden = false;
     h3Test.innerHTML = "LOGIN EXITOSO!";
   }
 }
