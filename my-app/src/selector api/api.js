@@ -1,5 +1,7 @@
 const BASE_URL = "http://localhost:8080";
-const IP_GENERAL = "http://192.168.0.3:8080";
+const IP_GENERAL = "http://localhost:8080";
+//const IP_GENERAL = "http://192.168.0.3:8080";
+
 const urlTest = "http://localhost:8080/TEST_EMAIL";
 const datosTest = {
   selector: "Cuentas",
