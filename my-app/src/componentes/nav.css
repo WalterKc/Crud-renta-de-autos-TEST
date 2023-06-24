@@ -40,7 +40,6 @@
   bottom: 0%;
   right: 30%;
   width: 40vw;
-  cursor: pointer;
 }
 #iconoLogin {
   font-size: 2.4em;
@@ -48,6 +47,7 @@
   position: relative;
   right: -31vw;
   top: 1.2em;
+  cursor: pointer;
 }
 #texto {
   color: white;
