@@ -285,7 +285,7 @@ function slidersParaEntregarGeneral(jsonImagenes, estadoBotones, setBotones) {
 
 export function SliderGeneral(estado) {
   const estadoBotones = estado.estado;
-  const setEstadoMenuDesplegable = estado.setEstadoMenuDesplegable;
+  const setEstadoMenuDesplegable = estado.set;
   const padre = estado.padre;
   const imagenes = estado.arrayDeImagenes;
   const ID = estado.ID;

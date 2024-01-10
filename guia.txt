@@ -116,4 +116,4 @@ o una señal de false y luego crear el mensaje de error) *LISTO*
 >> hacer los contenedores
 >> hacer la configuracion inicial y la ip automatica
 >> se deja afuera por el momento, la modificacion de datos de autos/usuario por parte de los mismos
-x
+
